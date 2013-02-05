@@ -22,7 +22,7 @@ class GeometryField(WritableField):
 	
     def from_native(self, value):
         try:
-            value = GEOSGeometry(unquote(value))
+            value = GEOSGeometry(json.dumps(value))
         except ValueError:
             pass
         return value
