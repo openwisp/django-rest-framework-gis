@@ -1,6 +1,5 @@
 # rest_framework_gis/serializers.py
-from django.db import models
-from django.contrib.gis.db import models as geomodels
+from django.contrib.gis.db import models
 
 from rest_framework.serializers import ModelSerializer
 
@@ -51,14 +50,14 @@ class GeoModelSerializer(ModelSerializer):
             models.BooleanField: BooleanField,
             models.FileField: FileField,
             models.ImageField: ImageField,
-            geomodels.GeometryField: GeometryField,
-            geomodels.PointField: GeometryField,
-            geomodels.LineStringField: GeometryField,
-            geomodels.PolygonField: GeometryField,
-            geomodels.MultiPointField: GeometryField,
-            geomodels.MultiLineStringField: GeometryField,
-            geomodels.MultiPolygonField: GeometryField,
-            geomodels.GeometryCollectionField: GeometryField
+            models.GeometryField: GeometryField,
+            models.PointField: GeometryField,
+            models.LineStringField: GeometryField,
+            models.PolygonField: GeometryField,
+            models.MultiPointField: GeometryField,
+            models.MultiLineStringField: GeometryField,
+            models.MultiPolygonField: GeometryField,
+            models.GeometryCollectionField: GeometryField
         }
 
         try:
