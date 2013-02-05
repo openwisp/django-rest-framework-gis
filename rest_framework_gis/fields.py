@@ -4,12 +4,15 @@ import json
 
 from django.contrib.gis.geos import GEOSGeometry
 
-from rest_framework.fields import WriteableField
+from rest_framework.fields import WritableField
 
 class GeometryField(WritableField):
+    """
+    A field to handle GeoDjango Geometry fields
+    """
     type_name = 'GeometryField'
 
-	def to_native(self, value):
+    def to_native(self, value):
         if isinstance(value, dict) or value is None:
             return value
 
