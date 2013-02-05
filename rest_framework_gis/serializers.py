@@ -1,5 +1,6 @@
 # rest_framework_gis/serializers.py
 from django.db import models
+from django.contrib.gis.db import models as geomodels
 
 from rest_framework.serializers import ModelSerializer
 
@@ -41,7 +42,6 @@ class GeoModelSerializer(ModelSerializer):
             models.SmallIntegerField: IntegerField,
             models.PositiveSmallIntegerField: IntegerField,
             models.DateTimeField: DateTimeField,
-            models.DateField: DateField,
             models.EmailField: EmailField,
             models.CharField: CharField,
             models.URLField: URLField,
@@ -51,8 +51,16 @@ class GeoModelSerializer(ModelSerializer):
             models.BooleanField: BooleanField,
             models.FileField: FileField,
             models.ImageField: ImageField,
-            models.GeometryField: GeometryField
+            geomodels.GeometryField: GeometryField,
+            geomodels.PointField: GeometryField,
+            geomodels.LineStringField: GeometryField,
+            geomodels.PolygonField: GeometryField,
+            geomodels.MultiPointField: GeometryField,
+            geomodels.MultiLineStringField: GeometryField,
+            geomodels.MultiPolygonField: GeometryField,
+            geomodels.GeometryCollectionField: GeometryField
         }
+
         try:
             return field_mapping[model_field.__class__](**kwargs)
         except KeyError:
