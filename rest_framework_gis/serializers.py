@@ -5,8 +5,29 @@ from rest_framework.serializers import ModelSerializer
 
 from .fields import GeometryField
 
+class GeoModelSerializerOptions(ModelSerializerOptions):
+    """
+    Options for GeoModelSerializer
+    """
+    def __init__(self, meta):
+        super(GeoModelSerializerOptions, self).__init__(meta)
+        self.geo_field = getattr(meta, 'geo_field', None)
+
 class GeoModelSerializer(ModelSerializer):
-    
+    """
+    A subclass of ModelSerializer that outputs geojson-ready data
+    """
+    _options_class = GeoModelSerializerOptions
+
+
+    def __init__(self, *args, **kwargs):
+        super(HyperGeoModelSerializer, self).__init__(*args, **kwargs)
+        if self.opts.geo_field is None:
+            raise ImproperlyConfigured("You must define a 'geo_field'.")
+        else:
+            # TODO: make sure the geo_field is a GeoDjango geometry field
+            pass
+
     def get_field(self, model_field):
         """
         Creates a default instance of a basic non-relational field.
