@@ -10,5 +10,8 @@ setup(
     author='Douglas Meehan',
     author_email='dmeehan@gmail.com',
     description='Geographic add-ons for Django Rest Framework',
-    packages=find_packages()
+    packages=find_packages(),
+    install_requires=[
+        "djangorestframework>=2.0"
+    ]
 )
