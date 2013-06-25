@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 from rest_framework_gis import __version__
 
 setup(
-    name='django-rest-framework-gis',
+    name='djangorestframework-gis',
     version=__version__,
     url='https://github.com/dmeehan/django-rest-framework-gis',
     license='',
