@@ -12,6 +12,6 @@ setup(
     description='Geographic add-ons for Django Rest Framework',
     packages=find_packages(),
     install_requires=[
-        "djangorestframework>=2.0"
+        "djangorestframework>=2.2.2"
     ]
 )
