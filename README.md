@@ -19,6 +19,7 @@ field mapping of GeoDjango geometry fields to the above GeometryField.
 
 For example, the following model::
 
+code-block::Python
 class Location(models.Model):
     """
     A model which holds information about a particular location
