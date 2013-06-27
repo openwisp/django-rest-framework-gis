@@ -17,7 +17,7 @@ Provides a GeoModelSerializer, which is a sublass os DRF ModelSerializer.
 This serializer updates the field_mapping dictionary to include
 field mapping of GeoDjango geometry fields to the above GeometryField.
 
-For example, the following model:
+For example, the following model::
 
 class Location(models.Model):
     """
@@ -28,7 +28,7 @@ class Location(models.Model):
    state = models.CharField(max_length=100)
    point = models.PointField()
 
-By default, the DRF ModelSerializer will output:
+By default, the DRF ModelSerializer will output::
 
 {
      "id": 1, 
@@ -38,7 +38,7 @@ By default, the DRF ModelSerializer will output:
       "point": "POINT(-123.0208 44.0464)" 
 }
 
-In contrast, the GeoModelSerizalizer will output:
+In contrast, the GeoModelSerizalizer will output::
 
 {
      "id": 1, 
