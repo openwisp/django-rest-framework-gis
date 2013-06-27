@@ -1,1 +1,0 @@
-djangorestframework >= 2.0
