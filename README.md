@@ -58,6 +58,6 @@ Further development needs to be done to output GeoJSON.
 Filters
 -------
 
-Provides a InBBOXFilter, which is a subclass of DRF BaseFilerBackend.
-Filters a queryset to only those instance within a certain bounding box.
+Provides a InBBOXFilter, which is a subclass of DRF BaseFilterBackend.
+Filters a queryset to only those instances within a certain bounding box.
 
