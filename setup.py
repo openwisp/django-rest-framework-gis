@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "djangorestframework>=2.2.2"
-    ]
+    ],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
