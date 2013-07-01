@@ -20,15 +20,15 @@ GeoModelSerializer.field_mapping.update({
     models.GeometryCollectionField: GeometryField
 })
 
-class GeoModelFeatureSerializerOptions(ModelSerializerOptions):
+class GeoFeatureSerializerOptions(ModelSerializerOptions):
     """
     Options for GeoModelFeatureSerializer
     """
     def __init__(self, meta):
-        super(GeoModelFeatureSerializerOptions, self).__init__(meta)
+        super(GeoFeatureSerializerOptions, self).__init__(meta)
         self.geo_field = getattr(meta, 'geo_field', None)
 
-class GeoModelFeatureSerializer(GeoModelSerializer):
+class GeoFeatureSerializer(GeoModelSerializer):
     """
     A subclass of GeoModelSerializer that outputs geojson-ready data
     """
@@ -36,7 +36,7 @@ class GeoModelFeatureSerializer(GeoModelSerializer):
 
 
     def __init__(self, *args, **kwargs):
-        super(GeoModelFeatureSerializer, self).__init__(*args, **kwargs)
+        super(GeoFeatureSerializer, self).__init__(*args, **kwargs)
         if self.opts.geo_field is None:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
         else:
