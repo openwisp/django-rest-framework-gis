@@ -20,23 +20,23 @@ GeoModelSerializer.field_mapping.update({
     models.GeometryCollectionField: GeometryField
 })
 
-class GeoFeatureSerializerOptions(ModelSerializerOptions):
+class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
     """
-    Options for GeoModelFeatureSerializer
+    Options for GeoFeatureModelSerializer
     """
     def __init__(self, meta):
         super(GeoFeatureSerializerOptions, self).__init__(meta)
         self.geo_field = getattr(meta, 'geo_field', None)
 
-class GeoFeatureSerializer(GeoModelSerializer):
+class GeoFeatureModelSerializer(GeoModelSerializer):
     """
-    A subclass of GeoModelSerializer that outputs geojson-ready data
+    A subclass of GeoFeatureModelSerializer that outputs geojson-ready data
     """
-    _options_class = GeoModelFeatureSerializerOptions
+    _options_class = GeoFeatureModelSerializerOptions
 
 
     def __init__(self, *args, **kwargs):
-        super(GeoFeatureSerializer, self).__init__(*args, **kwargs)
+        super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
         if self.opts.geo_field is None:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
         else:
@@ -45,3 +45,28 @@ class GeoFeatureSerializer(GeoModelSerializer):
 
     # TODO: implement new to_native and from_native methods for
     #       input/output of properly formatted GeoJSON. 
+
+    def to_native(self, obj):
+        """
+        Serialize objects -> primitives.
+        """
+        ret = self._dict_class()
+        ret["type"] = "Feature"
+        ret["properties"] = {}
+        ret["geometry"] = {}
+
+        for field_name, field in self.fields.items():
+        	field.initialize(parent=self, field_name=field_name)
+            key = self.get_field_key(field_name)
+            value = field.field_to_native(obj, field_name)
+            if field_name == self.opts.geo_field:
+                ret["geometry"] = value
+        	else:
+            	ret["properties"][key] = value
+            	ret.fields[key] = field
+        return ret
+
+    def from_native:
+    	pass
+    	
+    	
