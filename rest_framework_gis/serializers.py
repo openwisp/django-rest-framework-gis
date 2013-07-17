@@ -46,24 +46,13 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             raise ImproperlyConfigured("You must define a 'geo_field'.")
         else:
             # TODO: make sure the geo_field is a GeoDjango geometry field
-            pass
+            # if 'fields' are declared, make sure it includes 'geo_field'
+            if self.opts.fields:
+               if self.opts.geo_field not in self.opts.fields:
+                   fields = list(self.opts.fields)
+                   fields.extend(self.opts.geo_field)
+                   self.opts.fields = fields
 
-    def get_default_fields(self):
-        """
-           Make sure geo_field is always included in the result
-        """
-        fields = super(GeoFeatureModelSerializer, self).get_default_fields()
-
-        #ret[geo_field.name] = geo_field
-        #ret.update(fields)
-        #fields = ret
-
-        return fields
-
-
-
-    # TODO: implement new to_native and from_native methods for
-    #       input/output of properly formatted GeoJSON. 
 
     def to_native(self, obj):
         """
@@ -86,3 +75,6 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                 ret.fields[key] = field
         return ret    	
     	
+    # TODO: from_native method
+
+
