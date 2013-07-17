@@ -6,23 +6,27 @@ from rest_framework.serializers import ModelSerializer, ModelSerializerOptions
 from .fields import GeometryField
 
 class GeoModelSerializer(ModelSerializer):
+    """
+        A subclass of DFR ModelSerializer that adds support
+        for GeoDjango fields to be serialized as GeoJSON
+        compatible data
+    """
 
-    pass
-
-GeoModelSerializer.field_mapping.update({
-    models.GeometryField: GeometryField,
-    models.PointField: GeometryField,
-    models.LineStringField: GeometryField,
-    models.PolygonField: GeometryField,
-    models.MultiPointField: GeometryField,
-    models.MultiLineStringField: GeometryField,
-    models.MultiPolygonField: GeometryField,
-    models.GeometryCollectionField: GeometryField
-})
+    field_mapping = dict(ModelSerializer.field_mapping)
+    field_mapping.update({
+        models.GeometryField: GeometryField,
+        models.PointField: GeometryField,
+        models.LineStringField: GeometryField,
+        models.PolygonField: GeometryField,
+        models.MultiPointField: GeometryField,
+        models.MultiLineStringField: GeometryField,
+        models.MultiPolygonField: GeometryField,
+        models.GeometryCollectionField: GeometryField
+   })
 
 class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
     """
-    Options for GeoFeatureModelSerializer
+        Options for GeoFeatureModelSerializer
     """
     def __init__(self, meta):
         super(GeoFeatureSerializerOptions, self).__init__(meta)
@@ -30,7 +34,8 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
     """
-    A subclass of GeoFeatureModelSerializer that outputs geojson-ready data
+         A subclass of GeoFeatureModelSerializer 
+         that outputs geojson-ready data
     """
     _options_class = GeoFeatureModelSerializerOptions
 
@@ -61,7 +66,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             value = field.field_to_native(obj, field_name)
             if field_name == self.opts.geo_field:
                 ret["geometry"] = value
-        	else:
+            else:
             	ret["properties"][key] = value
             	ret.fields[key] = field
         return ret
