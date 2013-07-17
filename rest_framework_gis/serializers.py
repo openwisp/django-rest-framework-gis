@@ -69,9 +69,5 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             else:
                 ret["properties"][key] = value
                 ret.fields[key] = field
-            return ret
-
-    def from_native:
-    	pass
-    	
+            return ret    	
     	
