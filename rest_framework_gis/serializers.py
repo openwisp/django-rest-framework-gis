@@ -52,7 +52,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                    # make sure its a list so we can append
                    fields = list(self.opts.fields)
                    fields.append(self.opts.geo_field)
-                   self.opts.fields = fields
+                   self.opts.fields = tuple(fields)
 
 
     def to_native(self, obj):
