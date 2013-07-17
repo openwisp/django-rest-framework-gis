@@ -49,7 +49,10 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             # if 'fields' are declared, make sure it includes 'geo_field'
             if self.opts.fields:
                if self.opts.geo_field not in self.opts.fields:
-                   self.opts.fields.append(self.opts.geo_field)
+                   # make sure its a list so we can append
+                   fields = list(self.opts.fields)
+                   fields.append(self.opts.geo_field)
+                   self.opts.fields = fields
 
 
     def to_native(self, obj):
