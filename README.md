@@ -74,7 +74,7 @@ compatible. Using the above example, the GeoFeatureModelSerializer will output:
         },
     }
     
-GeoFeatureModelSerializer will require you to define a "geo_field" to be serializes as "geometry". For example:
+GeoFeatureModelSerializer will require you to define a "geo_field" to be serialized as the "geometry". For example:
 
     class LocationSerializer(GeoFeatureModelSerializer):
         """ A class to serialize locations as GeoJSON compatible data """
