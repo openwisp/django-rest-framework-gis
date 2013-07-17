@@ -48,6 +48,23 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             # TODO: make sure the geo_field is a GeoDjango geometry field
             pass
 
+    def get_default_fields(self):
+        """
+           Make sure geo_field is always included in the result
+        """
+        fields = super(GeoFeatureModelSerializer, self).get_default_fields()
+
+        geo_field = self.opts.geo_field
+        field = self.get_field(geo_field)
+        if field:
+            ret[geo_field.name] = field
+            ret.update(fields)
+            fields = ret
+
+        return fields
+
+
+
     # TODO: implement new to_native and from_native methods for
     #       input/output of properly formatted GeoJSON. 
 
