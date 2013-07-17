@@ -56,6 +56,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             Serialize objects -> primitives.
         """
         ret = self._dict_class()
+        ret.fields = {}
         ret["type"] = "Feature" 
         ret["properties"] = {}
         ret["geometry"] = {}
