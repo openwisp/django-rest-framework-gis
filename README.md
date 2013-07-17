@@ -50,9 +50,46 @@ In contrast, the GeoModelSerizalizer will output::
             "coordinates": [-123.0208, 44.0464],
         },
     }
+    
+    
+IN DEVELOPMENT: GeoFeatureModelSerializer
 
-Note that this output is still JSON and not properly formatted GeoJSON.
-Further development needs to be done to output GeoJSON. 
+GeoFeatureModelSerializer will be a subclass of GeoModelSerializer which will output data in a format that is GeoJSON
+compatible. Using the above example, the GeoFeatureModelSerializer will output:
+
+
+    {
+        "type": "Feature",
+        "properties": {
+            "id": 1, 
+            "address": "742 Evergreen Terrace", 
+            "city":  "Springfield", 
+            "state": "Oregon",
+        }
+        "geometry": {
+             "point": {
+                  "type": "Point",
+                  "coordinates": [-123.0208, 44.0464],
+             },
+        },
+    }
+    
+GeoFeatureModelSerializer will require you to define a "geo_field" to be serialized as the "geometry". For example:
+
+    class LocationSerializer(GeoFeatureModelSerializer):
+        """ A class to serialize locations as GeoJSON compatible data """
+        
+        class Meta:
+             model = Location
+             geo_field = "point"
+        
+            # you can also explicitly specify which other fields you want to include as "properties", 
+              as with a ModelSerializer
+             fields = ('address', 'city', 'state')
+             
+             
+             
+
 
 
 Filters
