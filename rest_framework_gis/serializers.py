@@ -29,7 +29,7 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
         Options for GeoFeatureModelSerializer
     """
     def __init__(self, meta):
-        super(GeoFeatureSerializerOptions, self).__init__(meta)
+        super(GeoFeatureModelSerializerOptions, self).__init__(meta)
         self.geo_field = getattr(meta, 'geo_field', None)
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
