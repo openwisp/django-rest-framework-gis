@@ -54,10 +54,9 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         fields = super(GeoFeatureModelSerializer, self).get_default_fields()
 
-        geo_field = self.opts.geo_field
-        field = self.get_field(geo_field)
-        if field:
-            ret[geo_field.name] = field
+        geo_field = self.get_field(self.opts.geo_field)
+        if geo_field:
+            ret[geo_field.name] = geo_field
             ret.update(fields)
             fields = ret
 
