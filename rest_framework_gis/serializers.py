@@ -70,5 +70,5 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             else:
                 ret["properties"][key] = value
                 ret.fields[key] = field
-            return ret    	
+        return ret    	
     	
