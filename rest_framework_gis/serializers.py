@@ -1,5 +1,8 @@
 # rest_framework_gis/serializers.py
+import warnings
+
 from django.contrib.gis.db import models
+from django.core.paginator import Page
 
 from rest_framework.serializers import ModelSerializer, ModelSerializerOptions
 
@@ -46,37 +49,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             raise ImproperlyConfigured("You must define a 'geo_field'.")
         else:
             # TODO: make sure the geo_field is a GeoDjango geometry field
-            # if 'fields' are declared, make sure it includes 'geo_field'
-            if self.opts.fields:
-               if self.opts.geo_field not in self.opts.fields:
-                   #self.opts.fields = list(self.opts.fields)
-                   self.opts.fields.append(self.opts.geo_field)
-
-    @property
-	def data(self):
-	    """
-        Returns the serialized data on the serializer.
-        """
-        if self._data is None:
-            obj = self.object
-
-            if self.many is not None:
-                many = self.many
-            else:
-                many = hasattr(obj, '__iter__') and not isinstance(obj, (Page, dict))
-                if many:
-                    warnings.warn('Implict list/queryset serialization is deprecated. '
-                                  'Use the `many=True` flag when instantiating the serializer.',
-                                  DeprecationWarning, stacklevel=2)
-
-            if many:
-                self._data = {}
-                self._data["type"] = "FeatureCollection"
-                self._data["features"] = [self.to_native(item) for item in obj]
-            else:
-                self._data = self.to_native(obj)
-
-        return self._data
+            pass
 
     def to_native(self, obj):
         """
@@ -97,7 +70,36 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             else:
                 ret["properties"][key] = value
                 ret.fields[key] = field
-        return ret    	
+        return ret  
+ 
+    @property
+    def data(self):
+        """
+        Returns the serialized data on the serializer.
+        """
+        if self._data is None:
+            obj = self.object
+
+            if self.many is not None:
+                many = self.many
+            else:
+                many = hasattr(obj, '__iter__') and not isinstance(obj, (Page, dict))
+                if many:
+                    warnings.warn('Implict list/queryset serialization is deprecated. '
+                                  'Use the `many=True` flag when instantiating the serializer.',
+                                  DeprecationWarning, stacklevel=2)
+
+            if many:
+                self._data = {}
+                self._data["type"] = "FeatureCollection"
+                self._data["Features"] = [self.to_native(item) for item in obj]
+            else:
+                self._data = self.to_native(obj)
+
+        return self._data
+
+
+      	
     	
     # TODO: from_native method
 
