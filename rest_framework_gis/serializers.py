@@ -52,6 +52,31 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                    #self.opts.fields = list(self.opts.fields)
                    self.opts.fields.append(self.opts.geo_field)
 
+	@property
+    def data(self):
+        """
+        Returns the serialized data on the serializer.
+        """
+        if self._data is None:
+            obj = self.object
+
+            if self.many is not None:
+                many = self.many
+            else:
+                many = hasattr(obj, '__iter__') and not isinstance(obj, (Page, dict))
+                if many:
+                    warnings.warn('Implict list/queryset serialization is deprecated. '
+                                  'Use the `many=True` flag when instantiating the serializer.',
+                                  DeprecationWarning, stacklevel=2)
+
+            if many:
+                self._data = {}
+                self._data["type"] = "FeatureCollection"
+                self._data["features"] = [self.to_native(item) for item in obj]
+            else:
+                self._data = self.to_native(obj)
+
+        return self._data
 
     def to_native(self, obj):
         """
