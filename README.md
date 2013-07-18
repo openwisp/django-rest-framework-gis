@@ -121,8 +121,8 @@ GeoFeatureModelSerializer requires you to define a "geo_field" to be serialized 
              model = Location
              geo_field = "point"
         
-            # you can also explicitly which other fields you want to include
-              as with a ModelSerializer. For now, this must include your geo_field.
+            # you can also explicitly declare which fields you want to include
+              as with a ModelSerializer. If you do this, you must include your geo_field.
              fields = ('address', 'city', 'state', 'point')
              
              
