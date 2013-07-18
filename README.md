@@ -13,6 +13,8 @@ and from_native methods for GeoJSON input/output.
 Serializers
 -----------
 
+__GeoModelSerializer__
+
 Provides a GeoModelSerializer, which is a sublass of DRF ModelSerializer.
 This serializer updates the field_mapping dictionary to include
 field mapping of GeoDjango geometry fields to the above GeometryField.
@@ -52,7 +54,7 @@ In contrast, the GeoModelSerizalizer will output::
     }
     
     
-GeoFeatureModelSerializer
+__GeoFeatureModelSerializer__
 
 GeoFeatureModelSerializer is a subclass of GeoModelSerializer which will output data in a format that is GeoJSON
 compatible. Using the above example, the GeoFeatureModelSerializer will output:
