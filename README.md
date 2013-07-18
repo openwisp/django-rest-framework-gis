@@ -80,7 +80,7 @@ If you are serializing an object list, GeoFeatureModelSerializer will create a F
 [ NOTE: This currenty does not work with the default pagination serializer ]
 
     { 
-        type: "FeatureCollection",
+        "type": "FeatureCollection",
         "features": [
           { "type": "Feature",
             "properties": {
