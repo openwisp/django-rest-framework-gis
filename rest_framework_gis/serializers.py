@@ -1,8 +1,5 @@
 # rest_framework_gis/serializers.py
-import warnings
-
 from django.contrib.gis.db import models
-from django.core.paginator import Page
 
 from rest_framework.serializers import ModelSerializer, ModelSerializerOptions
 
