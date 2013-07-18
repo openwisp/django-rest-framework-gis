@@ -52,9 +52,9 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                    #self.opts.fields = list(self.opts.fields)
                    self.opts.fields.append(self.opts.geo_field)
 
-	@property
-    def data(self):
-        """
+    @property
+	def data(self):
+	    """
         Returns the serialized data on the serializer.
         """
         if self._data is None:
