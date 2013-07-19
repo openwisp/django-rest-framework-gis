@@ -49,7 +49,13 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             raise ImproperlyConfigured("You must define a 'geo_field'.")
         else:
             # TODO: make sure the geo_field is a GeoDjango geometry field
-            pass
+            # make sure geo_field is included in fields
+            if self.opts.geo_field in self.opts.exclude:
+                raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
+            if self.opts.geo_field not in self.opts.fields:
+                self.opts.fields = self.opts.fields + (self.opts.geo_field, )
+                self.fields = self.get_fields()
+            
 
     def to_native(self, obj):
         """
@@ -69,7 +75,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                 ret["geometry"] = value
             else:
                 ret["properties"][key] = value
-                ret.fields[key] = field
+            ret.fields[key] = field
         return ret  
  
     def _format_data(self):
