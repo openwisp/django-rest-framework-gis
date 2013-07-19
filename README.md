@@ -13,6 +13,8 @@ and from_native methods for GeoJSON input/output.
 Serializers
 -----------
 
+__GeoModelSerializer__
+
 Provides a GeoModelSerializer, which is a sublass of DRF ModelSerializer.
 This serializer updates the field_mapping dictionary to include
 field mapping of GeoDjango geometry fields to the above GeometryField.
@@ -52,13 +54,12 @@ In contrast, the GeoModelSerizalizer will output::
     }
     
     
-IN DEVELOPMENT: GeoFeatureModelSerializer
+__GeoFeatureModelSerializer__
 
-GeoFeatureModelSerializer will be a subclass of GeoModelSerializer which will output data in a format that is GeoJSON
+GeoFeatureModelSerializer is a subclass of GeoModelSerializer which will output data in a format that is GeoJSON
 compatible. Using the above example, the GeoFeatureModelSerializer will output:
 
-
-    {
+     {
         "type": "Feature",
         "properties": {
             "id": 1, 
@@ -74,7 +75,44 @@ compatible. Using the above example, the GeoFeatureModelSerializer will output:
         },
     }
     
-GeoFeatureModelSerializer will require you to define a "geo_field" to be serialized as the "geometry". For example:
+If you are serializing an object list, GeoFeatureModelSerializer will create a FeatureCollection:
+
+[ NOTE: This currenty does not work with the default pagination serializer ]
+
+    { 
+        "type": "FeatureCollection",
+        "features": [
+          { "type": "Feature",
+            "properties": {
+                "id": 1, 
+                "address": "742 Evergreen Terrace", 
+                "city":  "Springfield", 
+                "state": "Oregon",
+            }
+            "geometry": {
+                 "point": {
+                      "type": "Point",
+                      "coordinates": [-123.0208, 44.0464],
+                 },
+            },
+          }
+          { "type": "Feature",
+            "properties": {
+                "id": 2, 
+                "address": "744 Evergreen Terrace", 
+                "city":  "Springfield", 
+                "state": "Oregon",
+            }
+            "geometry": {
+                 "point": {
+                      "type": "Point",
+                      "coordinates": [-123.0208, 44.0489],
+                 },
+            },
+          }
+    }
+    
+GeoFeatureModelSerializer requires you to define a "geo_field" to be serialized as the "geometry". For example:
 
     class LocationSerializer(GeoFeatureModelSerializer):
         """ A class to serialize locations as GeoJSON compatible data """
@@ -83,9 +121,9 @@ GeoFeatureModelSerializer will require you to define a "geo_field" to be seriali
              model = Location
              geo_field = "point"
         
-            # you can also explicitly specify which other fields you want to include as "properties", 
-              as with a ModelSerializer
-             fields = ('address', 'city', 'state')
+            # you can also explicitly declare which fields you want to include
+              as with a ModelSerializer. If you do this, you must include your geo_field.
+             fields = ('address', 'city', 'state', 'point')
              
              
              
