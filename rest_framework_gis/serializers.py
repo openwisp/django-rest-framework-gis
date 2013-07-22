@@ -7,9 +7,9 @@ from .fields import GeometryField
 
 class GeoModelSerializer(ModelSerializer):
     """
-        A subclass of DFR ModelSerializer that adds support
-        for GeoDjango fields to be serialized as GeoJSON
-        compatible data
+    A subclass of DFR ModelSerializer that adds support
+    for GeoDjango fields to be serialized as GeoJSON
+    compatible data
     """
 
     field_mapping = dict(ModelSerializer.field_mapping)
@@ -34,8 +34,8 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
     """
-         A subclass of GeoFeatureModelSerializer 
-         that outputs geojson-ready data
+    A subclass of GeoFeatureModelSerializer 
+    that outputs geojson-ready data
     """
     _options_class = GeoFeatureModelSerializerOptions
 
@@ -47,16 +47,17 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         else:
             # TODO: make sure the geo_field is a GeoDjango geometry field
             # make sure geo_field is included in fields
-            if self.opts.geo_field in self.opts.exclude:
-                raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
-            if self.opts.geo_field not in self.opts.fields:
-                self.opts.fields = self.opts.fields + (self.opts.geo_field, )
-                self.fields = self.get_fields()
-            
+            if self.opts.exclude:
+                if self.opts.geo_field in self.opts.exclude:
+                    raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
+            if self.opts.fields:
+                if self.opts.geo_field not in self.opts.fields:
+                    self.opts.fields = self.opts.fields + (self.opts.geo_field, )
+                    self.fields = self.get_fields()        
 
     def to_native(self, obj):
         """
-            Serialize objects -> primitives.
+        Serialize objects -> primitives.
         """
         ret = self._dict_class()
         ret.fields = {}
@@ -77,7 +78,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
  
     def _format_data(self):
         """
-           Add GeoJSON compatible formatting to a serialized queryset list
+        Add GeoJSON compatible formatting to a serialized queryset list
         """
         _data = super(GeoFeatureModelSerializer, self).data
         if isinstance(_data, list):
@@ -88,8 +89,8 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             self._formatted_data = _data
 
         return self._formatted_data
-            
 
+   
     @property
     def data(self):
         """
@@ -97,9 +98,29 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         return self._format_data()
 
-
-      	
-    	
-    # TODO: from_native method
+   
+    def from_native(self, data, files):
+        """
+        Amend the parent method to first remove the GeoJSON formatting
+        """
+        if data is not None:
+            if 'features' in data:
+                _unformatted_data = []
+                features = data['features']
+                for feature in features:
+                     dict = feature["properties"]
+                     geom = { self.opts.geo_field: feature["geometry"] }
+                     dict.update(geom)
+                     _unformatted_data.append(dict)
+            else:
+                dict = data["properties"]
+                geom = { self.opts.geo_field: data["geometry"] }
+                dict.update(geom)
+                _unformatted_data = dict
+                
+            
+            data = _unformatted_data 
+                
+        super(GeoFeatureModelSerializer, self).from_native(data, files)
 
 
