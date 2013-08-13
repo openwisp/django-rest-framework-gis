@@ -66,7 +66,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         ret = self._dict_class()
         ret.fields = {}
         ret["type"] = "Feature" 
-        ret["properties"] = {}
+        ret["properties"] = self._dict_class()
         ret["geometry"] = {}
         
         for field_name, field in self.fields.items():
