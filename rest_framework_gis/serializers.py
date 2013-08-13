@@ -1,9 +1,11 @@
 # rest_framework_gis/serializers.py
 from django.contrib.gis.db import models
+from django.core.exceptions import ImproperlyConfigured
 
 from rest_framework.serializers import ModelSerializer, ModelSerializerOptions
 
 from .fields import GeometryField
+
 
 class GeoModelSerializer(ModelSerializer):
     """
@@ -24,6 +26,7 @@ class GeoModelSerializer(ModelSerializer):
         models.GeometryCollectionField: GeometryField
    })
 
+
 class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
     """
         Options for GeoFeatureModelSerializer
@@ -31,6 +34,7 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
     def __init__(self, meta):
         super(GeoFeatureModelSerializerOptions, self).__init__(meta)
         self.geo_field = getattr(meta, 'geo_field', None)
+
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
     """
@@ -90,7 +94,6 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
 
         return self._formatted_data
 
-   
     @property
     def data(self):
         """
@@ -98,7 +101,6 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         return self._format_data()
 
-   
     def from_native(self, data, files):
         """
         Amend the parent method to first remove the GeoJSON formatting
@@ -122,5 +124,3 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             data = _unformatted_data 
                 
         super(GeoFeatureModelSerializer, self).from_native(data, files)
-
-
