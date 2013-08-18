@@ -1,6 +1,9 @@
 # rest_framework_gis/fields.py
 
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 from django.contrib.gis.geos import GEOSGeometry
 
