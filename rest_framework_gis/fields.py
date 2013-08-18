@@ -6,8 +6,11 @@ except ImportError:
     import json
 
 from django.contrib.gis.geos import GEOSGeometry
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.fields import WritableField
+
 
 class GeometryField(WritableField):
     """
@@ -22,10 +25,11 @@ class GeometryField(WritableField):
         # Get GeoDjango geojson serialization and then convert it _back_ to
         # a Python object
         return json.loads(value.geojson)
-	
+
     def from_native(self, value):
         try:
             value = GEOSGeometry(json.dumps(value))
-        except ValueError:
-            pass
+        except ValueError as e:
+            raise ValidationError(_('Bad Format for GeoJSON field. %s' % e.message))
+        
         return value
