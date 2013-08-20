@@ -1,6 +1,14 @@
 from setuptools import setup, find_packages
+from setuptools.command.test import test
 
 from rest_framework_gis import __version__
+
+
+class TestCommand(test):
+    def run(self):
+        from tests.runtests import runtests
+        runtests()
+
 
 setup(
     name='djangorestframework-gis',
@@ -10,7 +18,7 @@ setup(
     author='Douglas Meehan',
     author_email='dmeehan@gmail.com',
     description='Geographic add-ons for Django Rest Framework',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         "djangorestframework>=2.2.2"
     ],
@@ -24,5 +32,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
-    ]
+    ],
+    cmdclass={"test": TestCommand},
 )

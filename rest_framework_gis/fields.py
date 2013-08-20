@@ -31,5 +31,6 @@ class GeometryField(WritableField):
             value = GEOSGeometry(json.dumps(value))
         except ValueError as e:
             raise ValidationError(_('Bad Format for GeoJSON field. %s' % e.message))
-        
+        # TODO: this is not ok, needs testing
+        # validation error must be raised only if both json decoding and geos decoding fail
         return value

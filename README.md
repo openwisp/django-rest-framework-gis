@@ -68,10 +68,10 @@ compatible. Using the above example, the GeoFeatureModelSerializer will output:
             "state": "Oregon",
         }
         "geometry": {
-             "point": {
-                  "type": "Point",
-                  "coordinates": [-123.0208, 44.0464],
-             },
+            "point": {
+                "type": "Point",
+                "coordinates": [-123.0208, 44.0464],
+            },
         },
     }
     
@@ -82,7 +82,8 @@ If you are serializing an object list, GeoFeatureModelSerializer will create a F
     { 
         "type": "FeatureCollection",
         "features": [
-          { "type": "Feature",
+        {
+            "type": "Feature",
             "properties": {
                 "id": 1, 
                 "address": "742 Evergreen Terrace", 
@@ -90,13 +91,14 @@ If you are serializing an object list, GeoFeatureModelSerializer will create a F
                 "state": "Oregon",
             }
             "geometry": {
-                 "point": {
-                      "type": "Point",
-                      "coordinates": [-123.0208, 44.0464],
-                 },
+                "point": {
+                    "type": "Point",
+                    "coordinates": [-123.0208, 44.0464],
+                },
             },
-          }
-          { "type": "Feature",
+        }
+        {
+            "type": "Feature",
             "properties": {
                 "id": 2, 
                 "address": "744 Evergreen Terrace", 
@@ -104,12 +106,12 @@ If you are serializing an object list, GeoFeatureModelSerializer will create a F
                 "state": "Oregon",
             }
             "geometry": {
-                 "point": {
-                      "type": "Point",
-                      "coordinates": [-123.0208, 44.0489],
-                 },
+                "point": {
+                    "type": "Point",
+                    "coordinates": [-123.0208, 44.0489],
+                },
             },
-          }
+        }
     }
     
 GeoFeatureModelSerializer requires you to define a "geo_field" to be serialized as the "geometry". For example:
@@ -118,16 +120,13 @@ GeoFeatureModelSerializer requires you to define a "geo_field" to be serialized 
         """ A class to serialize locations as GeoJSON compatible data """
         
         class Meta:
-             model = Location
-             geo_field = "point"
+            model = Location
+            geo_field = "point"
         
             # you can also explicitly declare which fields you want to include
-              as with a ModelSerializer.
-             fields = ('address', 'city', 'state')
-             
-             
-             
-
+            # as with a ModelSerializer.
+            fields = ('address', 'city', 'state')
+            
 
 
 Filters
@@ -136,3 +135,31 @@ Filters
 Provides a InBBOXFilter, which is a subclass of DRF BaseFilterBackend.
 Filters a queryset to only those instances within a certain bounding box.
 
+
+Running the tests
+=================
+
+Assuming one has the dependencies installed (restframework and restframework_gis),
+and one of the **Sptial Database server supported by GeoDjango** is up and running::
+
+    python setup.py test
+
+You might need to tweak the DB settings according to your DB configuration.
+You can copy the file local_settings.example.py to **local_settings.py** and change
+the DATABASES and/or INSTALLED_APPS directive there.
+
+**Warning**: tests are still a work in progress.
+
+Contributing to the tests
+=========================
+
+If you want to contribute you need to install the test app in a proper development environment.
+
+These steps should do:
+ * create a spatial database named "django_restframework_gis"
+ * create local_settings.py, eg: "cp local_settings.example.py local_settings.py"
+ * tweak the DATABASES configuration directive according to your DB
+ * optionally install olwidget (pip install olwidget)
+ * run "python manage.py syncdb"
+ * run "python manage.py collectstatic"
+ * run "python manage.py runserver"
