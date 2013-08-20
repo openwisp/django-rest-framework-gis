@@ -137,7 +137,7 @@ Filters a queryset to only those instances within a certain bounding box.
 
 
 Running the tests
-=================
+-----------------
 
 Assuming one has the dependencies installed (restframework and restframework_gis),
 and one of the **Sptial Database server supported by GeoDjango** is up and running::
@@ -151,15 +151,16 @@ the DATABASES and/or INSTALLED_APPS directive there.
 **Warning**: tests are still a work in progress.
 
 Contributing to the tests
-=========================
+-------------------------
 
 If you want to contribute you need to install the test app in a proper development environment.
 
 These steps should do:
  * create a spatial database named "django_restframework_gis"
- * create local_settings.py, eg: "cp local_settings.example.py local_settings.py"
+ * create local_settings.py, eg: `cp local_settings.example.py local_settings.py`
  * tweak the DATABASES configuration directive according to your DB
  * optionally install olwidget (pip install olwidget)
- * run "python manage.py syncdb"
- * run "python manage.py collectstatic"
- * run "python manage.py runserver"
+ * uncomment INSTALLED_APPS (remove olwidget if you did not install it)
+ * run `python manage.py syncdb`
+ * run `python manage.py collectstatic`
+ * run `python manage.py runserver`
