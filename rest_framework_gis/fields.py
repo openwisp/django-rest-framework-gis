@@ -5,7 +5,8 @@ try:
 except ImportError:
     import json
 
-from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import GEOSGeometry, GEOSException
+from django.contrib.gis.gdal import OGRException
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
@@ -27,10 +28,15 @@ class GeometryField(WritableField):
         return json.loads(value.geojson)
 
     def from_native(self, value):
+        if value == '' or value is None:
+            return value
+
+        if isinstance(value, dict):
+            value = json.dumps(value)
+
         try:
-            value = GEOSGeometry(json.dumps(value))
-        except ValueError as e:
-            raise ValidationError(_('Bad Format for GeoJSON field. %s' % e.message))
-        # TODO: this is not ok, needs testing
-        # validation error must be raised only if both json decoding and geos decoding fail
+            return GEOSGeometry(value)
+        except (ValueError, GEOSException, OGRException, TypeError) as e:
+            raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
+
         return value
