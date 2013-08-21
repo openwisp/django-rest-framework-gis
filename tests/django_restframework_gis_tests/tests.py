@@ -190,12 +190,13 @@ class TestRestFrameworkGis(TestCase):
     
     def test_geojson_format(self):
         """ test geojson format """
-        location = Location.objects.create(name='id test', geometry='POINT (10.1 10.1)')
+        location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
         
         url = reverse('api_geojson_location_details', args=[location.id])
         response = self.client.get(url)
         self.assertEqual(response.data['type'], "Feature")
-        self.assertEqual(response.data['properties']['name'], "id test")
+        self.assertEqual(response.data['properties']['name'], "geojson test")
+        self.assertEqual(response.data['properties']['fancy_name'], "Kool geojson test")
         self.assertEqual(response.data['geometry']['type'], "Point")
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
     
