@@ -229,25 +229,101 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
         self.assertNotEqual(response.data['properties']['details'], "ignore this")
     
-    #def test_geofeatured_model_serializer_compatible_with_geomodel_serializer(self):
-    #    self.assertEqual(Location.objects.count(), 0)
-    #    
-    #    data = {
-    #        "name": "geojson input test",
-    #        "geometry": {
-    #            "type": "GeometryCollection", 
-    #            "geometries": [
-    #                {
-    #                    "type": "Point", 
-    #                    "coordinates": [
-    #                        12.492324113849, 
-    #                        41.890307434153
-    #                    ]
-    #                }
-    #            ]
-    #        }
-    #    }
-    #    
-    #    response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
-    #    self.assertEqual(response.status_code, 201)
-    #    self.assertEqual(Location.objects.count(), 1)
+    def test_post_invalid_geojson_location_list(self):
+        data = {
+            "type": "Feature", 
+            "properties": {
+                "details": "ignore this"
+            }, 
+            "geometry": {
+                "type": "Point", 
+                "coordinates": [
+                    10.1, 
+                    10.1
+                ]
+            }
+        }
+        
+        response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Location.objects.count(), 0)
+        self.assertEqual(response.data['name'][0], "This field is required.")
+        
+        data = {
+            "type": "Feature", 
+            "properties": {
+                "name": "point?",
+            }, 
+            "geometry": {
+                "type": "Point", 
+                "WRONG": {}
+            }
+        }
+        response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(Location.objects.count(), 0)
+        self.assertEqual(response.data['geometry'][0], self.geos_error_message)
+    
+    def test_post_geojson_location_list_WKT(self):
+        self.assertEqual(Location.objects.count(), 0)
+        
+        data = {
+            "type": "Feature", 
+            "properties": {
+                "name": "point?",
+            }, 
+            "geometry": "POINT (10.1 10.1)"
+        }
+        
+        response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Location.objects.count(), 1)
+        
+        url = reverse('api_geojson_location_details', args=[Location.objects.order_by('-id')[0].id])
+        response = self.client.get(url)
+        self.assertEqual(response.data['properties']['name'], "point?")
+        self.assertEqual(response.data['geometry']['type'], "Point")
+        self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
+    
+    def test_geofeatured_model_serializer_compatible_with_geomodel_serializer(self):
+        self.assertEqual(Location.objects.count(), 0)
+        
+        data = {
+            "name": "geojson input test",
+            "geometry": {
+                "type": "GeometryCollection", 
+                "geometries": [
+                    {
+                        "type": "Point", 
+                        "coordinates": [
+                            12.492324113849, 
+                            41.890307434153
+                        ]
+                    }
+                ]
+            }
+        }
+        
+        response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Location.objects.count(), 1)
+    
+    def test_geofeatured_model_post_as_multipartformdata(self):
+        """ emulate sending geojson string in webform """
+        self.assertEqual(Location.objects.count(), 0)
+        
+        data = {
+            "name": "geojson input test",
+            "geometry": json.dumps({
+                "type": "Point", 
+                "coordinates": [
+                    12.492324113849, 
+                    41.890307434153
+                ]
+            })
+        }
+        
+        response = self.client.post(self.location_list_url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Location.objects.count(), 1)
+        self.assertEqual(response.data['geometry']['type'], "Point")
