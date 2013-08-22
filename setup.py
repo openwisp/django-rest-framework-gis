@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.command.test import test
 
-from rest_framework_gis import __version__
+from rest_framework_gis import get_version
 
 
 class TestCommand(test):
@@ -12,7 +12,7 @@ class TestCommand(test):
 
 setup(
     name='djangorestframework-gis',
-    version=__version__,
+    version=get_version(),
     url='https://github.com/dmeehan/django-rest-framework-gis',
     license='BSD',
     author='Douglas Meehan',
