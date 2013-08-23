@@ -1,4 +1,7 @@
 *.py[cod]
+*.py~
 *.egg-info/
 dist/
 build/
+tests/static/
+*local_settings.py

@@ -103,24 +103,26 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
 
     def from_native(self, data, files):
         """
-        Amend the parent method to first remove the GeoJSON formatting
+        Override the parent method to first remove the GeoJSON formatting
         """
-        if data is not None:
-            if 'features' in data:
-                _unformatted_data = []
-                features = data['features']
-                for feature in features:
-                     dict = feature["properties"]
-                     geom = { self.opts.geo_field: feature["geometry"] }
-                     dict.update(geom)
-                     _unformatted_data.append(dict)
-            else:
-                dict = data["properties"]
-                geom = { self.opts.geo_field: data["geometry"] }
-                dict.update(geom)
-                _unformatted_data = dict
-                
-            
-            data = _unformatted_data 
-                
-        super(GeoFeatureModelSerializer, self).from_native(data, files)
+        if 'features' in data:
+            _unformatted_data = []
+            features = data['features']
+            for feature in features:
+                _dict = feature["properties"]
+                geom = { self.opts.geo_field: feature["geometry"] }
+                _dict.update(geom)
+                _unformatted_data.append(_dict)
+        elif 'properties' in data:
+            _dict = data["properties"]
+            geom = { self.opts.geo_field: data["geometry"] }
+            _dict.update(geom)
+            _unformatted_data = _dict
+        else:
+            _unformatted_data = data
+        
+        data = _unformatted_data
+        
+        instance = super(GeoFeatureModelSerializer, self).from_native(data, files)
+        if not self._errors:
+            return self.full_clean(instance)
