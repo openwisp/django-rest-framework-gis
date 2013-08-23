@@ -140,7 +140,7 @@ Running the tests
 -----------------
 
 Assuming one has the dependencies installed (restframework and restframework_gis),
-and one of the [Spatial Database server supported by GeoDjango]:(https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends) is up and running::
+and one of the **Spatial Database server supported by GeoDjango**: https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends is up and running::
 
     python setup.py test
 
