@@ -1,16 +1,15 @@
-from django.conf.urls import patterns, include, url
-from django.contrib import admin
-
-admin.autodiscover()
+from django.conf.urls import patterns, url
 
 
-urlpatterns = patterns('',    
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+urlpatterns = patterns('django_restframework_gis_tests.views',
+    url(r'^$', 'location_list', name='api_location_list'),
+    url(r'^(?P<pk>[0-9]+)/$', 'location_details', name='api_location_details'),
     
-    url(r'', include('django_restframework_gis_tests.urls')),
+    # geojson
+    url(r'^geojson/$', 'geojson_location_list', name='api_geojson_location_list'),
+    url(r'^geojson/(?P<pk>[0-9]+)/$', 'geojson_location_details', name='api_geojson_location_details'),
     
-    url(r'^static/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve'),
+    # Filters
+    url(r'^filters/contained_in_bbox$', 'geojson_location_contained_in_bbox_list' name='api_geojson_location_list_contained_in_bbox_filter'),
+    url(r'^filters/overlaps_bbox$', 'geojson_location_overlaps_bbox_list' name='api_geojson_location_list_overlaps_bbox_filter'),
 )
