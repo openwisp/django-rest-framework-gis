@@ -29,8 +29,24 @@ class GeojsonLocationList(generics.ListCreateAPIView):
     paginate_by = 40
     
 geojson_location_list = GeojsonLocationList.as_view()
-    
-    
+
+
+class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureSerializer
+    queryset = Location.objects.all()
+    bbox_filter_field = 'geometry'
+    filter_backends = (InBBoxFilter,)
+
+geojson_location_contained_in_bbox_list = GeojsonLocationContainedInBBoxList.as_view()
+
+
+class GeojsonLocationOverlapsBBoxList(GeojsonLocationContainedInBBoxList):
+    bbox_filter_include_overlapping = True
+
+geojson_location_overlaps_bbox_list = GeojsonLocationOverlapsBBoxList.as_view()
+
+
 class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
