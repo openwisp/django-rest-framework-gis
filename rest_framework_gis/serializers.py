@@ -38,8 +38,9 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
     """
-    A subclass of GeoFeatureModelSerializer 
-    that outputs geojson-ready data
+    A subclass of GeoModelSerializer 
+    that outputs geojson-ready data as
+    features and feature collections
     """
     _options_class = GeoFeatureModelSerializerOptions
 
