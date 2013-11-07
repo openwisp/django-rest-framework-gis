@@ -333,7 +333,6 @@ class TestRestFrameworkGis(TestCase):
     def test_inBBoxFilter_filtering(self):
         """ Checks that the inBBoxFilter returns only objects strictly contained in
             the bounding box given by the in_bbox URL parameter """
-        self.assertEqual(False,True)
         self.assertEqual(Location.objects.count(), 0)
         
         # Bounding box
@@ -377,5 +376,5 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.get(self.location_overlaps_bbox_list_url + url_params)
         self.assertEqual(len(response.data['features']), 3)
         for result in response.data['features']:
-            self.assertEqual(result['properties']['name'] in {'isContained', 'isEqualToBounds', 'overlaps'})
+            self.assertEqual(result['properties']['name'] in {'isContained', 'isEqualToBounds', 'overlaps'}, True)
    
