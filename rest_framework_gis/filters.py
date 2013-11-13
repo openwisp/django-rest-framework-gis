@@ -1,5 +1,5 @@
 from rest_framework.filters import BaseFilterBackend
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import ParseError
 
 from django.db.models import Q
 from django.contrib.gis.geos import Polygon
@@ -17,8 +17,8 @@ class InBBOXFilter(BaseFilterBackend):
         try:
             p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
         except ValueError:
-            raise APIException("Not valid bbox string in parameter %s."
-                               % self.bbox_param)
+            raise ParseError("Not valid bbox string in parameter %s."
+                             % self.bbox_param)
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
         return x
