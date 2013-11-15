@@ -2,6 +2,7 @@ from rest_framework import generics
 
 from .models import *
 from .serializers import *
+from rest_framework_gis.filters import *
 
 
 class LocationList(generics.ListCreateAPIView):
@@ -36,7 +37,7 @@ class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
     bbox_filter_field = 'geometry'
-    filter_backends = (InBBoxFilter,)
+    filter_backends = (InBBOXFilter,)
 
 geojson_location_contained_in_bbox_list = GeojsonLocationContainedInBBoxList.as_view()
 

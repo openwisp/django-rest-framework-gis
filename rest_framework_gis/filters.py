@@ -29,7 +29,7 @@ class InBBOXFilter(BaseFilterBackend):
         if include_overlapping:
             geoDjango_filter = 'bboverlaps'
         else:
-            geoDjango_filter = 'bbcontains'
+            geoDjango_filter = 'contained'
 
         if not filter_field:
             return queryset
