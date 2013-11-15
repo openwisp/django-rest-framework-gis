@@ -9,7 +9,7 @@ except Exception:
 
 
 from django.test import TestCase
-from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.core.urlresolvers import reverse
 
 from .models import Location
@@ -20,6 +20,8 @@ class TestRestFrameworkGis(TestCase):
     def setUp(self):
         self.location_list_url = reverse('api_location_list')
         self.geojson_location_list_url = reverse('api_geojson_location_list')
+        self.location_contained_in_bbox_list_url = reverse('api_geojson_location_list_contained_in_bbox_filter')
+        self.location_overlaps_bbox_list_url = reverse('api_geojson_location_list_overlaps_bbox_filter')
         self.geos_error_message = 'Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'
         
     def test_get_location_list(self):
@@ -327,3 +329,52 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
         self.assertEqual(response.data['geometry']['type'], "Point")
+        
+    def test_inBBOXFilter_filtering(self):
+        """ Checks that the inBBOXFilter returns only objects strictly contained in
+            the bounding box given by the in_bbox URL parameter """
+        self.assertEqual(Location.objects.count(), 0)
+        
+        # Bounding box
+        xmin = 0
+        ymin = 0
+        xmax = 10
+        ymax = 10
+        
+        url_params = '?in_bbox=%d,%d,%d,%d&format=json' % (xmin,ymin,xmax,ymax)
+        
+        # Square with bottom left at (1,1), top right at (9,9)
+        isContained = Location()
+        isContained.name = 'isContained'
+        isContained.geometry = Polygon(((1,1),(9,1),(9,9),(1,9),(1,1)))
+        isContained.save()
+        
+        isEqualToBounds = Location()
+        isEqualToBounds.name = 'isEqualToBounds'
+        isEqualToBounds.geometry = Polygon(((0,0),(10,0),(10,10),(0,10),(0,0)))
+        isEqualToBounds.save()
+        
+        # Rectangle with bottom left at (-1,1), top right at (5,5)
+        overlaps = Location()
+        overlaps.name = 'overlaps'
+        overlaps.geometry = Polygon(((-1,1),(5,1),(5,5),(-1,5),(-1,1)))
+        overlaps.save()
+        
+        # Rectangle with bottom left at (-3,-3), top right at (-1,2)
+        nonIntersecting = Location()
+        nonIntersecting.name = 'nonIntersecting'
+        nonIntersecting.geometry = Polygon(((-3,-3),(-1,-3),(-1,2),(-3,2),(-3,-3)))
+        nonIntersecting.save()
+        
+        # Make sure we only get back the ones strictly contained in the bounding box
+        response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
+        self.assertEqual(len(response.data['features']), 2)
+        for result in response.data['features']:
+            self.assertEqual(result['properties']['name'] in {'isContained', 'isEqualToBounds'}, True)
+        
+        # Make sure we get overlapping results for the view which allows bounding box overlaps.
+        response = self.client.get(self.location_overlaps_bbox_list_url + url_params)
+        self.assertEqual(len(response.data['features']), 3)
+        for result in response.data['features']:
+            self.assertEqual(result['properties']['name'] in {'isContained', 'isEqualToBounds', 'overlaps'}, True)
+   
