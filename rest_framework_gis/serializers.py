@@ -1,11 +1,19 @@
 # rest_framework_gis/serializers.py
 from django.contrib.gis.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
 
 from rest_framework.serializers import ModelSerializer, ModelSerializerOptions
 
 from .fields import GeometryField
 
+
+class MapGeometryField(dict):
+    def __getitem__(self, key):
+        if issubclass(key, django_GeometryField):
+            return GeometryField
+        return super(MapGeometryField, self).__getitem__(key)
+    
 
 class GeoModelSerializer(ModelSerializer):
     """
@@ -13,18 +21,7 @@ class GeoModelSerializer(ModelSerializer):
     for GeoDjango fields to be serialized as GeoJSON
     compatible data
     """
-
-    field_mapping = dict(ModelSerializer.field_mapping)
-    field_mapping.update({
-        models.GeometryField: GeometryField,
-        models.PointField: GeometryField,
-        models.LineStringField: GeometryField,
-        models.PolygonField: GeometryField,
-        models.MultiPointField: GeometryField,
-        models.MultiLineStringField: GeometryField,
-        models.MultiPolygonField: GeometryField,
-        models.GeometryCollectionField: GeometryField
-   })
+    field_mapping = MapGeometryField(ModelSerializer.field_mapping)
 
 
 class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
