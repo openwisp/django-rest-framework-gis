@@ -1,8 +1,8 @@
 django-rest-framework-gis
 =========================
 
-[![Build Status](https://travis-ci.org/nemesisdesign/django-rest-framework-gis.png?branch=master)](https://travis-ci.org/nemesisdesign/django-rest-framework-gis)
-[![Coverage Status](https://coveralls.io/repos/nemesisdesign/django-rest-framework-gis/badge.png)](https://coveralls.io/r/nemesisdesign/django-rest-framework-gis)
+[![Build Status](https://travis-ci.org/dmeehan/django-rest-framework-gis.png?branch=master)](https://travis-ci.org/dmeehan/django-rest-framework-gis)
+[![Coverage Status](https://coveralls.io/repos/dmeehan/django-rest-framework-gis/badge.png)](https://coveralls.io/r/dmeehan/django-rest-framework-gis)
 
 Geographic add-ons for Django Rest Framework
 
