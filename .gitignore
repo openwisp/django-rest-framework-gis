@@ -5,3 +5,7 @@ dist/
 build/
 tests/static/
 *local_settings.py
+.coverage
+*~
+._*
+*.DS_Store

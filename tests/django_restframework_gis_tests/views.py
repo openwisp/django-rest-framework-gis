@@ -53,3 +53,18 @@ class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LocationGeoFeatureSerializer
 
 geojson_location_details = GeojsonLocationDetails.as_view()
+
+
+class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = Location
+    lookup_field = 'slug'
+    serializer_class = LocationGeoFeatureSlugSerializer
+
+geojson_location_slug_details = GeojsonLocationSlugDetails.as_view()
+
+
+class GeojsonLocationFalseIDDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureFalseIDSerializer
+
+geojson_location_falseid_details = GeojsonLocationFalseIDDetails.as_view()

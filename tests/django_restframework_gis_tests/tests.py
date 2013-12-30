@@ -4,7 +4,7 @@ unit tests for restframework_gis
 
 try:
     import simplejson as json
-except Exception:
+except ImportError:
     import json
 
 
@@ -52,7 +52,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 1)
         
         data = {
-            "name": "geojson input test",
+            "name": "geojson input test2",
             "geometry": {
                 "type": "Point", 
                 "coordinates": [
@@ -202,6 +202,28 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['geometry']['type'], "Point")
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
     
+    def test_geojson_id_attribute(self):
+        location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
+        
+        url = reverse('api_geojson_location_details', args=[location.id])
+        response = self.client.get(url)
+        self.assertEqual(response.data['id'], location.id)
+    
+    def test_geojson_id_attribute_slug(self):
+        location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
+        
+        url = reverse('api_geojson_location_slug_details', args=[location.slug])
+        response = self.client.get(url)
+        self.assertEqual(response.data['id'], location.slug)
+    
+    def test_geojson_false_id_attribute_slug(self):
+        location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
+        
+        url = reverse('api_geojson_location_falseid_details', args=[location.id])
+        response = self.client.get(url)
+        with self.assertRaises(KeyError):
+            response.data['id']
+    
     def test_post_geojson_location_list(self):
         self.assertEqual(Location.objects.count(), 0)
         
@@ -341,7 +363,7 @@ class TestRestFrameworkGis(TestCase):
         xmax = 10
         ymax = 10
         
-        url_params = '?in_bbox=%d,%d,%d,%d&format=json' % (xmin,ymin,xmax,ymax)
+        url_params = '?in_bbox=%d,%d,%d,%d&format=json' % (xmin, ymin, xmax, ymax)
         
         # Square with bottom left at (1,1), top right at (9,9)
         isContained = Location()
@@ -370,11 +392,10 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
-            self.assertEqual(result['properties']['name'] in {'isContained', 'isEqualToBounds'}, True)
+            self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds'), True)
         
         # Make sure we get overlapping results for the view which allows bounding box overlaps.
         response = self.client.get(self.location_overlaps_bbox_list_url + url_params)
         self.assertEqual(len(response.data['features']), 3)
         for result in response.data['features']:
-            self.assertEqual(result['properties']['name'] in {'isContained', 'isEqualToBounds', 'overlaps'}, True)
-   
+            self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)

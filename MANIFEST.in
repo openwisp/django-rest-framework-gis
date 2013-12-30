@@ -1,0 +1,3 @@
+include AUTHORS LICENSE README.md
+recursive-include tests *
+recursive-exclude * *.pyc *.swp

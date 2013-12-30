@@ -31,6 +31,8 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
     def __init__(self, meta):
         super(GeoFeatureModelSerializerOptions, self).__init__(meta)
         self.geo_field = getattr(meta, 'geo_field', None)
+        # id field defaults to primary key of the model
+        self.id_field = getattr(meta, 'id_field', meta.model._meta.pk.name)
 
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
@@ -63,19 +65,26 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         ret = self._dict_class()
         ret.fields = {}
-        ret["type"] = "Feature" 
-        ret["properties"] = self._dict_class()
+        if self.opts.id_field is not False:
+            ret["id"] = ""
+        ret["type"] = "Feature"
         ret["geometry"] = {}
+        ret["properties"] = self._dict_class()
         
         for field_name, field in self.fields.items():
             field.initialize(parent=self, field_name=field_name)
             key = self.get_field_key(field_name)
             value = field.field_to_native(obj, field_name)
-            if field_name == self.opts.geo_field:
+            
+            if self.opts.id_field is not False and field_name == self.opts.id_field:
+                ret["id"] = value
+            elif field_name == self.opts.geo_field:
                 ret["geometry"] = value
             else:
                 ret["properties"][key] = value
+            
             ret.fields[key] = field
+            
         return ret  
  
     def _format_data(self):

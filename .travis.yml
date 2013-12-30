@@ -1,0 +1,40 @@
+language: python
+
+services:
+  - postgresql
+
+python:
+  - "2.7"
+  - "2.6"
+
+env:
+  - DJANGO_VERSION=1.5.5
+  - DJANGO_VERSION=1.6.1
+
+branches:
+  only:
+    - master 
+
+before_install:
+ - sudo add-apt-repository -r -y ppa:ubuntugis/ppa
+ - sudo apt-get update
+ - sudo apt-get remove --purge postgresql-9.1-postgis-2.1 postgresql-9.1-postgis-scripts
+ - sudo apt-get install postgresql-9.1-postgis libgeoip1
+
+# command to install requirements
+install:
+  - pip install Django==$DJANGO_VERSION
+  - pip install psycopg2 djangorestframework coverage coveralls --use-mirrors
+  - python setup.py -q install
+
+before_script:
+  - find / -name postgis.sql || true
+  - curl https://raw.github.com/django/django/1.5.5/docs/ref/contrib/gis/install/create_template_postgis-debian.sh | sh
+  - createdb -T template_postgis django_restframework_gis
+
+# command to run tests, e.g. python setup.py test
+script:
+  - coverage run --source=rest_framework_gis,django_restframework_gis_tests setup.py test
+
+after_success:
+  coveralls

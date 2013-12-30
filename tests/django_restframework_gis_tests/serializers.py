@@ -7,16 +7,15 @@ from .models import *
 __all__ = [
     'LocationGeoSerializer',
     'PaginatedLocationGeoSerializer',
-    # GeoFeatureSerializer
     'LocationGeoFeatureSerializer',
+    'LocationGeoFeatureSlugSerializer',
+    'LocationGeoFeatureFalseIDSerializer',
     'PaginatedLocationGeoFeatureSerializer',
 ]
 
   
 class LocationGeoSerializer(gis_serializers.GeoModelSerializer):
     """ location geo serializer  """
-    
-    #geometry = gis_serializers.GeometryField(required=True)
     
     details = serializers.HyperlinkedIdentityField(view_name='api_location_details')
     
@@ -43,6 +42,24 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = Location
         geo_field = 'geometry'
+
+
+class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
+    """ use slug as id attribute  """
+    
+    class Meta:
+        model = Location
+        geo_field = 'geometry'
+        id_field = 'slug'
+
+
+class LocationGeoFeatureFalseIDSerializer(LocationGeoFeatureSerializer):
+    """ id attribute set as False """
+    
+    class Meta:
+        model = Location
+        geo_field = 'geometry'
+        id_field = False
 
 
 class PaginatedLocationGeoFeatureSerializer(pagination.PaginationSerializer):

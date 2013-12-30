@@ -1,6 +1,9 @@
 django-rest-framework-gis
 =========================
 
+[![Build Status](https://travis-ci.org/nemesisdesign/django-rest-framework-gis.png?branch=master)](https://travis-ci.org/nemesisdesign/django-rest-framework-gis)
+[![Coverage Status](https://coveralls.io/repos/nemesisdesign/django-rest-framework-gis/badge.png)](https://coveralls.io/r/nemesisdesign/django-rest-framework-gis)
+
 Geographic add-ons for Django Rest Framework
 
 Fields
@@ -60,19 +63,19 @@ GeoFeatureModelSerializer is a subclass of GeoModelSerializer which will output 
 compatible. Using the above example, the GeoFeatureModelSerializer will output:
 
      {
+        "id": 1, 
         "type": "Feature",
-        "properties": {
-            "id": 1, 
-            "address": "742 Evergreen Terrace", 
-            "city":  "Springfield", 
-            "state": "Oregon",
-        }
         "geometry": {
             "point": {
                 "type": "Point",
                 "coordinates": [-123.0208, 44.0464],
             },
         },
+        "properties": {
+            "address": "742 Evergreen Terrace", 
+            "city":  "Springfield", 
+            "state": "Oregon"
+        }
     }
     
 If you are serializing an object list, GeoFeatureModelSerializer will create a FeatureCollection:
@@ -83,34 +86,34 @@ If you are serializing an object list, GeoFeatureModelSerializer will create a F
         "type": "FeatureCollection",
         "features": [
         {
+            "id": 1
             "type": "Feature",
-            "properties": {
-                "id": 1, 
-                "address": "742 Evergreen Terrace", 
-                "city":  "Springfield", 
-                "state": "Oregon",
-            }
             "geometry": {
                 "point": {
                     "type": "Point",
                     "coordinates": [-123.0208, 44.0464],
-                },
+                }
             },
-        }
-        {
-            "type": "Feature",
             "properties": {
-                "id": 2, 
-                "address": "744 Evergreen Terrace", 
+                "address": "742 Evergreen Terrace", 
                 "city":  "Springfield", 
                 "state": "Oregon",
             }
+        }
+        {
+            "id": 2, 
+            "type": "Feature",
             "geometry": {
                 "point": {
                     "type": "Point",
                     "coordinates": [-123.0208, 44.0489],
                 },
             },
+            "properties": {
+                "address": "744 Evergreen Terrace", 
+                "city":  "Springfield", 
+                "state": "Oregon"
+            }
         }
     }
     
@@ -125,9 +128,28 @@ GeoFeatureModelSerializer requires you to define a "geo_field" to be serialized 
         
             # you can also explicitly declare which fields you want to include
             # as with a ModelSerializer.
-            fields = ('address', 'city', 'state')
+            fields = ('id', 'address', 'city', 'state')
             
+The primary key of the model (usually the "id" attribute) is automatically put outside
+the "properties" object (before "type") unless "id_field" is set to False:
 
+    class LocationSerializer(GeoFeatureModelSerializer):
+        
+        class Meta:
+            model = Location
+            geo_field = "point"
+            id_field = False
+            fields = ('id', 'address', 'city', 'state')
+
+You could also set the id_field to some other unique field in your model, like "slug":
+
+    class LocationSerializer(GeoFeatureModelSerializer):
+        
+        class Meta:
+            model = Location
+            geo_field = "point"
+            id_field = "slug"
+            fields = ('slug', 'address', 'city', 'state')
 
 Filters
 -------
