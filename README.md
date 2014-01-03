@@ -223,3 +223,6 @@ Contributing
 7. Ensure test coverage is not under 90%
 8. Document your changes
 9. Send pull request
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/djangonauts/django-rest-framework-gis/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
