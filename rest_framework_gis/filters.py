@@ -1,8 +1,13 @@
+from django.db.models import Q
+from django.contrib.gis.geos import Polygon
+from django.contrib.gis import forms
+from django.contrib.gis.db import models
+from django.contrib.gis.db.models.sql.query import ALL_TERMS
+
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
 
-from django.db.models import Q
-from django.contrib.gis.geos import Polygon
+from django_filters import Filter, FilterSet
 
 
 class InBBOXFilter(BaseFilterBackend):
@@ -38,3 +43,20 @@ class InBBOXFilter(BaseFilterBackend):
         if not bbox:
             return queryset
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+
+
+class GeometryFilter(Filter):
+    field_class = forms.GeometryField
+
+
+class GeoFilterSet(FilterSet):
+    GEOFILTER_FOR_DBFIELD_DEFAULTS = {
+        models.GeometryField: {
+            'filter_class': GeometryFilter
+        },
+    }
+
+    def __new__(cls, *args, **kwargs):
+        cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
+        cls.LOOKUP_TYPES = sorted(ALL_TERMS)
+        return super(GeoFilterSet, cls).__new__(cls, *args, **kwargs)
