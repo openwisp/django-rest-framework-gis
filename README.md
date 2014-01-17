@@ -180,8 +180,30 @@ class LocationSerializer(GeoFeatureModelSerializer):
 Filters
 -------
 
-Provides a `InBBOXFilter`, which is a subclass of DRF `BaseFilterBackend`.
-Filters a queryset to only those instances within a certain bounding box.
+We provide a `GeometryFilter` field as well as a `GeometryFilterSet` for usage with `django_filter`.  You simply provide, in the query string, one of the textual types supported by `GEOSGeometry`.  By default, this includes WKT, HEXEWKB, WKB (in a buffer), and GeoJSON.
+
+### GeometryFilter
+
+```python
+from rest_framework_gis.filters import GeoFilterSet
+
+class RegionFilter(GeoFilterSet):
+    slug = filters.CharFilter(name='slug', lookup_type='istartswith')
+    contains_geom = filters.GeometryFilter(name='geom', lookup_type='contains')
+
+    class Meta:
+        model = Region
+```
+
+We can then filter in the URL, using GeoJSON, and we will perform a `__contains` geometry lookup, e.g. `/region/?contains_geom={ "type": "Point", "coordinates": [ -123.26436996459961, 44.564178042345375 ] }`.
+
+### GeoFilterSet
+
+The `GeoFilterSet` provides a `django_filter` compatible `FilterSet` that will automatically create `GeometryFilters` for `GeometryFields`.
+
+### InBBOXFilter
+
+Provides a `InBBOXFilter`, which is a subclass of DRF `BaseFilterBackend`.  Filters a queryset to only those instances within a certain bounding box.
 
 
 Running the tests
