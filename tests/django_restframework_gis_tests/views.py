@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.filters import DjangoFilterBackend
 
 from .models import *
 from .serializers import *
@@ -68,3 +69,20 @@ class GeojsonLocationFalseIDDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LocationGeoFeatureFalseIDSerializer
 
 geojson_location_falseid_details = GeojsonLocationFalseIDDetails.as_view()
+
+
+class LocationFilter(GeoFilterSet):
+    contains_properly = GeometryFilter(name='geometry', lookup_type='contains_properly')
+
+    class Meta:
+        model = Location
+
+
+class GeojsonLocationContainedInGeometry(generics.ListAPIView):
+    queryset = Location.objects.all()
+    serializer_class = LocationGeoSerializer
+    filter_class = LocationFilter
+
+    filter_backends = (DjangoFilterBackend,)
+
+geojson_contained_in_geometry = GeojsonLocationContainedInGeometry.as_view()

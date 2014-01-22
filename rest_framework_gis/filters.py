@@ -1,8 +1,10 @@
-from rest_framework.filters import BaseFilterBackend
-from rest_framework.exceptions import ParseError
-
 from django.db.models import Q
 from django.contrib.gis.geos import Polygon
+from django.contrib.gis import forms
+
+from rest_framework.filters import BaseFilterBackend
+from rest_framework.exceptions import ParseError
+from django_filters import Filter
 
 
 class InBBOXFilter(BaseFilterBackend):
@@ -38,3 +40,10 @@ class InBBOXFilter(BaseFilterBackend):
         if not bbox:
             return queryset
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+
+
+class GeometryFilter(Filter):
+    field_class = forms.GeometryField
+
+
+from .filterset import *
