@@ -20,7 +20,8 @@ setup(
     description='Geographic add-ons for Django Rest Framework',
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
-        "djangorestframework>=2.2.2"
+        "djangorestframework>=2.2.2",
+        "django-filter>=0.7",
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

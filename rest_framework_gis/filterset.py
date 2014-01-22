@@ -15,4 +15,4 @@ class GeoFilterSet(FilterSet):
     def __new__(cls, *args, **kwargs):
         cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
         cls.LOOKUP_TYPES = sorted(ALL_TERMS)
-        return super(GeoFilterSet, cls).__new__(cls, *args, **kwargs)
+        return super(GeoFilterSet, cls).__new__(cls)
