@@ -3,7 +3,9 @@ django-rest-framework-gis
 
 [![Build Status](https://travis-ci.org/djangonauts/django-rest-framework-gis.png?branch=master)](https://travis-ci.org/djangonauts/django-rest-framework-gis)
 [![Coverage Status](https://coveralls.io/repos/djangonauts/django-rest-framework-gis/badge.png)](https://coveralls.io/r/djangonauts/django-rest-framework-gis)
+[![Code Health](https://landscape.io/github/djangonauts/django-rest-framework-gis/master/landscape.png)](https://landscape.io/github/djangonauts/django-rest-framework-gis/master)
 [![PyPI version](https://badge.fury.io/py/djangorestframework-gis.png)](http://badge.fury.io/py/djangorestframework-gis)
+[![Requirements Status](https://requires.io/github/djangonauts/django-rest-framework-gis/requirements.png?branch=master)](https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master)
 
 Geographic add-ons for Django Rest Framework - [Mailing List](https://groups.google.com/forum/#!forum/django-rest-framework-gis).
 
@@ -210,7 +212,7 @@ Running the tests
 -----------------
 
 Assuming one has the dependencies installed (restframework and restframework_gis),
-and one of the **Spatial Database server supported by GeoDjango**: https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends is up and running::
+and one of the [Spatial Database server supported by GeoDjango](https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends) is up and running:
 
 ```bash
 python setup.py test
