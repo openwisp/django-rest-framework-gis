@@ -24,7 +24,7 @@ before_install:
 # command to install requirements
 install:
   - pip install Django==$DJANGO_VERSION
-  - pip install psycopg2 djangorestframework coverage coveralls --use-mirrors
+  - pip install psycopg2 djangorestframework coverage coveralls django-filter --use-mirrors
   - python setup.py -q install
 
 before_script:

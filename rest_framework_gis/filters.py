@@ -1,10 +1,18 @@
 from django.db.models import Q
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.geos import Polygon
 from django.contrib.gis import forms
 
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
-from django_filters import Filter
+
+try:
+    from django_filters import Filter
+except ImportError:
+    raise ImproperlyConfigured(
+        'restframework-gis filters depend on package "django-filter" '
+        'which is missing. Install with "pip install django-filter".'
+    )
 
 
 class InBBOXFilter(BaseFilterBackend):
