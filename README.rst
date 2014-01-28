@@ -10,7 +10,7 @@ List <https://groups.google.com/forum/#!forum/django-rest-framework-gis>`__.
 Install
 -------
 
-.. code:: bash
+.. code-block:: bash
 
     pip install djangorestframework-gis
 
@@ -35,7 +35,7 @@ above ``GeometryField``.
 
 For example, the following model:
 
-.. code:: python
+.. code-block:: python
 
     class Location(models.Model):
         """
@@ -46,9 +46,9 @@ For example, the following model:
         state = models.CharField(max_length=100)
         point = models.PointField()
 
-By default, the DRF ModelSerializer will output::
+By default, the DRF ModelSerializer will output:
 
-.. code:: javascript
+.. code-block:: javascript
 
     {
         "id": 1,
@@ -58,9 +58,9 @@ By default, the DRF ModelSerializer will output::
         "point": "POINT(-123.0208 44.0464)"
     }
 
-In contrast, the ``GeoModelSerizalizer`` will output::
+In contrast, the ``GeoModelSerizalizer`` will output:
 
-.. code:: javascript
+.. code-block:: javascript
 
     {
         "id": 1,
@@ -80,7 +80,7 @@ GeoFeatureModelSerializer
 which will output data in a format that is **GeoJSON** compatible. Using
 the above example, the ``GeoFeatureModelSerializer`` will output:
 
-.. code:: javascript
+.. code-block:: javascript
 
      {
         "id": 1,
@@ -104,7 +104,7 @@ will create a ``FeatureCollection``:
 (**NOTE:** This currenty does not work with the default pagination
 serializer)
 
-.. code:: javascript
+.. code-block:: javascript
 
     {
         "type": "FeatureCollection",
@@ -144,7 +144,7 @@ serializer)
 ``GeoFeatureModelSerializer`` requires you to define a **``geo_field``**
 to be serialized as the "geometry". For example:
 
-.. code:: python
+.. code-block:: python
 
     class LocationSerializer(GeoFeatureModelSerializer):
         """ A class to serialize locations as GeoJSON compatible data """
@@ -161,7 +161,7 @@ The primary key of the model (usually the "id" attribute) is
 automatically put outside the "properties" object (before "type") unless
 **``id_field``** is set to False:
 
-.. code:: python
+.. code-block:: python
 
     class LocationSerializer(GeoFeatureModelSerializer):
 
@@ -174,7 +174,7 @@ automatically put outside the "properties" object (before "type") unless
 You could also set the **``id_field``** to some other unique field in
 your model, like **"slug"**:
 
-.. code:: python
+.. code-block:: python
 
     class LocationSerializer(GeoFeatureModelSerializer):
 
@@ -195,7 +195,7 @@ default, this includes WKT, HEXEWKB, WKB (in a buffer), and GeoJSON.
 GeometryFilter
 ~~~~~~~~~~~~~~
 
-.. code:: python
+.. code-block:: python
 
     from rest_framework_gis.filters import GeoFilterSet
 
@@ -233,7 +233,7 @@ by
 GeoDjango <https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends>`__
 is up and running:
 
-.. code:: bash
+.. code-block:: bash
 
     python setup.py test
 
