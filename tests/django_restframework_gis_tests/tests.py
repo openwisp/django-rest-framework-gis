@@ -355,8 +355,10 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['geometry']['type'], "Point")
         
     def test_inBBOXFilter_filtering(self):
-        """ Checks that the inBBOXFilter returns only objects strictly contained in
-            the bounding box given by the in_bbox URL parameter """
+        """
+        Checks that the inBBOXFilter returns only objects strictly contained
+        in the bounding box given by the in_bbox URL parameter
+        """
         self.assertEqual(Location.objects.count(), 0)
         
         # Bounding box
@@ -403,97 +405,99 @@ class TestRestFrameworkGis(TestCase):
             self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)
 
     def test_GeometryField_filtering(self):
-        """Checks that the GeometryField allows sane filtering."""
+        """ Checks that the GeometryField allows sane filtering. """
         self.assertEqual(Location.objects.count(), 0)
 
         treasure_island_geojson = """{
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -122.44640350341795,
-              37.86103094116189
-            ],
-            [
-              -122.44262695312501,
-              37.85506751416839
-            ],
-            [
-              -122.43481636047363,
-              37.853305500228025
-            ],
-            [
-              -122.42975234985352,
-              37.854660899304704
-            ],
-            [
-              -122.41953849792479,
-              37.852627791344894
-            ],
-            [
-              -122.41807937622069,
-              37.853305500228025
-            ],
-            [
-              -122.41868019104004,
-              37.86211514878027
-            ],
-            [
-              -122.42391586303711,
-              37.870584971740065
-            ],
-            [
-              -122.43035316467285,
-              37.8723465726078
-            ],
-            [
-              -122.43515968322752,
-              37.86963639998042
-            ],
-            [
-              -122.43953704833984,
-              37.86882332875222
-            ],
-            [
-              -122.44640350341795,
-              37.86103094116189
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [
+                        -122.44640350341795,
+                        37.86103094116189
+                    ],
+                    [
+                        -122.44262695312501,
+                        37.85506751416839
+                    ],
+                    [
+                        -122.43481636047363,
+                        37.853305500228025
+                    ],
+                    [
+                        -122.42975234985352,
+                        37.854660899304704
+                    ],
+                    [
+                        -122.41953849792479,
+                        37.852627791344894
+                    ],
+                    [
+                        -122.41807937622069,
+                        37.853305500228025
+                    ],
+                    [
+                        -122.41868019104004,
+                        37.86211514878027
+                    ],
+                    [
+                        -122.42391586303711,
+                        37.870584971740065
+                    ],
+                    [
+                        -122.43035316467285,
+                        37.8723465726078
+                    ],
+                    [
+                        -122.43515968322752,
+                        37.86963639998042
+                    ],
+                    [
+                        -122.43953704833984,
+                        37.86882332875222
+                    ],
+                    [
+                        -122.44640350341795,
+                        37.86103094116189
+                    ]
+                ]
             ]
-          ]
-        ]
-      }"""
+        }"""
+        
         treasure_island_geom = GEOSGeometry(treasure_island_geojson)
         treasure_island = Location()
         treasure_island.name = "Treasure Island"
         treasure_island.geometry = treasure_island_geom
+        treasure_island.full_clean()
         treasure_island.save()
 
         ggpark_geojson = """{
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -122.5111198425293,
-              37.77125750792944
-            ],
-            [
-              -122.51026153564452,
-              37.76447260365713
-            ],
-            [
-              -122.45309829711913,
-              37.76677954095475
-            ],
-            [
-              -122.45481491088867,
-              37.77424266859531
-            ],
-            [
-              -122.5111198425293,
-              37.77125750792944
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [
+                        -122.5111198425293,
+                        37.77125750792944
+                    ],
+                    [
+                        -122.51026153564452,
+                        37.76447260365713
+                    ],
+                    [
+                        -122.45309829711913,
+                        37.76677954095475
+                    ],
+                    [
+                        -122.45481491088867,
+                        37.77424266859531
+                    ],
+                    [
+                        -122.5111198425293,
+                        37.77125750792944
+                    ]
+                ]
             ]
-          ]
-        ]
-      }"""
+        }"""
         ggpark_geom = GEOSGeometry(ggpark_geojson)
         ggpark = Location()
         ggpark.name = "Golden Gate Park"
@@ -506,5 +510,12 @@ class TestRestFrameworkGis(TestCase):
 
         response = self.client.get(self.geojson_contained_in_geometry + url_params)
         self.assertEqual(len(response.data), 1)
+        
+        geometry_response = GEOSGeometry(json.dumps(response.data[0]['geometry']))
 
-        self.assertEqual(response.data[0]['geometry'], {u'type': u'Polygon', u'coordinates': [[[-122.44640350341795, 37.86103094116189], [-122.44262695312501, 37.85506751416839], [-122.43481636047363, 37.853305500228025], [-122.42975234985352, 37.854660899304704], [-122.41953849792479, 37.852627791344894], [-122.41807937622069, 37.853305500228025], [-122.41868019104004, 37.86211514878027], [-122.42391586303711, 37.870584971740065], [-122.43035316467285, 37.8723465726078], [-122.43515968322752, 37.86963639998042], [-122.43953704833984, 37.86882332875222], [-122.44640350341795, 37.86103094116189]]]})
+        self.assertTrue(geometry_response.equals_exact(ggpark_geom))
+        self.assertEqual(response.data[0]['name'], ggpark.name)
+        
+        # try without any param, should return both
+        response = self.client.get(self.geojson_contained_in_geometry)
+        self.assertEqual(len(response.data), 2)
