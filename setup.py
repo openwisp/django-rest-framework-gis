@@ -13,11 +13,14 @@ class TestCommand(test):
 setup(
     name='djangorestframework-gis',
     version=get_version(),
-    url='https://github.com/djangonauts/django-rest-framework-gis',
     license='BSD',
     author='Douglas Meehan',
     author_email='dmeehan@gmail.com',
     description='Geographic add-ons for Django Rest Framework',
+    url='https://github.com/djangonauts/django-rest-framework-gis',
+    download_url='https://github.com/djangonauts/django-rest-framework-gis/releases',
+    platforms=['Platform Indipendent'],
+    keywords=['django', 'rest-framework', 'gis', 'geojson'],
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         "djangorestframework>=2.2.2"
