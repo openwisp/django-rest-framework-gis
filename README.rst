@@ -187,7 +187,7 @@ your model, like **"slug"**:
 Filters
 -------
 
-We provide a ``GeometryFilter`` field as well as a ``GeometryFilterSet``
+We provide a ``GeometryFilter`` field as well as a ``GeoFilterSet``
 for usage with ``django_filter``. You simply provide, in the query
 string, one of the textual types supported by ``GEOSGeometry``. By
 default, this includes WKT, HEXEWKB, WKB (in a buffer), and GeoJSON.
@@ -197,7 +197,7 @@ GeometryFilter
 
 .. code-block:: python
 
-    from rest_framework_gis.filters import GeoFilterSet
+    from rest_framework_gis.filterset import GeoFilterSet
 
     class RegionFilter(GeoFilterSet):
         slug = filters.CharFilter(name='slug', lookup_type='istartswith')
@@ -223,6 +223,36 @@ InBBOXFilter
 Provides a ``InBBOXFilter``, which is a subclass of DRF
 ``BaseFilterBackend``. Filters a queryset to only those instances within
 a certain bounding box.
+
+
+``views.py:``
+
+.. code-block:: python
+
+    from rest_framework_gis.filters import InBBOXFilter
+
+    class LocationList(ListAPIView):
+
+        queryset = models.Location.objects.all()
+        serializer_class = serializers.LocationSerializer
+        bbox_filter_field = 'point'
+        filter_backends = (InBBOXFilter, ) 
+        bbox_filter_include_overlapping = True # Optional
+
+We can then filter in the URL, using Bounding Box format (min Lon, min 
+Lat, max Lon, max Lat), and we can search for instances within the 
+bounding box, e.g.:
+``/location/?in_bbox=-90,29,-89,35``.
+
+By default, InBBOXFilter will only return those instances entirely 
+within the stated bounding box. To include those instances which overlap 
+the bounding box, include ``bbox_filter_include_overlapping = True`` 
+in your view.
+
+Note that if you are using other filters, you'll want to include your 
+other filter backend in your view. For example:
+
+``filter_backends = (InBBOXFilter, DjangoFilterBackend,)``
 
 Running the tests
 -----------------
