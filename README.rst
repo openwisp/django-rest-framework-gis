@@ -226,17 +226,18 @@ a certain bounding box.
 
 
 ``views.py:``
+
 .. code-block:: python
 
     from rest_framework_gis.filters import InBBOXFilter
 
     class LocationList(ListAPIView):
 
-    queryset = models.Location.objects.all()
-    serializer_class = serializers.LocationSerializer
-    bbox_filter_field = 'point'
-    filter_backends = (InBBOXFilter, ) 
-    bbox_filter_include_overlapping = True # Optional
+        queryset = models.Location.objects.all()
+        serializer_class = serializers.LocationSerializer
+        bbox_filter_field = 'point'
+        filter_backends = (InBBOXFilter, ) 
+        bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using Bounding Box format (min Lon, min 
 Lat, max Lon, max Lat), and we can search for instances within the 
