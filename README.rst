@@ -145,6 +145,7 @@ serializer)
 to be serialized as the "geometry". For example:
 
 .. code-block:: python
+    from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
     class LocationSerializer(GeoFeatureModelSerializer):
         """ A class to serialize locations as GeoJSON compatible data """
@@ -162,6 +163,7 @@ automatically put outside the "properties" object (before "type") unless
 **``id_field``** is set to False:
 
 .. code-block:: python
+    from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
     class LocationSerializer(GeoFeatureModelSerializer):
 
@@ -175,6 +177,7 @@ You could also set the **``id_field``** to some other unique field in
 your model, like **"slug"**:
 
 .. code-block:: python
+    from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
     class LocationSerializer(GeoFeatureModelSerializer):
 
