@@ -519,3 +519,9 @@ class TestRestFrameworkGis(TestCase):
         # try without any param, should return both
         response = self.client.get(self.geojson_contained_in_geometry)
         self.assertEqual(len(response.data), 2)
+    
+    def test_HTML_browsable_geojson_location_list(self):
+        response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')
+        self.assertEqual(response.status_code, 200)
+        
+        # TODO: perform POST action too
