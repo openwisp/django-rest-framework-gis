@@ -13,7 +13,7 @@ class MapGeometryField(dict):
         if issubclass(key, django_GeometryField):
             return GeometryField
         return super(MapGeometryField, self).__getitem__(key)
-    
+
 
 class GeoModelSerializer(ModelSerializer):
     """
@@ -26,7 +26,7 @@ class GeoModelSerializer(ModelSerializer):
 
 class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
     """
-        Options for GeoFeatureModelSerializer
+    Options for GeoFeatureModelSerializer
     """
     def __init__(self, meta):
         super(GeoFeatureModelSerializerOptions, self).__init__(meta)
@@ -42,8 +42,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
     features and feature collections
     """
     _options_class = GeoFeatureModelSerializerOptions
-
-
+    
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
         if self.opts.geo_field is None:
@@ -57,7 +56,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             if self.opts.fields:
                 if self.opts.geo_field not in self.opts.fields:
                     self.opts.fields = self.opts.fields + (self.opts.geo_field, )
-                    self.fields = self.get_fields()        
+                    self.fields = self.get_fields()
 
     def to_native(self, obj):
         """
@@ -72,6 +71,8 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         ret["properties"] = self._dict_class()
         
         for field_name, field in self.fields.items():
+            if field.read_only and obj is None:
+                continue
             field.initialize(parent=self, field_name=field_name)
             key = self.get_field_key(field_name)
             value = field.field_to_native(obj, field_name)
@@ -112,24 +113,30 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         Override the parent method to first remove the GeoJSON formatting
         """
-        if 'features' in data:
-            _unformatted_data = []
-            features = data['features']
-            for feature in features:
-                _dict = feature["properties"]
-                geom = { self.opts.geo_field: feature["geometry"] }
+        self._errors = {}
+        
+        if data is not None or files is not None:
+            if 'features' in data:
+                _unformatted_data = []
+                features = data['features']
+                for feature in features:
+                    _dict = feature["properties"]
+                    geom = { self.opts.geo_field: feature["geometry"] }
+                    _dict.update(geom)
+                    _unformatted_data.append(_dict)
+            elif 'properties' in data:
+                _dict = data["properties"]
+                geom = { self.opts.geo_field: data["geometry"] }
                 _dict.update(geom)
-                _unformatted_data.append(_dict)
-        elif 'properties' in data:
-            _dict = data["properties"]
-            geom = { self.opts.geo_field: data["geometry"] }
-            _dict.update(geom)
-            _unformatted_data = _dict
+                _unformatted_data = _dict
+            else:
+                _unformatted_data = data
+            
+            attrs = self.restore_fields(_unformatted_data, files)
+            if attrs is not None:
+                attrs = self.perform_validation(attrs)
         else:
-            _unformatted_data = data
+            self._errors['non_field_errors'] = ['No input provided']
         
-        data = _unformatted_data
-        
-        instance = super(GeoFeatureModelSerializer, self).from_native(data, files)
         if not self._errors:
-            return self.full_clean(instance)
+            return self.restore_object(attrs, instance=getattr(self, 'object', None))
