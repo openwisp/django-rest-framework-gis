@@ -8,8 +8,8 @@ python:
   - "2.6"
 
 env:
-  - DJANGO_VERSION=1.5.5
-  - DJANGO_VERSION=1.6.1
+  - DJANGO="django==1.5.8"
+  - DJANGO="django==1.6.5"
 
 branches:
   only:
@@ -23,13 +23,11 @@ before_install:
 
 # command to install requirements
 install:
-  - pip install Django==$DJANGO_VERSION
+  - pip install $DJANGO
   - pip install psycopg2 djangorestframework coverage coveralls django-filter --use-mirrors
   - python setup.py -q install
 
 before_script:
-  - find / -name postgis.sql || true
-  - curl https://raw.github.com/django/django/1.5.5/docs/ref/contrib/gis/install/create_template_postgis-debian.sh | sh
   - createdb -T template_postgis django_restframework_gis
 
 # command to run tests, e.g. python setup.py test
