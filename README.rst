@@ -274,7 +274,7 @@ is up and running:
 
 .. code-block:: bash
 
-    python setup.py test
+    ./runtests.py
 
 You might need to tweak the DB settings according to your DB
 configuration. You can copy the file ``local_settings.example.py`` to
