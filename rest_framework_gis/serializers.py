@@ -1,5 +1,3 @@
-# rest_framework_gis/serializers.py
-from django.contrib.gis.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
 

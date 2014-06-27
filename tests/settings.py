@@ -37,3 +37,9 @@ MEDIA_ROOT = '%s/media/' % SITE_ROOT
 MEDIA_URL = '/media/'
 STATIC_ROOT = '%s/static/' % SITE_ROOT
 STATIC_URL = '/static/'
+
+# local settings must be imported before test runner otherwise they'll be ignored
+try:
+    from local_settings import *
+except ImportError:
+    pass

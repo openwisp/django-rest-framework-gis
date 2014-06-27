@@ -4,12 +4,6 @@ from setuptools.command.test import test
 from rest_framework_gis import get_version
 
 
-class TestCommand(test):
-    def run(self):
-        from tests.runtests import runtests
-        runtests()
-
-
 setup(
     name='djangorestframework-gis',
     version=get_version(),
@@ -35,6 +29,5 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
-    ],
-    cmdclass={"test": TestCommand},
+    ]
 )
