@@ -64,6 +64,8 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         ret = self._dict_class()
         ret.fields = {}
+        
+        # geo structure
         if self.opts.id_field is not False:
             ret["id"] = ""
         ret["type"] = "Feature"
@@ -76,18 +78,21 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             field.initialize(parent=self, field_name=field_name)
             key = self.get_field_key(field_name)
             value = field.field_to_native(obj, field_name)
+            method = getattr(self, 'transform_%s' % field_name, None)
+            if callable(method):
+                value = method(obj, value)
             
             if self.opts.id_field is not False and field_name == self.opts.id_field:
                 ret["id"] = value
             elif field_name == self.opts.geo_field:
                 ret["geometry"] = value
-            else:
+            elif not getattr(field, 'write_only', False):
                 ret["properties"][key] = value
             
-            ret.fields[key] = field
-            
-        return ret  
- 
+            ret.fields[key] = self.augment_field(field, field_name, key, value)
+        
+        return ret
+    
     def _format_data(self):
         """
         Add GeoJSON compatible formatting to a serialized queryset list
@@ -99,16 +104,16 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             self._formatted_data["features"] = _data
         else:
             self._formatted_data = _data
-
+    
         return self._formatted_data
-
+    
     @property
     def data(self):
         """
         Returns the serialized data on the serializer.
         """
         return self._format_data()
-
+    
     def from_native(self, data, files):
         """
         Override the parent method to first remove the GeoJSON formatting
