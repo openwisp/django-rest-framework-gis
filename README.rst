@@ -14,6 +14,15 @@ Install
 
     pip install djangorestframework-gis
 
+Django Rest Framework Compatibility
+-----------------------------------
+
+===============================  ============================
+djangorestframework-gis version  djangorestframework version
+**0.3.0**                        higher than **2.3.14**
+**0.2.0**                        from **2.2.2** to **2.3.13**
+===============================  ============================
+
 Fields
 ------
 
