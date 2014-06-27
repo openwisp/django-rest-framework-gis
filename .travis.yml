@@ -15,12 +15,6 @@ branches:
   only:
     - master 
 
-before_install:
- - sudo add-apt-repository -r -y ppa:ubuntugis/ppa
- - sudo apt-get update
- - sudo apt-get remove --purge postgresql-9.1-postgis-2.1 postgresql-9.1-postgis-scripts
- - sudo apt-get install postgresql-9.1-postgis libgeoip1
-
 # command to install requirements
 install:
   - pip install $DJANGO
