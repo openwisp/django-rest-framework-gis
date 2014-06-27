@@ -28,7 +28,9 @@ install:
   - python setup.py -q install
 
 before_script:
-  - createdb -T template_postgis django_restframework_gis
+  - createdb django_restframework_gis
+  - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis;"
+  - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis_topology;"
 
 # command to run tests, e.g. python setup.py test
 script:
