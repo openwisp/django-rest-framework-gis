@@ -263,6 +263,11 @@ other filter backend in your view. For example:
 
 ``filter_backends = (InBBOXFilter, DjangoFilterBackend,)``
 
+Projects using this package
+--------------------------
+
+- `Nodeshot <https://github.com/ninuxorg/nodeshot>`__: Extensible Django web application for management of community-led georeferenced data
+
 Running the tests
 -----------------
 
@@ -314,8 +319,6 @@ Contributing
 8. Document your changes
 9. Send pull request
 
-|Bitdeli Badge|
-
 .. |Build Status| image:: https://travis-ci.org/djangonauts/django-rest-framework-gis.png?branch=master
    :target: https://travis-ci.org/djangonauts/django-rest-framework-gis
 .. |Coverage Status| image:: https://coveralls.io/repos/djangonauts/django-rest-framework-gis/badge.png
@@ -326,5 +329,3 @@ Contributing
    :target: http://badge.fury.io/py/djangorestframework-gis
 .. |Requirements Status| image:: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements.png?branch=master
    :target: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master
-.. |Bitdeli Badge| image:: https://d2weczhvl823v0.cloudfront.net/djangonauts/django-rest-framework-gis/trend.png
-   :target: https://bitdeli.com/free
