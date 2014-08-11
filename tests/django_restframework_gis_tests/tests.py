@@ -569,7 +569,12 @@ class TestRestFrameworkGis(TestCase):
     
         point_inside_ggpark_geojson = """{ "type": "Point", "coordinates": [ -122.49034881591797, 37.76949349270407 ] }"""
     
-        url_params = "?contains_properly=%s" % urllib.quote(point_inside_ggpark_geojson)
+        try:
+            quoted_param = urllib.quote(point_inside_ggpark_geojson)
+        except AttributeError:
+            quoted_param = urllib.parse.quote(point_inside_ggpark_geojson)
+        
+        url_params = "?contains_properly=%s" % quoted_param
     
         response = self.client.get(self.geojson_contained_in_geometry + url_params)
         self.assertEqual(len(response.data), 1)
@@ -635,5 +640,5 @@ class TestRestFrameworkGis(TestCase):
         self._create_locations()
         response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')
         self.assertContains(response, '<textarea cols="40" id="geometry"')
-        self.assertContains(response, '&quot;type&quot;: &quot;Point&quot;,')
+        self.assertContains(response, '&quot;type&quot;: &quot;Point&quot;')
         self.assertContains(response, '&quot;coordinates&quot;: [')

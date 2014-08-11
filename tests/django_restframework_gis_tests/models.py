@@ -17,7 +17,7 @@ class Location(models.Model):
     
     def _generate_slug(self):
         if self.slug == '' or self.slug is None:
-            self.slug = slugify(unicode(self.name))
+            self.slug = slugify(self.name)
     
     def clean(self):
         self._generate_slug()
