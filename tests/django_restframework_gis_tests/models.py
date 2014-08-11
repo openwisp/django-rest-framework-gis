@@ -17,7 +17,11 @@ class Location(models.Model):
     
     def _generate_slug(self):
         if self.slug == '' or self.slug is None:
-            self.slug = slugify(self.name)
+            try:
+                name = unicode(self.name)
+            except NameError:
+                name = self.name
+            self.slug = slugify(name)
     
     def clean(self):
         self._generate_slug()
