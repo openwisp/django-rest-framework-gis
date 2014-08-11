@@ -9,6 +9,7 @@ from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import OGRException
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.forms.widgets import Textarea as TextareaWidget
 
 from rest_framework.fields import WritableField
 
@@ -18,6 +19,7 @@ class GeometryField(WritableField):
     A field to handle GeoDjango Geometry fields
     """
     type_name = 'GeometryField'
+    widget = TextareaWidget
 
     def to_native(self, value):
         if isinstance(value, dict) or value is None:
@@ -40,3 +42,13 @@ class GeometryField(WritableField):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
 
         return value
+    
+    def widget_html(self):
+        if not self.widget:
+            return ''
+
+        attrs = {}
+        if 'id' not in self.widget.attrs:
+            attrs['id'] = self._name
+
+        return self.widget.render(self._name, json.dumps(self._value, indent=4), attrs=attrs)
