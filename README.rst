@@ -1,8 +1,7 @@
 django-rest-framework-gis
 =========================
 
-|Build Status| |Coverage Status| |Code Health| |PyPI version|
-|Requirements Status|
+|Build Status| |Coverage Status| |Code Health| |Requirements Status| |PyPI version| |PyPI downloads|
 
 Geographic add-ons for Django Rest Framework - `Mailing
 List <https://groups.google.com/forum/#!forum/django-rest-framework-gis>`__.
@@ -17,11 +16,12 @@ Install
 Django Rest Framework Compatibility
 -----------------------------------
 
-===============================  ============================
-djangorestframework-gis version  djangorestframework version
-**0.3.0**                        higher than **2.3.14**
-**0.2.0**                        from **2.2.2** to **2.3.13**
-===============================  ============================
+===============  ============================ ==================== ==================
+DRF-gis version  DRF version                  Django version       Python version
+**0.4.0**        higher than **2.3.14**       **1.5.x** to **1.7** **2.6** to **3.4**
+**0.3.0**        higher than **2.3.14**       **1.5.x**, **1.6.x** **2.6**, **2.7**
+**0.2.0**        from **2.2.2** to **2.3.13** **1.5.x**, **1.6.x** **2.6**, **2.7**
+===============  ============================ ==================== ==================
 
 Fields
 ------
@@ -325,7 +325,9 @@ Contributing
    :target: https://coveralls.io/r/djangonauts/django-rest-framework-gis
 .. |Code Health| image:: https://landscape.io/github/djangonauts/django-rest-framework-gis/master/landscape.png
    :target: https://landscape.io/github/djangonauts/django-rest-framework-gis/master
-.. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.png
-   :target: http://badge.fury.io/py/djangorestframework-gis
 .. |Requirements Status| image:: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements.png?branch=master
    :target: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master
+.. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.png
+   :target: http://badge.fury.io/py/djangorestframework-gis
+.. |PyPI downloads| image:: https://pypip.in/d/djangorestframework-gis/badge.png
+    :target: http://badge.fury.io/py/djangorestframework-gis
