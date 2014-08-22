@@ -7,7 +7,7 @@ from django.contrib.gis import forms
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
 
-from tilenames import tileEdges
+from rest_framework_gis.tilenames import tileEdges
 
 try:
     import django_filters
