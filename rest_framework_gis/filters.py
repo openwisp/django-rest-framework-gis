@@ -7,6 +7,8 @@ from django.contrib.gis import forms
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
 
+from tilenames import tileEdges
+
 try:
     import django_filters
 except ImportError:
@@ -19,7 +21,8 @@ except ImportError:
 __all__ = [
     'InBBOXFilter',
     'GeometryFilter',
-    'GeoFilterSet'
+    'GeoFilterSet',
+    'TMSTileFilter'
 ]
 
 
@@ -73,3 +76,22 @@ class GeoFilterSet(django_filters.FilterSet):
         cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
         cls.LOOKUP_TYPES = sorted(models.sql.query.ALL_TERMS)
         return super(GeoFilterSet, cls).__new__(cls)
+
+
+class TMSTileFilter(InBBOXFilter):
+
+    tile_param = 'tile' # The URL query paramater which contains the tile address
+
+    def get_filter_bbox(self, request):
+        tile_string = request.QUERY_PARAMS.get(self.tile_param, None)
+        if not tile_string:
+            return None
+
+        try:
+            z, x, y = (int(n) for n in tile_string.split('/'))
+        except ValueError:
+            raise ParseError("Not valid tile string in parameter %s."
+                             % self.tile_param)
+
+        bbox = Polygon.from_bbox(tileEdges(x, y, z))
+        return bbox
