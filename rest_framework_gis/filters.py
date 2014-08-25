@@ -7,7 +7,7 @@ from django.contrib.gis import forms
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
 
-from rest_framework_gis.tilenames import tileEdges
+from .tilenames import tile_edges
 
 try:
     import django_filters
@@ -93,5 +93,5 @@ class TMSTileFilter(InBBOXFilter):
             raise ParseError("Not valid tile string in parameter %s."
                              % self.tile_param)
 
-        bbox = Polygon.from_bbox(tileEdges(x, y, z))
+        bbox = Polygon.from_bbox(tile_edges(x, y, z))
         return bbox
