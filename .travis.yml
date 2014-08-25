@@ -17,7 +17,7 @@ env:
 matrix:
   exclude:
     - python: "2.6"
-      env: DJANGO="https://www.djangoproject.com/download/1.7c2/tarball/"
+      env: DJANGO="https://www.djangoproject.com/download/1.7c3/tarball/"
 
 branches:
   only:
