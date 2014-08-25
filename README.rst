@@ -264,7 +264,7 @@ other filter backend in your view. For example:
 ``filter_backends = (InBBOXFilter, DjangoFilterBackend,)``
 
 Projects using this package
---------------------------
+---------------------------
 
 - `Nodeshot <https://github.com/ninuxorg/nodeshot>`__: Extensible Django web application for management of community-led georeferenced data
 
