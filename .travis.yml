@@ -10,9 +10,9 @@ python:
   - "2.6"
 
 env:
-  - DJANGO="https://www.djangoproject.com/download/1.7c2/tarball/"
-  - DJANGO="django==1.5.8"
-  - DJANGO="django==1.6.5"
+  - DJANGO="https://www.djangoproject.com/download/1.7c3/tarball/"
+  - DJANGO="django==1.5.9"
+  - DJANGO="django==1.6.6"
 
 matrix:
   exclude:
