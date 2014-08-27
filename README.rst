@@ -263,6 +263,37 @@ other filter backend in your view. For example:
 
 ``filter_backends = (InBBOXFilter, DjangoFilterBackend,)``
 
+TMSTileFilter
+~~~~~~~~~~~~
+
+Provides a ``TMSTileFilter``, which is a subclass of ``InBBOXFilter``.
+Filters a queryset to only those instances within a bounding box defined 
+by a TMS tile address.
+
+``views.py:``
+
+.. code-block:: python
+
+    from rest_framework_gis.filters import TMSTileFilter
+
+    class LocationList(ListAPIView):
+
+        queryset = models.Location.objects.all()
+        serializer_class = serializers.LocationSerializer
+        bbox_filter_field = 'point'
+        filter_backends = (TMSTileFilter, ) 
+        bbox_filter_include_overlapping = True # Optional
+
+We can then filter in the URL, using TMS tile addresses in the zoom/x/y format, 
+eg:.
+``/location/?tile=8/100/200``
+which is equivalant to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261)
+
+For more information on configuration options see InBBOXFilter.
+
+Note that the tile address start in the upper left, not the lower left origin used by some 
+implementations.
+
 Projects using this package
 --------------------------
 
