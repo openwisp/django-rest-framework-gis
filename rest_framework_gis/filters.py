@@ -22,7 +22,8 @@ __all__ = [
     'InBBOXFilter',
     'GeometryFilter',
     'GeoFilterSet',
-    'TMSTileFilter'
+    'TMSTileFilter',
+    'DistanceFilter'
 ]
 
 
@@ -95,3 +96,73 @@ class TMSTileFilter(InBBOXFilter):
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
         return bbox
+
+
+class DistanceFilter(BaseFilterBackend):
+
+    geom_param = 'geom'  # The URL query parameter which contains the bbox.
+
+    def get_filter_geom(self, request):
+        geom_string = request.QUERY_PARAMS.get(self.geom_param, None)
+        if not geom_string:
+            return None
+
+        try:
+            points = (float(n) for n in geom_string.split(','))
+        except ValueError:
+            raise ParseError("Not valid geometry string in parameter %s."
+                             % self.geom_param)
+
+        x = Polygon.from_geom(points)
+        return x
+
+    
+    def distToDeg(distance, latitude):
+        """
+        distance = distance in meters
+        latitude = latitude in degrees 
+        As one moves away from the equator towards a pole, one degree of longitude is 
+        multiplied by the cosine of the latitude, decreasing the distance. 
+        http://en.wikipedia.org/wiki/Decimal_degrees
+
+        There's no good solution here, the distance/ degree is quite constant N/S around the earth,
+        but varies over a huge range E/W. 
+        Split the difference: I'm going to average the the degrees latitude and degrees longitude 
+        corresponding to the given distance. This will be too short N/S and too long E/W, 
+        but less so than no correction. 
+
+        Errors are < 25% for latitude < 70° N/S.
+        """
+        #   d * (180 / pi) / earthRadius   ==> degrees longitude
+        #   (degrees longitude) / cos(latitude)  ==> degrees latitude
+        latitude if latitude >= 0 else -1*latitude 
+        rad2deg = 180/math.pi
+        earthRadius = 6378160.0
+        latitudeCorrection = 0.5 * (1 + cos(latitude * math.pi / 180))
+        return (distance / (earthRadius * latitudeCorrection) * rad2deg)
+
+
+    def filter_queryset(self, request, queryset, view):
+        filter_field = getattr(view, 'distance_filter_field', None)
+
+        geoDjango_filter = 'dwithin'  # use dwithin or geom.buffer with overlaps/contains?
+
+        if not filter_field:
+            return queryset
+
+        geom = self.get_filter_geom(request)
+        if not geom:
+            return queryset
+
+        # distance in meters
+        dist_string = request.QUERY_PARAMS.get(self.dist_param, 100)
+        try:
+            dist = float(dist_string)
+        except ValueError:
+            raise ParseError("Not valid distance string in parameter %s."
+                             % self.dist_param)
+
+        if (geom.srid == 4326): # or other projections in degrees
+            dist = distToDeg(dist, geom.centroid[1])
+            
+        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (geom, dist)}))
