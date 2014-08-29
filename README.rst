@@ -226,10 +226,10 @@ The ``GeoFilterSet`` provides a ``django_filter`` compatible
 ``FilterSet`` that will automatically create ``GeometryFilters`` for
 ``GeometryFields``.
 
-InBBOXFilter
+InBBoxFilter
 ~~~~~~~~~~~~
 
-Provides a ``InBBOXFilter``, which is a subclass of DRF
+Provides a ``InBBoxFilter``, which is a subclass of DRF
 ``BaseFilterBackend``. Filters a queryset to only those instances within
 a certain bounding box.
 
@@ -238,14 +238,14 @@ a certain bounding box.
 
 .. code-block:: python
 
-    from rest_framework_gis.filters import InBBOXFilter
+    from rest_framework_gis.filters import InBBoxFilter
 
     class LocationList(ListAPIView):
 
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (InBBOXFilter, ) 
+        filter_backends = (InBBoxFilter, ) 
         bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using Bounding Box format (min Lon, min 
@@ -253,7 +253,7 @@ Lat, max Lon, max Lat), and we can search for instances within the
 bounding box, e.g.:
 ``/location/?in_bbox=-90,29,-89,35``.
 
-By default, InBBOXFilter will only return those instances entirely 
+By default, InBBoxFilter will only return those instances entirely 
 within the stated bounding box. To include those instances which overlap 
 the bounding box, include ``bbox_filter_include_overlapping = True`` 
 in your view.
@@ -261,12 +261,12 @@ in your view.
 Note that if you are using other filters, you'll want to include your 
 other filter backend in your view. For example:
 
-``filter_backends = (InBBOXFilter, DjangoFilterBackend,)``
+``filter_backends = (InBBoxFilter, DjangoFilterBackend,)``
 
 TMSTileFilter
 ~~~~~~~~~~~~
 
-Provides a ``TMSTileFilter``, which is a subclass of ``InBBOXFilter``.
+Provides a ``TMSTileFilter``, which is a subclass of ``InBBoxFilter``.
 Filters a queryset to only those instances within a bounding box defined 
 by a TMS tile address.
 
@@ -289,7 +289,7 @@ eg:.
 ``/location/?tile=8/100/200``
 which is equivalant to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261)
 
-For more information on configuration options see InBBOXFilter.
+For more information on configuration options see InBBoxFilter.
 
 Note that the tile address start in the upper left, not the lower left origin used by some 
 implementations.

@@ -38,7 +38,7 @@ class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
     bbox_filter_field = 'geometry'
-    filter_backends = (InBBOXFilter,)
+    filter_backends = (InBBoxFilter,)
 
 geojson_location_contained_in_bbox_list = GeojsonLocationContainedInBBoxList.as_view()
 

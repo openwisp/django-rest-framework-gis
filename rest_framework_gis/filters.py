@@ -19,6 +19,7 @@ except ImportError:
 
 
 __all__ = [
+    'InBBoxFilter',
     'InBBOXFilter',
     'GeometryFilter',
     'GeoFilterSet',
@@ -26,8 +27,7 @@ __all__ = [
 ]
 
 
-class InBBOXFilter(BaseFilterBackend):
-
+class InBBoxFilter(BaseFilterBackend):
     bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
 
     def get_filter_bbox(self, request):
@@ -59,6 +59,8 @@ class InBBOXFilter(BaseFilterBackend):
         if not bbox:
             return queryset
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+# backward compatibility
+InBBOXFilter = InBBoxFilter
 
 
 class GeometryFilter(django_filters.Filter):
@@ -78,8 +80,7 @@ class GeoFilterSet(django_filters.FilterSet):
         return super(GeoFilterSet, cls).__new__(cls)
 
 
-class TMSTileFilter(InBBOXFilter):
-
+class TMSTileFilter(InBBoxFilter):
     tile_param = 'tile' # The URL query paramater which contains the tile address
 
     def get_filter_bbox(self, request):
