@@ -18,9 +18,10 @@ Django Rest Framework Compatibility
 
 ===============  ============================ ==================== ==================
 DRF-gis version  DRF version                  Django version       Python version
-**0.4.0**        higher than **2.3.14**       **1.5.x** to **1.7** **2.6** to **3.4**
-**0.3.0**        higher than **2.3.14**       **1.5.x**, **1.6.x** **2.6**, **2.7**
-**0.2.0**        from **2.2.2** to **2.3.13** **1.5.x**, **1.6.x** **2.6**, **2.7**
+**0.5**          higher than **2.3.14**       **1.5.x** to **1.7** **2.6** to **3.4**
+**0.4**          higher than **2.3.14**       **1.5.x** to **1.7** **2.6** to **3.4**
+**0.3**          higher than **2.3.14**       **1.5.x**, **1.6.x** **2.6**, **2.7**
+**0.2**          from **2.2.2** to **2.3.13** **1.5.x**, **1.6.x** **2.6**, **2.7**
 ===============  ============================ ==================== ==================
 
 Fields
@@ -264,11 +265,11 @@ other filter backend in your view. For example:
 ``filter_backends = (InBBoxFilter, DjangoFilterBackend,)``
 
 TMSTileFilter
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Provides a ``TMSTileFilter``, which is a subclass of ``InBBoxFilter``.
 Filters a queryset to only those instances within a bounding box defined 
-by a TMS tile address.
+by a `TMS tile <http://wiki.openstreetmap.org/wiki/TMS>`__ address.
 
 ``views.py:``
 
@@ -287,7 +288,7 @@ by a TMS tile address.
 We can then filter in the URL, using TMS tile addresses in the zoom/x/y format, 
 eg:.
 ``/location/?tile=8/100/200``
-which is equivalant to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261)
+which is equivalant to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261).
 
 For more information on configuration options see InBBoxFilter.
 
