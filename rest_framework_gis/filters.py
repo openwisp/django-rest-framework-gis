@@ -99,22 +99,22 @@ class TMSTileFilter(InBBOXFilter):
 
 
 class DistanceFilter(BaseFilterBackend):
-
-    geom_param = 'geom'  # The URL query parameter which contains the bbox.
+    dist_param = 'dist'
+    point_param = 'point'  # The URL query parameter which contains the 
 
     def get_filter_geom(self, request):
-        geom_string = request.QUERY_PARAMS.get(self.geom_param, None)
-        if not geom_string:
+        point_string = request.QUERY_PARAMS.get(self.point_param, None)
+        if not point_string:
             return None
 
         try:
-            points = (float(n) for n in geom_string.split(','))
+            (x,y) = (float(n) for n in point_string.split(','))
         except ValueError:
             raise ParseError("Not valid geometry string in parameter %s."
-                             % self.geom_param)
+                             % self.point_string)
 
-        x = Polygon.from_geom(points)
-        return x
+        p = Point(x,y)
+        return p
 
     
     def distToDeg(distance, latitude):
@@ -145,24 +145,26 @@ class DistanceFilter(BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
         filter_field = getattr(view, 'distance_filter_field', None)
 
-        geoDjango_filter = 'dwithin'  # use dwithin or geom.buffer with overlaps/contains?
+        geoDjango_filter = 'dwithin'  # use dwithin for points
+        # could extend to geometries with geom.buffer and overlaps/contains
 
         if not filter_field:
             return queryset
 
-        geom = self.get_filter_geom(request)
-        if not geom:
+        point = self.get_filter_point(request)
+        if not point:
             return queryset
 
         # distance in meters
-        dist_string = request.QUERY_PARAMS.get(self.dist_param, 100)
+        dist_string = request.QUERY_PARAMS.get(self.dist_param, 1000)
         try:
             dist = float(dist_string)
         except ValueError:
             raise ParseError("Not valid distance string in parameter %s."
                              % self.dist_param)
 
-        if (geom.srid == 4326): # or other projections in degrees
-            dist = distToDeg(dist, geom.centroid[1])
+        if (point.srid == 4326): # or other projections in degrees
+            # Warning:  assumes that the point is (lon,lat)
+            dist = distToDeg(dist, point[1])
             
-        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (geom, dist)}))
+        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
