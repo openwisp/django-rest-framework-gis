@@ -420,32 +420,6 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 1)
         self.assertEqual(response.data['geometry']['type'], "Point")
 
-"""
-    def create_test_geometries(self);
-        # Square with bottom left at (1,1), top right at (9,9)
-        isContained = Location()
-        isContained.name = 'isContained'
-        isContained.geometry = Polygon(((1,1),(9,1),(9,9),(1,9),(1,1)))
-        isContained.save()
-        
-        isEqualToBounds = Location()
-        isEqualToBounds.name = 'isEqualToBounds'
-        isEqualToBounds.geometry = Polygon(((0,0),(10,0),(10,10),(0,10),(0,0)))
-        isEqualToBounds.save()
-        
-        # Rectangle with bottom left at (-1,1), top right at (5,5)
-        overlaps = Location()
-        overlaps.name = 'overlaps'
-        overlaps.geometry = Polygon(((-1,1),(5,1),(5,5),(-1,5),(-1,1)))
-        overlaps.save()
-        
-        # Rectangle with bottom left at (-3,-3), top right at (-1,2)
-        nonIntersecting = Location()
-        nonIntersecting.name = 'nonIntersecting'
-        nonIntersecting.geometry = Polygon(((-3,-3),(-1,-3),(-1,2),(-3,2),(-3,-3)))
-        nonIntersecting.save()
-"""
-
     def test_inBBOXFilter_filtering(self):
         """
         Checks that the inBBOXFilter returns only objects strictly contained
@@ -553,15 +527,15 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 0)
         
         # Filter parameters
-        distance = 500 #meters
+        distance = 5000 #meters
         point_inside_ggpark = [ -122.49034881591797, 37.76949349270407 ]
         point_on_golden_gate_bridge = [ -122.47894, 37.8199 ]
         point_on_alcatraz = [-122.4222, 37.82667 ]
         point_on_treasure_island = [ -122.3692, 37.8244 ]
         point_on_angel_island = [ -122.4326, 37.86091 ]
         
-        url_params = '?dist=%d&point=%d,%d&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
-    
+        url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
+
         treasure_island_geojson = """{
             "type": "Polygon",
             "coordinates": [
@@ -658,6 +632,14 @@ class TestRestFrameworkGis(TestCase):
         ggpark.geometry = ggpark_geom
         ggpark.save()
     
+        # Make sure we only get back the ones within the distance
+        response = self.client.get(self.location_within_distance_list_url + url_params)
+        self.assertEqual(len(response.data['features']), 1)
+        for result in response.data['features']:
+            self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
+
+        distance = 7000
+        url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
         # Make sure we only get back the ones within the distance
         response = self.client.get(self.location_within_distance_list_url + url_params)
         self.assertEqual(len(response.data['features']), 2)

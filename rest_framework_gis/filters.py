@@ -1,11 +1,12 @@
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db import models
-from django.contrib.gis.geos import Polygon
+from django.contrib.gis.geos import Polygon, Point
 from django.contrib.gis import forms
 
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
+from math import cos, pi 
 
 from .tilenames import tile_edges
 
@@ -102,7 +103,7 @@ class DistanceFilter(BaseFilterBackend):
     dist_param = 'dist'
     point_param = 'point'  # The URL query parameter which contains the 
 
-    def get_filter_geom(self, request):
+    def get_filter_point(self, request):
         point_string = request.QUERY_PARAMS.get(self.point_param, None)
         if not point_string:
             return None
@@ -117,7 +118,7 @@ class DistanceFilter(BaseFilterBackend):
         return p
 
     
-    def distToDeg(distance, latitude):
+    def distToDeg(self, distance, latitude):
         """
         distance = distance in meters
         latitude = latitude in degrees 
@@ -131,14 +132,14 @@ class DistanceFilter(BaseFilterBackend):
         corresponding to the given distance. This will be too short N/S and too long E/W, 
         but less so than no correction. 
 
-        Errors are < 25% for latitude < 70° N/S.
+        Errors are < 25 percent for latitude < 70 degrees N/S.
         """
         #   d * (180 / pi) / earthRadius   ==> degrees longitude
         #   (degrees longitude) / cos(latitude)  ==> degrees latitude
-        latitude if latitude >= 0 else -1*latitude 
-        rad2deg = 180/math.pi
+        lat = latitude if latitude >= 0 else -1*latitude 
+        rad2deg = 180/pi
         earthRadius = 6378160.0
-        latitudeCorrection = 0.5 * (1 + cos(latitude * math.pi / 180))
+        latitudeCorrection = 0.5 * (1 + cos(lat * pi / 180))
         return (distance / (earthRadius * latitudeCorrection) * rad2deg)
 
 
@@ -163,8 +164,8 @@ class DistanceFilter(BaseFilterBackend):
             raise ParseError("Not valid distance string in parameter %s."
                              % self.dist_param)
 
-        if (point.srid == 4326): # or other projections in degrees
+        if (point.srid != 3857): # can use distance if srid is in meters. otherwise convert here
             # Warning:  assumes that the point is (lon,lat)
-            dist = distToDeg(dist, point[1])
+            dist = self.distToDeg(dist, point[1])
             
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
