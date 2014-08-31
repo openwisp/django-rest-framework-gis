@@ -24,7 +24,7 @@ __all__ = [
     'GeometryFilter',
     'GeoFilterSet',
     'TMSTileFilter',
-    'DistanceFilter'
+    'DistanceToPointFilter'
 ]
 
 
@@ -99,7 +99,7 @@ class TMSTileFilter(InBBOXFilter):
         return bbox
 
 
-class DistanceFilter(BaseFilterBackend):
+class DistanceToPointFilter(BaseFilterBackend):
     dist_param = 'dist'
     point_param = 'point'  # The URL query parameter which contains the 
 
@@ -122,17 +122,21 @@ class DistanceFilter(BaseFilterBackend):
         """
         distance = distance in meters
         latitude = latitude in degrees 
-        As one moves away from the equator towards a pole, one degree of longitude is 
-        multiplied by the cosine of the latitude, decreasing the distance. 
+
+        at the equator, the distance of one degree is equal in latitude and longitude.
+        at higher latitudes, a degree longitude is shorter in length, proportional to cos(latitude)
         http://en.wikipedia.org/wiki/Decimal_degrees
 
-        There's no good solution here, the distance/ degree is quite constant N/S around the earth,
-        but varies over a huge range E/W. 
-        Split the difference: I'm going to average the the degrees latitude and degrees longitude 
-        corresponding to the given distance. This will be too short N/S and too long E/W, 
-        but less so than no correction. 
+        This function is part of a distance filter where the database 'distance' is in degrees.
+        There's no good single-valued answer to this problem. 
+        The distance/ degree is quite constant N/S around the earth (latitude), 
+        but varies over a huge range E/W (longitude).
 
-        Errors are < 25 percent for latitude < 70 degrees N/S.
+        Split the difference: I'm going to average the the degrees latitude and degrees longitude 
+        corresponding to the given distance. At high latitudes, this will be too short N/S 
+        and too long E/W. It splits the errors between the two axes.  
+
+        Errors are < 25 percent for latitudes < 70 degrees N/S.
         """
         #   d * (180 / pi) / earthRadius   ==> degrees longitude
         #   (degrees longitude) / cos(latitude)  ==> degrees latitude

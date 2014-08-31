@@ -25,7 +25,7 @@ class TestRestFrameworkGis(TestCase):
         self.location_overlaps_bbox_list_url = reverse('api_geojson_location_list_overlaps_bbox_filter')
         self.location_contained_in_tile_list_url = reverse('api_geojson_location_list_contained_in_tile_filter')
         self.location_overlaps_tile_list_url = reverse('api_geojson_location_list_overlaps_tile_filter')
-        self.location_within_distance_list_url = reverse('api_geojson_location_list_within_distance_filter')
+        self.location_within_distance_of_point_list_url = reverse('api_geojson_location_list_within_distance_of_point_filter')
         self.geos_error_message = 'Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'
         self.geojson_contained_in_geometry = reverse('api_geojson_contained_in_geometry')
     
@@ -519,7 +519,7 @@ class TestRestFrameworkGis(TestCase):
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)
 
-    def test_DistanceFilter_filtering(self):
+    def test_DistanceToPointFilter_filtering(self):
         """
         Checks that the DistancFilter returns only objects within the given distance of the 
         given geometry defined by the URL parameters
@@ -633,15 +633,15 @@ class TestRestFrameworkGis(TestCase):
         ggpark.save()
     
         # Make sure we only get back the ones within the distance
-        response = self.client.get(self.location_within_distance_list_url + url_params)
+        response = self.client.get(self.location_within_distance_of_point_list_url + url_params)
         self.assertEqual(len(response.data['features']), 1)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
 
+        # Make sure we get back all the ones within the distance
         distance = 7000
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
-        # Make sure we only get back the ones within the distance
-        response = self.client.get(self.location_within_distance_list_url + url_params)
+        response = self.client.get(self.location_within_distance_of_point_list_url + url_params)
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (ggpark.name, treasure_island.name), True)

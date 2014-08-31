@@ -64,14 +64,14 @@ class GeojsonLocationOverlapsTileList(GeojsonLocationContainedInTileList):
 
 geojson_location_overlaps_tile_list = GeojsonLocationOverlapsTileList.as_view()
 
-class GeojsonLocationWithinDistanceList(generics.ListAPIView):
+class GeojsonLocationWithinDistanceOfPointList(generics.ListAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
     distance_filter_field = 'geometry'
-    filter_backends = (DistanceFilter,)
+    filter_backends = (DistanceToPointFilter,)
 
-geojson_location_within_distance_list = GeojsonLocationWithinDistanceList.as_view()
+geojson_location_within_distance_of_point_list = GeojsonLocationWithinDistanceOfPointList.as_view()
 
 
 class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
