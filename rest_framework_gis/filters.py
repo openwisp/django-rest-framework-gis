@@ -149,9 +149,8 @@ class DistanceToPointFilter(BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         filter_field = getattr(view, 'distance_filter_field', None)
-
+        convert_distance_input = getattr(view, 'distance_filter_convert_meters', False)
         geoDjango_filter = 'dwithin'  # use dwithin for points
-        # could extend to geometries with geom.buffer and overlaps/contains
 
         if not filter_field:
             return queryset
@@ -168,7 +167,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             raise ParseError("Not valid distance string in parameter %s."
                              % self.dist_param)
 
-        if (point.srid != 3857): # can use distance if srid is in meters. otherwise convert here
+        if (convert_distance_input): 
             # Warning:  assumes that the point is (lon,lat)
             dist = self.distToDeg(dist, point[1])
             

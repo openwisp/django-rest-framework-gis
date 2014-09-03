@@ -26,6 +26,7 @@ class TestRestFrameworkGis(TestCase):
         self.location_contained_in_tile_list_url = reverse('api_geojson_location_list_contained_in_tile_filter')
         self.location_overlaps_tile_list_url = reverse('api_geojson_location_list_overlaps_tile_filter')
         self.location_within_distance_of_point_list_url = reverse('api_geojson_location_list_within_distance_of_point_filter')
+        self.location_within_degrees_of_point_list_url = reverse('api_geojson_location_list_within_degrees_of_point_filter')
         self.geos_error_message = 'Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'
         self.geojson_contained_in_geometry = reverse('api_geojson_contained_in_geometry')
     
@@ -646,6 +647,15 @@ class TestRestFrameworkGis(TestCase):
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (ggpark.name, treasure_island.name), True)
 
+        
+        
+        # Make sure we only get back the ones within the distance
+        degrees = .05
+        url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (degrees, point_on_alcatraz[0], point_on_alcatraz[1])
+        response = self.client.get(self.location_within_degrees_of_point_list_url + url_params)
+        self.assertEqual(len(response.data['features']), 1)
+        for result in response.data['features']:
+            self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
     
     def test_GeometryField_filtering(self):
         """ Checks that the GeometryField allows sane filtering. """

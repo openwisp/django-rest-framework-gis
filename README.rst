@@ -294,6 +294,41 @@ For more information on configuration options see InBBOXFilter.
 Note that the tile address start in the upper left, not the lower left origin used by some 
 implementations.
 
+DistanceToPointFilter
+~~~~~~~~~~~~
+
+Provides a ``DistanceToPointFilter``, which is a subclass of DRF
+``BaseFilterBackend``. Filters a queryset to only those instances within
+a certain distance of a given point.
+
+``views.py:``
+
+.. code-block:: python
+
+    from rest_framework_gis.filters import DistanceToPointFilter
+
+    class LocationList(ListAPIView):
+
+        queryset = models.Location.objects.all()
+        serializer_class = serializers.LocationSerializer
+        distance_filter_field = 'geometry'
+        filter_backends = (DistanceToPointFilter, ) 
+        bbox_filter_include_overlapping = True # Optional
+
+We can then filter in the URL, using a distance and a point in (lon, lat) format. The
+distance can be given in meters or in degrees. 
+
+eg:.
+``/location/?dist=4000&point=-122.4862,37.7694&format=json`` 
+which is equivalant to filtering within 4000 meters of the point  (-122.4862, 37.7694).
+
+By default, DistanceToPointFilter will pass the 'distance' in the URL directly to the database for the search.
+The effect depends on the srid of the database in use. If geo data is indexed in meters (srid 3875, aka 900913), a
+distance in meters can be passed in directly without conversion. For lat-lon databases such as srid 4326, 
+which is indexed in degrees, the 'distance' will be interpreted as degrees. Set the flag, 'distance_filter_convert_meters' 
+to 'True' in order to convert an input distance in meters to degrees. This conversion is approximate, and the errors
+at latitudes > 60 degrees are > 25%. 
+
 Projects using this package
 --------------------------
 
