@@ -118,7 +118,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         return p
 
     
-    def distToDeg(self, distance, latitude):
+    def dist_to_deg(self, distance, latitude):
         """
         distance = distance in meters
         latitude = latitude in degrees 
@@ -136,7 +136,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         corresponding to the given distance. At high latitudes, this will be too short N/S 
         and too long E/W. It splits the errors between the two axes.  
 
-        Errors are < 25 percent for latitudes < 70 degrees N/S.
+        Errors are < 25 percent for latitudes < 60 degrees N/S.
         """
         #   d * (180 / pi) / earthRadius   ==> degrees longitude
         #   (degrees longitude) / cos(latitude)  ==> degrees latitude
@@ -169,6 +169,6 @@ class DistanceToPointFilter(BaseFilterBackend):
 
         if (convert_distance_input): 
             # Warning:  assumes that the point is (lon,lat)
-            dist = self.distToDeg(dist, point[1])
+            dist = self.dist_to_deg(dist, point[1])
             
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
