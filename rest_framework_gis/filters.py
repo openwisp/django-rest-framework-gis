@@ -118,7 +118,6 @@ class DistanceToPointFilter(BaseFilterBackend):
         p = Point(x,y)
         return p
 
-    
     def dist_to_deg(self, distance, latitude):
         """
         distance = distance in meters
@@ -146,8 +145,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         earthRadius = 6378160.0
         latitudeCorrection = 0.5 * (1 + cos(lat * pi / 180))
         return (distance / (earthRadius * latitudeCorrection) * rad2deg)
-
-
+    
     def filter_queryset(self, request, queryset, view):
         filter_field = getattr(view, 'distance_filter_field', None)
         convert_distance_input = getattr(view, 'distance_filter_convert_meters', False)

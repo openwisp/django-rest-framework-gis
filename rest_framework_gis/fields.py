@@ -38,7 +38,7 @@ class GeometryField(WritableField):
 
         try:
             return GEOSGeometry(value)
-        except (ValueError, GEOSException, OGRException, TypeError) as e:
+        except (ValueError, GEOSException, OGRException, TypeError):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
 
         return value

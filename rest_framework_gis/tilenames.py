@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-------------------------------------------------------
+# -------------------------------------------------------
 # Translates between lat/long and the slippy-map tile
 # numbering scheme
 # 
@@ -7,11 +7,12 @@
 # 
 # Written by Oliver White, 2007
 # This file is public-domain
-#-------------------------------------------------------
-from math import pi, atan, sinh, degrees, pow
+# -------------------------------------------------------
+from math import pi, atan, sinh, degrees, pow as math_pow
+
 
 def num_tiles(z):
-    return(pow(2,z))
+    return(math_pow(2,z))
 
 
 def lat_edges(y,z):

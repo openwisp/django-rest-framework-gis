@@ -529,11 +529,11 @@ class TestRestFrameworkGis(TestCase):
         
         # Filter parameters
         distance = 5000 #meters
-        point_inside_ggpark = [ -122.49034881591797, 37.76949349270407 ]
-        point_on_golden_gate_bridge = [ -122.47894, 37.8199 ]
-        point_on_alcatraz = [-122.4222, 37.82667 ]
-        point_on_treasure_island = [ -122.3692, 37.8244 ]
-        point_on_angel_island = [ -122.4326, 37.86091 ]
+        point_inside_ggpark = [-122.49034881591797, 37.76949349270407]
+        point_on_golden_gate_bridge = [-122.47894, 37.8199]
+        point_on_alcatraz = [-122.4222, 37.82667]
+        point_on_treasure_island = [-122.3692, 37.8244]
+        point_on_angel_island = [-122.4326, 37.86091]
         
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
 
@@ -634,7 +634,7 @@ class TestRestFrameworkGis(TestCase):
         ggpark.save()
     
         # Make sure we only get back the ones within the distance
-        response = self.client.get(self.location_within_distance_of_point_list_url + url_params)
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
         self.assertEqual(len(response.data['features']), 1)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
@@ -642,12 +642,10 @@ class TestRestFrameworkGis(TestCase):
         # Make sure we get back all the ones within the distance
         distance = 7000
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
-        response = self.client.get(self.location_within_distance_of_point_list_url + url_params)
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (ggpark.name, treasure_island.name), True)
-
-        
         
         # Make sure we only get back the ones within the distance
         degrees = .05

@@ -64,6 +64,7 @@ class GeojsonLocationOverlapsTileList(GeojsonLocationContainedInTileList):
 
 geojson_location_overlaps_tile_list = GeojsonLocationOverlapsTileList.as_view()
 
+
 class GeojsonLocationWithinDistanceOfPointList(generics.ListAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
@@ -73,6 +74,7 @@ class GeojsonLocationWithinDistanceOfPointList(generics.ListAPIView):
     filter_backends = (DistanceToPointFilter,)
 
 geojson_location_within_distance_of_point_list = GeojsonLocationWithinDistanceOfPointList.as_view()
+
 
 class GeojsonLocationWithinDegreesOfPointList(GeojsonLocationWithinDistanceOfPointList):
     distance_filter_convert_meters = False #Default setting
