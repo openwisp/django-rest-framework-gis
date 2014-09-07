@@ -299,7 +299,7 @@ Note that the tile address start in the upper left, not the lower left origin us
 implementations.
 
 DistanceToPointFilter
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 Provides a ``DistanceToPointFilter``, which is a subclass of DRF
 ``BaseFilterBackend``. Filters a queryset to only those instances within
