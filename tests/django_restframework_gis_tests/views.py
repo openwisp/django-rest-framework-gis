@@ -48,6 +48,7 @@ class GeojsonLocationOverlapsBBoxList(GeojsonLocationContainedInBBoxList):
 
 geojson_location_overlaps_bbox_list = GeojsonLocationOverlapsBBoxList.as_view()
 
+
 class GeojsonLocationContainedInTileList(generics.ListAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
@@ -57,10 +58,27 @@ class GeojsonLocationContainedInTileList(generics.ListAPIView):
 
 geojson_location_contained_in_tile_list = GeojsonLocationContainedInTileList.as_view()
 
+
 class GeojsonLocationOverlapsTileList(GeojsonLocationContainedInTileList):
     bbox_filter_include_overlapping = True
 
 geojson_location_overlaps_tile_list = GeojsonLocationOverlapsTileList.as_view()
+
+class GeojsonLocationWithinDistanceOfPointList(generics.ListAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureSerializer
+    distance_filter_convert_meters = True
+    queryset = Location.objects.all()
+    distance_filter_field = 'geometry'
+    filter_backends = (DistanceToPointFilter,)
+
+geojson_location_within_distance_of_point_list = GeojsonLocationWithinDistanceOfPointList.as_view()
+
+class GeojsonLocationWithinDegreesOfPointList(GeojsonLocationWithinDistanceOfPointList):
+    distance_filter_convert_meters = False #Default setting
+
+geojson_location_within_degrees_of_point_list = GeojsonLocationWithinDegreesOfPointList.as_view()
+
 
 class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location

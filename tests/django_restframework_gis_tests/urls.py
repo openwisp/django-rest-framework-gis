@@ -17,4 +17,6 @@ urlpatterns = patterns('django_restframework_gis_tests.views',
     url(r'^filters/contained_in_geometry$', 'geojson_contained_in_geometry', name='api_geojson_contained_in_geometry'),
     url(r'^filters/contained_in_tile$', 'geojson_location_contained_in_tile_list', name='api_geojson_location_list_contained_in_tile_filter'),
     url(r'^filters/overlaps_tile$', 'geojson_location_overlaps_tile_list', name='api_geojson_location_list_overlaps_tile_filter'),
+    url(r'^filters/within_distance_of_point$', 'geojson_location_within_distance_of_point_list', name='api_geojson_location_list_within_distance_of_point_filter'),
+    url(r'^filters/within_degrees_of_point$', 'geojson_location_within_degrees_of_point_list', name='api_geojson_location_list_within_degrees_of_point_filter'),
 )
