@@ -18,9 +18,10 @@ Django Rest Framework Compatibility
 
 ===============  ============================ ==================== ==================
 DRF-gis version  DRF version                  Django version       Python version
-**0.5**          higher than **2.3.14**       **1.5.x** to **1.7** **2.6** to **3.4**
-**0.4**          higher than **2.3.14**       **1.5.x** to **1.7** **2.6** to **3.4**
-**0.3**          higher than **2.3.14**       **1.5.x**, **1.6.x** **2.6**, **2.7**
+**0.6**          **2.4.3**                    **1.5.x** to **1.7** **2.6** to **3.4**
+**0.5**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6** to **3.4**
+**0.4**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6** to **3.4**
+**0.3**          from **2.3.14** to **2.4.2** **1.5.x**, **1.6.x** **2.6**, **2.7**
 **0.2**          from **2.2.2** to **2.3.13** **1.5.x**, **1.6.x** **2.6**, **2.7**
 ===============  ============================ ==================== ==================
 
@@ -249,20 +250,20 @@ a certain bounding box.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (InBBoxFilter, ) 
+        filter_backends = (InBBoxFilter, )
         bbox_filter_include_overlapping = True # Optional
 
-We can then filter in the URL, using Bounding Box format (min Lon, min 
-Lat, max Lon, max Lat), and we can search for instances within the 
+We can then filter in the URL, using Bounding Box format (min Lon, min
+Lat, max Lon, max Lat), and we can search for instances within the
 bounding box, e.g.:
 ``/location/?in_bbox=-90,29,-89,35``.
 
-By default, InBBoxFilter will only return those instances entirely 
-within the stated bounding box. To include those instances which overlap 
-the bounding box, include ``bbox_filter_include_overlapping = True`` 
+By default, InBBoxFilter will only return those instances entirely
+within the stated bounding box. To include those instances which overlap
+the bounding box, include ``bbox_filter_include_overlapping = True``
 in your view.
 
-Note that if you are using other filters, you'll want to include your 
+Note that if you are using other filters, you'll want to include your
 other filter backend in your view. For example:
 
 ``filter_backends = (InBBoxFilter, DjangoFilterBackend,)``
@@ -271,7 +272,7 @@ TMSTileFilter
 ~~~~~~~~~~~~~
 
 Provides a ``TMSTileFilter``, which is a subclass of ``InBBoxFilter``.
-Filters a queryset to only those instances within a bounding box defined 
+Filters a queryset to only those instances within a bounding box defined
 by a `TMS tile <http://wiki.openstreetmap.org/wiki/TMS>`__ address.
 
 ``views.py:``
@@ -285,17 +286,17 @@ by a `TMS tile <http://wiki.openstreetmap.org/wiki/TMS>`__ address.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (TMSTileFilter, ) 
+        filter_backends = (TMSTileFilter, )
         bbox_filter_include_overlapping = True # Optional
 
-We can then filter in the URL, using TMS tile addresses in the zoom/x/y format, 
+We can then filter in the URL, using TMS tile addresses in the zoom/x/y format,
 eg:.
 ``/location/?tile=8/100/200``
 which is equivalant to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261).
 
 For more information on configuration options see InBBoxFilter.
 
-Note that the tile address start in the upper left, not the lower left origin used by some 
+Note that the tile address start in the upper left, not the lower left origin used by some
 implementations.
 
 DistanceToPointFilter
@@ -316,22 +317,22 @@ a certain distance of a given point.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         distance_filter_field = 'geometry'
-        filter_backends = (DistanceToPointFilter, ) 
+        filter_backends = (DistanceToPointFilter, )
         bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using a distance and a point in (lon, lat) format. The
-distance can be given in meters or in degrees. 
+distance can be given in meters or in degrees.
 
 eg:.
-``/location/?dist=4000&point=-122.4862,37.7694&format=json`` 
+``/location/?dist=4000&point=-122.4862,37.7694&format=json``
 which is equivalant to filtering within 4000 meters of the point  (-122.4862, 37.7694).
 
 By default, DistanceToPointFilter will pass the 'distance' in the URL directly to the database for the search.
 The effect depends on the srid of the database in use. If geo data is indexed in meters (srid 3875, aka 900913), a
-distance in meters can be passed in directly without conversion. For lat-lon databases such as srid 4326, 
-which is indexed in degrees, the 'distance' will be interpreted as degrees. Set the flag, 'distance_filter_convert_meters' 
+distance in meters can be passed in directly without conversion. For lat-lon databases such as srid 4326,
+which is indexed in degrees, the 'distance' will be interpreted as degrees. Set the flag, 'distance_filter_convert_meters'
 to 'True' in order to convert an input distance in meters to degrees. This conversion is approximate, and the errors
-at latitudes > 60 degrees are > 25%. 
+at latitudes > 60 degrees are > 25%.
 
 Projects using this package
 ---------------------------
