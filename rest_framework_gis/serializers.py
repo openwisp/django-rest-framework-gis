@@ -7,6 +7,11 @@ from .fields import GeometryField
 
 
 class MapGeometryField(dict):
+    def __contains__(self, key):
+        if not super(MapGeometryField, self).__contains__(key):
+            return issubclass(key, django_GeometryField)
+        return True
+
     def __getitem__(self, key):
         if issubclass(key, django_GeometryField):
             return GeometryField
@@ -35,12 +40,12 @@ class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
     """
-    A subclass of GeoModelSerializer 
+    A subclass of GeoModelSerializer
     that outputs geojson-ready data as
     features and feature collections
     """
     _options_class = GeoFeatureModelSerializerOptions
-    
+
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
         if self.opts.geo_field is None:
@@ -62,14 +67,14 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         """
         ret = self._dict_class()
         ret.fields = {}
-        
+
         # geo structure
         if self.opts.id_field is not False:
             ret["id"] = ""
         ret["type"] = "Feature"
         ret["geometry"] = {}
         ret["properties"] = self._dict_class()
-        
+
         for field_name, field in self.fields.items():
             if field.read_only and obj is None:
                 continue
@@ -79,18 +84,18 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             method = getattr(self, 'transform_%s' % field_name, None)
             if callable(method):
                 value = method(obj, value)
-            
+
             if self.opts.id_field is not False and field_name == self.opts.id_field:
                 ret["id"] = value
             elif field_name == self.opts.geo_field:
                 ret["geometry"] = value
             elif not getattr(field, 'write_only', False):
                 ret["properties"][key] = value
-            
+
             ret.fields[key] = self.augment_field(field, field_name, key, value)
-        
+
         return ret
-    
+
     def _format_data(self):
         """
         Add GeoJSON compatible formatting to a serialized queryset list
@@ -102,22 +107,22 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             self._formatted_data["features"] = _data
         else:
             self._formatted_data = _data
-    
+
         return self._formatted_data
-    
+
     @property
     def data(self):
         """
         Returns the serialized data on the serializer.
         """
         return self._format_data()
-    
+
     def from_native(self, data, files):
         """
         Override the parent method to first remove the GeoJSON formatting
         """
         self._errors = {}
-        
+
         if data is not None or files is not None:
             if 'features' in data:
                 _unformatted_data = []
@@ -134,12 +139,12 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                 _unformatted_data = _dict
             else:
                 _unformatted_data = data
-            
+
             attrs = self.restore_fields(_unformatted_data, files)
             if attrs is not None:
                 attrs = self.perform_validation(attrs)
         else:
             self._errors['non_field_errors'] = ['No input provided']
-        
+
         if not self._errors:
             return self.restore_object(attrs, instance=getattr(self, 'object', None))
