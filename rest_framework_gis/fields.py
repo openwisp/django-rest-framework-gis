@@ -42,7 +42,7 @@ class GeometryField(WritableField):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
 
         return value
-    
+
     def widget_html(self):
         if not self.widget:
             return ''
@@ -51,4 +51,9 @@ class GeometryField(WritableField):
         if 'id' not in self.widget.attrs:
             attrs['id'] = self._name
 
-        return self.widget.render(self._name, json.dumps(self._value, indent=4), attrs=attrs)
+        if self._value:
+            content = json.dumps(self._value, indent=4)
+        else:
+            content = None
+
+        return self.widget.render(self._name, content, attrs=attrs)
