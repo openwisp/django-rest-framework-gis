@@ -20,7 +20,7 @@ setup(
         "djangorestframework>=2.3.14"
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Topic :: Internet :: WWW/HTTP',
         'Intended Audience :: Developers',
