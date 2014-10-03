@@ -17,7 +17,7 @@ from .models import Location
 
 
 class TestRestFrameworkGis(TestCase):
-    
+
     def setUp(self):
         self.location_list_url = reverse('api_location_list')
         self.geojson_location_list_url = reverse('api_geojson_location_list')
@@ -29,44 +29,44 @@ class TestRestFrameworkGis(TestCase):
         self.location_within_degrees_of_point_list_url = reverse('api_geojson_location_list_within_degrees_of_point_filter')
         self.geos_error_message = 'Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'
         self.geojson_contained_in_geometry = reverse('api_geojson_contained_in_geometry')
-    
+
     def _create_locations(self):
         self.l1 = Location.objects.create(id=1, name='l1', slug='l1', geometry='POINT (13.0078125000020002 42.4234565179379999)')
         self.l2 = Location.objects.create(id=2, name='l2', slug='l2', geometry='POINT (12.0078125000020002 43.4234565179379999)')
-    
+
     def test_get_location_list(self):
         response = self.client.get(self.location_list_url)
         self.assertEqual(response.status_code, 200)
-    
+
     def test_post_location_list_geojson(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "geojson input test",
             "geometry": {
-                "type": "GeometryCollection", 
+                "type": "GeometryCollection",
                 "geometries": [
                     {
-                        "type": "Point", 
+                        "type": "Point",
                         "coordinates": [
-                            12.492324113849, 
+                            12.492324113849,
                             41.890307434153
                         ]
                     }
                 ]
             }
         }
-        
+
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         data = {
             "name": "geojson input test2",
             "geometry": {
-                "type": "Point", 
+                "type": "Point",
                 "coordinates": [
-                    12.492324113849, 
+                    12.492324113849,
                     41.890307434153
                 ]
             }
@@ -74,44 +74,44 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 2)
-    
+
     def test_post_location_list_geojson_as_multipartformdata(self):
         """ emulate sending geojson string in webform """
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "geojson input test",
             "geometry": json.dumps({
-                "type": "GeometryCollection", 
+                "type": "GeometryCollection",
                 "geometries": [
                     {
-                        "type": "Point", 
+                        "type": "Point",
                         "coordinates": [
-                            12.492324113849, 
+                            12.492324113849,
                             41.890307434153
                         ]
                     }
                 ]
             })
         }
-        
+
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-    
+
     def test_post_HTML_browsable_api(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "geojson input test2",
             "slug": "prova",
             "geometry": json.dumps({
-                "type": "GeometryCollection", 
+                "type": "GeometryCollection",
                 "geometries": [
                     {
-                        "type": "Point", 
+                        "type": "Point",
                         "coordinates": [
-                            12.492324113849, 
+                            12.492324113849,
                             41.890307434153
                         ]
                     }
@@ -121,14 +121,14 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.post(self.location_list_url, data, HTTP_ACCEPT='text/html')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         location = Location.objects.all()[0]
         self.assertEqual(location.name, 'geojson input test2')
         self.assertEqual(location.slug, 'prova')
-    
+
     def test_post_location_list_WKT(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             'name': 'WKT input test',
             'geometry': 'POINT (12.492324113849 41.890307434153)'
@@ -136,10 +136,10 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-    
+
     def test_post_location_list_WKT_as_json(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             'name': 'WKT input test',
             'geometry': 'POINT (12.492324113849 41.890307434153)'
@@ -147,24 +147,24 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-    
+
     def test_post_location_list_empty_geometry(self):
         data = { 'name': 'empty input test' }
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-        
+
         data = { 'name': 'empty input test', 'geometry': '' }
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-        
+
         data = { 'name': 'empty input test' }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-        
+
         data = { 'name': 'empty input test', 'geometry': '' }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-    
+
     def test_post_location_list_invalid_WKT(self):
         data = {
             'name': 'WKT wrong input test',
@@ -174,30 +174,30 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Location.objects.count(), 0)
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-        
+
         # repeat as multipart form data
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-        
+
         data = {
             'name': 'I AM MODERATELY WRONG',
             'geometry': 'POINT (12.492324113849, 41.890307434153)'
         }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-        
+
         # repeat as multipart form data
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-    
+
     def test_post_location_list_invalid_geojson(self):
         data = {
             "name": "quite wrong",
             "geometry": {
-                "type": "ARRRR", 
+                "type": "ARRRR",
                 "dasdas": [
                     {
-                        "STtype": "PTUAMAoint", 
+                        "STtype": "PTUAMAoint",
                         "NNAare":"rgon"
                     }
                 ]
@@ -205,32 +205,32 @@ class TestRestFrameworkGis(TestCase):
         }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-        
+
         data = {
             "name": "very wrong",
             "geometry": ['a', 'b', 'c']
         }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-        
+
         data = {
             "name": "very wrong",
             "geometry": False
         }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-        
+
         data = {
             "name": "very wrong",
             "geometry": { "value": { "nested": ["yo"] } }
         }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-    
+
     def test_geojson_format(self):
         """ test geojson format """
         location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
-        
+
         url = reverse('api_geojson_location_details', args=[location.id])
         response = self.client.get(url)
         self.assertEqual(response.data['type'], "Feature")
@@ -238,117 +238,117 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['properties']['fancy_name'], "Kool geojson test")
         self.assertEqual(response.data['geometry']['type'], "Point")
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
-        
+
         response = self.client.get(url, HTTP_ACCEPT='text/html')
         self.assertContains(response, "Kool geojson test")
-    
+
     def test_geojson_id_attribute(self):
         location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
-        
+
         url = reverse('api_geojson_location_details', args=[location.id])
         response = self.client.get(url)
         self.assertEqual(response.data['id'], location.id)
-    
+
     def test_geojson_id_attribute_slug(self):
         location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
-        
+
         url = reverse('api_geojson_location_slug_details', args=[location.slug])
         response = self.client.get(url)
         self.assertEqual(response.data['id'], location.slug)
-    
+
     def test_geojson_false_id_attribute_slug(self):
         location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
-        
+
         url = reverse('api_geojson_location_falseid_details', args=[location.id])
         response = self.client.get(url)
         with self.assertRaises(KeyError):
             response.data['id']
-    
+
     def test_post_geojson_location_list(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
-            "type": "Feature", 
+            "type": "Feature",
             "properties": {
                 "name": "point?",
                 "details": "ignore this"
-            }, 
+            },
             "geometry": {
-                "type": "Point", 
+                "type": "Point",
                 "coordinates": [
-                    10.1, 
+                    10.1,
                     10.1
                 ]
             }
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         url = reverse('api_geojson_location_details', args=[Location.objects.order_by('-id')[0].id])
         response = self.client.get(url)
         self.assertEqual(response.data['properties']['name'], "point?")
         self.assertEqual(response.data['geometry']['type'], "Point")
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
         self.assertNotEqual(response.data['properties']['details'], "ignore this")
-    
+
     def test_post_geojson_location_list_HTML(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
-            "type": "Feature", 
+            "type": "Feature",
             "properties": {
                 "name": "point?",
                 "details": "ignore this"
-            }, 
+            },
             "geometry": {
-                "type": "Point", 
+                "type": "Point",
                 "coordinates": [
-                    10.1, 
+                    10.1,
                     10.1
                 ]
             }
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json', HTTP_ACCEPT='text/html')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         url = reverse('api_geojson_location_details', args=[Location.objects.order_by('-id')[0].id])
         response = self.client.get(url)
         self.assertEqual(response.data['properties']['name'], "point?")
         self.assertEqual(response.data['geometry']['type'], "Point")
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
         self.assertNotEqual(response.data['properties']['details'], "ignore this")
-    
+
     def test_post_invalid_geojson_location_list(self):
         data = {
-            "type": "Feature", 
+            "type": "Feature",
             "properties": {
                 "details": "ignore this"
-            }, 
+            },
             "geometry": {
-                "type": "Point", 
+                "type": "Point",
                 "coordinates": [
-                    10.1, 
+                    10.1,
                     10.1
                 ]
             }
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Location.objects.count(), 0)
         self.assertEqual(response.data['name'][0], "This field is required.")
-        
+
         data = {
-            "type": "Feature", 
+            "type": "Feature",
             "properties": {
                 "name": "point?",
-            }, 
+            },
             "geometry": {
-                "type": "Point", 
+                "type": "Point",
                 "WRONG": {}
             }
         }
@@ -356,66 +356,66 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(Location.objects.count(), 0)
         self.assertEqual(response.data['geometry'][0], self.geos_error_message)
-    
+
     def test_post_geojson_location_list_WKT(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
-            "type": "Feature", 
+            "type": "Feature",
             "properties": {
                 "name": "point?",
-            }, 
+            },
             "geometry": "POINT (10.1 10.1)"
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         url = reverse('api_geojson_location_details', args=[Location.objects.order_by('-id')[0].id])
         response = self.client.get(url)
         self.assertEqual(response.data['properties']['name'], "point?")
         self.assertEqual(response.data['geometry']['type'], "Point")
         self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
-    
+
     def test_geofeatured_model_serializer_compatible_with_geomodel_serializer(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "geojson input test",
             "geometry": {
-                "type": "GeometryCollection", 
+                "type": "GeometryCollection",
                 "geometries": [
                     {
-                        "type": "Point", 
+                        "type": "Point",
                         "coordinates": [
-                            12.492324113849, 
+                            12.492324113849,
                             41.890307434153
                         ]
                     }
                 ]
             }
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-    
+
     def test_geofeatured_model_post_as_multipartformdata(self):
         """ emulate sending geojson string in webform """
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "geojson input test",
             "geometry": json.dumps({
-                "type": "Point", 
+                "type": "Point",
                 "coordinates": [
-                    12.492324113849, 
+                    12.492324113849,
                     41.890307434153
                 ]
             })
         }
-        
+
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
@@ -427,44 +427,44 @@ class TestRestFrameworkGis(TestCase):
         in the bounding box given by the in_bbox URL parameter
         """
         self.assertEqual(Location.objects.count(), 0)
-        
+
         # Bounding box
         xmin = 0
         ymin = 0
         xmax = 10
         ymax = 10
-        
+
         url_params = '?in_bbox=%d,%d,%d,%d&format=json' % (xmin, ymin, xmax, ymax)
-        
+
         # Square with bottom left at (1,1), top right at (9,9)
         isContained = Location()
         isContained.name = 'isContained'
         isContained.geometry = Polygon(((1,1),(9,1),(9,9),(1,9),(1,1)))
         isContained.save()
-        
+
         isEqualToBounds = Location()
         isEqualToBounds.name = 'isEqualToBounds'
         isEqualToBounds.geometry = Polygon(((0,0),(10,0),(10,10),(0,10),(0,0)))
         isEqualToBounds.save()
-        
+
         # Rectangle with bottom left at (-1,1), top right at (5,5)
         overlaps = Location()
         overlaps.name = 'overlaps'
         overlaps.geometry = Polygon(((-1,1),(5,1),(5,5),(-1,5),(-1,1)))
         overlaps.save()
-        
+
         # Rectangle with bottom left at (-3,-3), top right at (-1,2)
         nonIntersecting = Location()
         nonIntersecting.name = 'nonIntersecting'
         nonIntersecting.geometry = Polygon(((-3,-3),(-1,-3),(-1,2),(-3,2),(-3,-3)))
         nonIntersecting.save()
-        
+
         # Make sure we only get back the ones strictly contained in the bounding box
         response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds'), True)
-        
+
         # Make sure we get overlapping results for the view which allows bounding box overlaps.
         response = self.client.get(self.location_overlaps_bbox_list_url + url_params)
         self.assertEqual(len(response.data['features']), 3)
@@ -477,43 +477,43 @@ class TestRestFrameworkGis(TestCase):
         in the bounding box given by the tile URL parameter
         """
         self.assertEqual(Location.objects.count(), 0)
-        
+
         # Bounding box
         z = 1
         x = 1
         y = 0
-        
+
         url_params = '?tile=%d/%d/%d&format=json' % (z, x, y)
-        
+
         # Square with bottom left at (1,1), top right at (9,9)
         isContained = Location()
         isContained.name = 'isContained'
         isContained.geometry = Polygon(((1,1),(9,1),(9,9),(1,9),(1,1)))
         isContained.save()
-        
+
         isEqualToBounds = Location()
         isEqualToBounds.name = 'isEqualToBounds'
         isEqualToBounds.geometry = Polygon(((0,0),(0,85.05113),(180,85.05113),(180,0),(0,0)))
         isEqualToBounds.save()
-        
+
         # Rectangle with bottom left at (-1,1), top right at (5,5)
         overlaps = Location()
         overlaps.name = 'overlaps'
         overlaps.geometry = Polygon(((-1,1),(5,1),(5,5),(-1,5),(-1,1)))
         overlaps.save()
-        
+
         # Rectangle with bottom left at (-3,-3), top right at (-1,2)
         nonIntersecting = Location()
         nonIntersecting.name = 'nonIntersecting'
         nonIntersecting.geometry = Polygon(((-3,-3),(-1,-3),(-1,2),(-3,2),(-3,-3)))
         nonIntersecting.save()
-        
+
         # Make sure we only get back the ones strictly contained in the bounding box
         response = self.client.get(self.location_contained_in_tile_list_url + url_params)
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds'), True)
-        
+
         # Make sure we get overlapping results for the view which allows bounding box overlaps.
         response = self.client.get(self.location_overlaps_tile_list_url + url_params)
         self.assertEqual(len(response.data['features']), 3)
@@ -522,11 +522,11 @@ class TestRestFrameworkGis(TestCase):
 
     def test_DistanceToPointFilter_filtering(self):
         """
-        Checks that the DistancFilter returns only objects within the given distance of the 
+        Checks that the DistancFilter returns only objects within the given distance of the
         given geometry defined by the URL parameters
         """
         self.assertEqual(Location.objects.count(), 0)
-        
+
         # Filter parameters
         distance = 5000 #meters
         point_inside_ggpark = [-122.49034881591797, 37.76949349270407]
@@ -534,7 +534,7 @@ class TestRestFrameworkGis(TestCase):
         point_on_alcatraz = [-122.4222, 37.82667]
         point_on_treasure_island = [-122.3692, 37.8244]
         point_on_angel_island = [-122.4326, 37.86091]
-        
+
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
 
         treasure_island_geojson = """{
@@ -592,14 +592,14 @@ class TestRestFrameworkGis(TestCase):
                 ]
             ]
         }"""
-        
+
         treasure_island_geom = GEOSGeometry(treasure_island_geojson)
         treasure_island = Location()
         treasure_island.name = "Treasure Island"
         treasure_island.geometry = treasure_island_geom
         treasure_island.full_clean()
         treasure_island.save()
-    
+
         ggpark_geojson = """{
             "type": "Polygon",
             "coordinates": [
@@ -632,7 +632,7 @@ class TestRestFrameworkGis(TestCase):
         ggpark.name = "Golden Gate Park"
         ggpark.geometry = ggpark_geom
         ggpark.save()
-    
+
         # Make sure we only get back the ones within the distance
         response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
         self.assertEqual(len(response.data['features']), 1)
@@ -646,7 +646,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (ggpark.name, treasure_island.name), True)
-        
+
         # Make sure we only get back the ones within the distance
         degrees = .05
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (degrees, point_on_alcatraz[0], point_on_alcatraz[1])
@@ -654,11 +654,11 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(len(response.data['features']), 1)
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
-    
+
     def test_GeometryField_filtering(self):
         """ Checks that the GeometryField allows sane filtering. """
         self.assertEqual(Location.objects.count(), 0)
-    
+
         treasure_island_geojson = """{
             "type": "Polygon",
             "coordinates": [
@@ -714,14 +714,14 @@ class TestRestFrameworkGis(TestCase):
                 ]
             ]
         }"""
-        
+
         treasure_island_geom = GEOSGeometry(treasure_island_geojson)
         treasure_island = Location()
         treasure_island.name = "Treasure Island"
         treasure_island.geometry = treasure_island_geom
         treasure_island.full_clean()
         treasure_island.save()
-    
+
         ggpark_geojson = """{
             "type": "Polygon",
             "coordinates": [
@@ -754,76 +754,76 @@ class TestRestFrameworkGis(TestCase):
         ggpark.name = "Golden Gate Park"
         ggpark.geometry = ggpark_geom
         ggpark.save()
-    
+
         point_inside_ggpark_geojson = """{ "type": "Point", "coordinates": [ -122.49034881591797, 37.76949349270407 ] }"""
-    
+
         try:
             quoted_param = urllib.quote(point_inside_ggpark_geojson)
         except AttributeError:
             quoted_param = urllib.parse.quote(point_inside_ggpark_geojson)
-        
+
         url_params = "?contains_properly=%s" % quoted_param
-    
+
         response = self.client.get(self.geojson_contained_in_geometry + url_params)
         self.assertEqual(len(response.data), 1)
-        
+
         geometry_response = GEOSGeometry(json.dumps(response.data[0]['geometry']))
-    
+
         self.assertTrue(geometry_response.equals_exact(ggpark_geom))
         self.assertEqual(response.data[0]['name'], ggpark.name)
-        
+
         # try without any param, should return both
         response = self.client.get(self.geojson_contained_in_geometry)
         self.assertEqual(len(response.data), 2)
-    
+
     def test_HTML_browsable_geojson_location_list(self):
         response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')
         self.assertEqual(response.status_code, 200)
-        
+
         self._create_locations()
-        
+
         response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')
         self.assertContains(response, 'l1')
         self.assertContains(response, 'l2')
-    
+
     def test_post_geojson_location_list_HTML_web_form(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "HTML test",
             "geometry": json.dumps({
-                "type": "Point", 
+                "type": "Point",
                 "coordinates": [
-                    10.1, 
+                    10.1,
                     10.1
                 ]
             })
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data, HTTP_ACCEPT='text/html')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         location = Location.objects.all()[0]
         self.assertEqual(location.name, "HTML test")
         self.assertEqual(location.geometry.geom_type, "Point")
-    
+
     def test_post_geojson_location_list_HTML_web_form_WKT(self):
         self.assertEqual(Location.objects.count(), 0)
-        
+
         data = {
             "name": "HTML test WKT",
             "geometry": "POINT (10.1 10.1)"
         }
-        
+
         response = self.client.post(self.geojson_location_list_url, data, HTTP_ACCEPT='text/html')
         #print response.content
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        
+
         location = Location.objects.all()[0]
         self.assertEqual(location.name, "HTML test WKT")
-    
+
     def test_geojson_HTML_widget_value(self):
         self._create_locations()
         response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')

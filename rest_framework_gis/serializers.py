@@ -50,16 +50,18 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
         if self.opts.geo_field is None:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
-        else:
-            # TODO: make sure the geo_field is a GeoDjango geometry field
-            # make sure geo_field is included in fields
-            if self.opts.exclude:
-                if self.opts.geo_field in self.opts.exclude:
-                    raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
-            if self.opts.fields:
-                if self.opts.geo_field not in self.opts.fields:
-                    self.opts.fields = self.opts.fields + (self.opts.geo_field, )
-                    self.fields = self.get_fields()
+        # make sure geo_field is included in fields
+        if self.opts.exclude:
+            if self.opts.geo_field in self.opts.exclude:
+                raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
+        if self.opts.fields:
+            if self.opts.geo_field not in self.opts.fields:
+                if type(self.opts.fields) is tuple:
+                    additional_fields = (self.opts.geo_field, )
+                else:
+                    additional_fields = [self.opts.geo_field, ]
+                self.opts.fields += additional_fields
+                self.fields = self.get_fields()
 
     def to_native(self, obj):
         """
