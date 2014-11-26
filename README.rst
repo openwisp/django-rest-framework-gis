@@ -70,7 +70,7 @@ By default, the DRF ModelSerializer will output:
         "point": "POINT(-123.0208 44.0464)"
     }
 
-In contrast, the ``GeoModelSerizalizer`` will output:
+In contrast, the ``GeoModelSerializer`` will output:
 
 .. code-block:: javascript
 
