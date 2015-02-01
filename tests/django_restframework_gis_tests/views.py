@@ -9,6 +9,7 @@ from rest_framework_gis.filters import *
 class LocationList(generics.ListCreateAPIView):
     model = Location
     serializer_class = LocationGeoSerializer
+    queryset = Location.objects.all()
     pagination_serializer_class = PaginatedLocationGeoSerializer
     paginate_by_param = 'limit'
     paginate_by = 40
@@ -19,6 +20,7 @@ location_list = LocationList.as_view()
 class LocationDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     serializer_class = LocationGeoSerializer
+    queryset = Location.objects.all()
 
 location_details = LocationDetails.as_view()
 
@@ -26,6 +28,7 @@ location_details = LocationDetails.as_view()
 class GeojsonLocationList(generics.ListCreateAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
+    queryset = Location.objects.all()
     pagination_serializer_class = PaginatedLocationGeoFeatureSerializer
     paginate_by_param = 'limit'
     paginate_by = 40
@@ -85,6 +88,7 @@ geojson_location_within_degrees_of_point_list = GeojsonLocationWithinDegreesOfPo
 class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
+    queryset = Location.objects.all()
 
 geojson_location_details = GeojsonLocationDetails.as_view()
 
@@ -93,6 +97,7 @@ class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     lookup_field = 'slug'
     serializer_class = LocationGeoFeatureSlugSerializer
+    queryset = Location.objects.all()
 
 geojson_location_slug_details = GeojsonLocationSlugDetails.as_view()
 
@@ -100,6 +105,7 @@ geojson_location_slug_details = GeojsonLocationSlugDetails.as_view()
 class GeojsonLocationFalseIDDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     serializer_class = LocationGeoFeatureFalseIDSerializer
+    queryset = Location.objects.all()
 
 geojson_location_falseid_details = GeojsonLocationFalseIDDetails.as_view()
 

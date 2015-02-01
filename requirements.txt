@@ -1,1 +1,1 @@
-djangorestframework>=2.3.14
+djangorestframework>=3.0.4
