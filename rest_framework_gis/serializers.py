@@ -1,21 +1,11 @@
+from collections import OrderedDict
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
 
-from rest_framework.serializers import ModelSerializer, ModelSerializerOptions
+from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
+from rest_framework.utils.field_mapping import ClassLookupDict
 
 from .fields import GeometryField
-
-
-class MapGeometryField(dict):
-    def __contains__(self, key):
-        if not super(MapGeometryField, self).__contains__(key):
-            return issubclass(key, django_GeometryField)
-        return True
-
-    def __getitem__(self, key):
-        if issubclass(key, django_GeometryField):
-            return GeometryField
-        return super(MapGeometryField, self).__getitem__(key)
 
 
 class GeoModelSerializer(ModelSerializer):
@@ -24,18 +14,25 @@ class GeoModelSerializer(ModelSerializer):
     for GeoDjango fields to be serialized as GeoJSON
     compatible data
     """
-    field_mapping = MapGeometryField(ModelSerializer.field_mapping)
+    _field_mapping = ClassLookupDict(dict(ModelSerializer._field_mapping.mapping.items() + {
+        django_GeometryField: GeometryField
+    }.items()))
 
 
-class GeoFeatureModelSerializerOptions(ModelSerializerOptions):
-    """
-    Options for GeoFeatureModelSerializer
-    """
-    def __init__(self, meta):
-        super(GeoFeatureModelSerializerOptions, self).__init__(meta)
-        self.geo_field = getattr(meta, 'geo_field', None)
-        # id field defaults to primary key of the model
-        self.id_field = getattr(meta, 'id_field', meta.model._meta.pk.name)
+class GeoFeatureModelListSerializer(ListSerializer):
+
+    @property
+    def data(self):
+        return super(ListSerializer, self).data
+
+    def to_representation(self, data):
+        """
+        Add GeoJSON compatible formatting to a serialized queryset list
+        """
+        ret = {}
+        ret["type"] = "FeatureCollection"
+        ret["features"] = super(GeoFeatureModelListSerializer, self).to_representation(data)
+        return ret
 
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
@@ -44,109 +41,87 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
     that outputs geojson-ready data as
     features and feature collections
     """
-    _options_class = GeoFeatureModelSerializerOptions
+
+    @classmethod
+    def many_init(cls, *args, **kwargs):
+        child_serializer = cls(*args, **kwargs)
+        list_kwargs = {'child': child_serializer}
+        list_kwargs.update(dict([
+            (key, value) for key, value in kwargs.items()
+            if key in LIST_SERIALIZER_KWARGS
+        ]))
+        meta = getattr(cls, 'Meta', None)
+        list_serializer_class = getattr(meta, 'list_serializer_class', GeoFeatureModelListSerializer)
+        return list_serializer_class(*args, **list_kwargs)
 
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
-        if self.opts.geo_field is None:
+        self.Meta.id_field = getattr(self.Meta, 'id_field', self.Meta.model._meta.pk.name)
+        if self.Meta.geo_field is None:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
         # make sure geo_field is included in fields
-        if self.opts.exclude:
-            if self.opts.geo_field in self.opts.exclude:
+        if hasattr(self.Meta, 'exclude'):
+            if self.Meta.geo_field in self.Meta.exclude:
                 raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
-        if self.opts.fields:
-            if self.opts.geo_field not in self.opts.fields:
-                if type(self.opts.fields) is tuple:
-                    additional_fields = (self.opts.geo_field, )
+        if hasattr(self.Meta, 'fields'):
+            if self.Meta.geo_field not in self.Meta.fields:
+                if type(self.Meta.fields) is tuple:
+                    additional_fields = (self.Meta.geo_field, )
                 else:
-                    additional_fields = [self.opts.geo_field, ]
-                self.opts.fields += additional_fields
-                self.fields = self.get_fields()
+                    additional_fields = [self.Meta.geo_field, ]
+                self.Meta.fields += additional_fields
 
-    def to_native(self, obj):
+    def to_representation(self, instance):
         """
         Serialize objects -> primitives.
         """
-        ret = self._dict_class()
-        ret.fields = {}
+        ret = OrderedDict()
+        fields = [field for field in self.fields.values() if not field.write_only]
 
         # geo structure
-        if self.opts.id_field is not False:
+        if self.Meta.id_field is not False:
             ret["id"] = ""
         ret["type"] = "Feature"
         ret["geometry"] = {}
-        ret["properties"] = self._dict_class()
+        ret["properties"] = OrderedDict()
 
-        for field_name, field in self.fields.items():
-            if field.read_only and obj is None:
+        for field in fields:
+            field_name = field.field_name
+            if field.read_only and instance is None:
                 continue
-            field.initialize(parent=self, field_name=field_name)
-            key = self.get_field_key(field_name)
-            value = field.field_to_native(obj, field_name)
-            method = getattr(self, 'transform_%s' % field_name, None)
-            if callable(method):
-                value = method(obj, value)
-
-            if self.opts.id_field is not False and field_name == self.opts.id_field:
+            value = field.to_representation(field.get_attribute(instance))
+            if self.Meta.id_field is not False and field_name == self.Meta.id_field:
                 ret["id"] = value
-            elif field_name == self.opts.geo_field:
+            elif field_name == self.Meta.geo_field:
                 ret["geometry"] = value
             elif not getattr(field, 'write_only', False):
-                ret["properties"][key] = value
+                ret["properties"][field_name] = value
 
-            ret.fields[key] = self.augment_field(field, field_name, key, value)
+            ret[field_name] = value
+
+        if self.Meta.id_field is False:
+            ret.pop(self.Meta.model._meta.pk.name)
 
         return ret
 
-    def _format_data(self):
-        """
-        Add GeoJSON compatible formatting to a serialized queryset list
-        """
-        _data = super(GeoFeatureModelSerializer, self).data
-        if isinstance(_data, list):
-            self._formatted_data = {}
-            self._formatted_data["type"] = "FeatureCollection"
-            self._formatted_data["features"] = _data
-        else:
-            self._formatted_data = _data
-
-        return self._formatted_data
-
-    @property
-    def data(self):
-        """
-        Returns the serialized data on the serializer.
-        """
-        return self._format_data()
-
-    def from_native(self, data, files):
+    def to_internal_value(self, data):
         """
         Override the parent method to first remove the GeoJSON formatting
         """
-        self._errors = {}
-
-        if data is not None or files is not None:
-            if 'features' in data:
-                _unformatted_data = []
-                features = data['features']
-                for feature in features:
-                    _dict = feature["properties"]
-                    geom = { self.opts.geo_field: feature["geometry"] }
-                    _dict.update(geom)
-                    _unformatted_data.append(_dict)
-            elif 'properties' in data:
-                _dict = data["properties"]
-                geom = { self.opts.geo_field: data["geometry"] }
+        if 'features' in data:
+            _unformatted_data = []
+            features = data['features']
+            for feature in features:
+                _dict = feature["properties"]
+                geom = { self.Meta.geo_field: feature["geometry"] }
                 _dict.update(geom)
-                _unformatted_data = _dict
-            else:
-                _unformatted_data = data
-
-            attrs = self.restore_fields(_unformatted_data, files)
-            if attrs is not None:
-                attrs = self.perform_validation(attrs)
+                _unformatted_data.append(_dict)
+        elif 'properties' in data:
+            _dict = data["properties"]
+            geom = { self.Meta.geo_field: data["geometry"] }
+            _dict.update(geom)
+            _unformatted_data = _dict
         else:
-            self._errors['non_field_errors'] = ['No input provided']
+            _unformatted_data = data
 
-        if not self._errors:
-            return self.restore_object(attrs, instance=getattr(self, 'object', None))
+        return super(GeoFeatureModelSerializer, self).to_internal_value(_unformatted_data)
