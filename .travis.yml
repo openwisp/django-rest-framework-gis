@@ -26,7 +26,7 @@ branches:
 # command to install requirements
 install:
   - pip install $DJANGO  --use-mirrors
-  - pip install psycopg2 djangorestframework coverage coveralls django-filter --use-mirrors
+  - pip install -r requirements-test.txt
   - python setup.py -q install
 
 before_script:
