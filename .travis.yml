@@ -21,11 +21,12 @@ matrix:
 
 branches:
   only:
-    - master 
+    - master
+    - drf-3.0
 
 # command to install requirements
 install:
-  - pip install $DJANGO  --use-mirrors
+  - pip install $DJANGO
   - pip install -r requirements-test.txt
   - python setup.py -q install
 
