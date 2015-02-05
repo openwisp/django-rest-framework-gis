@@ -1,1 +1,2 @@
 djangorestframework>=3.0.4
+future==0.14.3

@@ -14,9 +14,9 @@ class GeoModelSerializer(ModelSerializer):
     for GeoDjango fields to be serialized as GeoJSON
     compatible data
     """
-    _field_mapping = ClassLookupDict(dict(ModelSerializer._field_mapping.mapping.items() + {
+    _field_mapping = ClassLookupDict(dict(list(ModelSerializer._field_mapping.mapping.items()) + list({
         django_GeometryField: GeometryField
-    }.items()))
+    }.items())))
 
 
 class GeoFeatureModelListSerializer(ListSerializer):
@@ -47,7 +47,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         child_serializer = cls(*args, **kwargs)
         list_kwargs = {'child': child_serializer}
         list_kwargs.update(dict([
-            (key, value) for key, value in kwargs.items()
+            (key, value) for key, value in list(kwargs.items())
             if key in LIST_SERIALIZER_KWARGS
         ]))
         meta = getattr(cls, 'Meta', None)
@@ -76,7 +76,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         Serialize objects -> primitives.
         """
         ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]
+        fields = [field for field in list(self.fields.values()) if not field.write_only]
 
         # geo structure
         if self.Meta.id_field is not False:
