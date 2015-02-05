@@ -8,6 +8,8 @@
 # Written by Oliver White, 2007
 # This file is public-domain
 # -------------------------------------------------------
+from __future__ import division
+from past.utils import old_div
 from math import pi, atan, sinh, degrees, pow as math_pow
 
 
@@ -17,7 +19,7 @@ def num_tiles(z):
 
 def lat_edges(y,z):
     n = num_tiles(z)
-    unit = 1 / n
+    unit = old_div(1, n)
     relY1 = y * unit
     relY2 = relY1 + unit
     lat1 = mercator_to_lat(pi * (1 - 2 * relY1))
@@ -27,7 +29,7 @@ def lat_edges(y,z):
 
 def lon_edges(x,z):
     n = num_tiles(z)
-    unit = 360 / n
+    unit = old_div(360, n)
     lon1 = -180 + x * unit
     lon2 = lon1 + unit
     return(lon1,lon2)

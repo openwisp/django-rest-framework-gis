@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db import models
@@ -141,7 +143,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         #   d * (180 / pi) / earthRadius   ==> degrees longitude
         #   (degrees longitude) / cos(latitude)  ==> degrees latitude
         lat = latitude if latitude >= 0 else -1*latitude 
-        rad2deg = 180/pi
+        rad2deg = old_div(180,pi)
         earthRadius = 6378160.0
         latitudeCorrection = 0.5 * (1 + cos(lat * pi / 180))
         return (distance / (earthRadius * latitudeCorrection) * rad2deg)
