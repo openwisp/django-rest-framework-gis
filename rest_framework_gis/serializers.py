@@ -1,9 +1,13 @@
-from collections import OrderedDict
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
 
 from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
 from rest_framework.utils.field_mapping import ClassLookupDict
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 from .fields import GeometryField
 
