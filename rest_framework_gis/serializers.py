@@ -11,6 +11,11 @@ except ImportError:
 
 from .fields import GeometryField
 
+_geo_field_mapping = ModelSerializer._field_mapping.mapping
+_geo_field_mapping.update({
+    django_GeometryField: GeometryField
+})
+
 
 class GeoModelSerializer(ModelSerializer):
     """
@@ -18,9 +23,7 @@ class GeoModelSerializer(ModelSerializer):
     for GeoDjango fields to be serialized as GeoJSON
     compatible data
     """
-    _field_mapping = ClassLookupDict(dict(ModelSerializer._field_mapping.mapping.items() + {
-        django_GeometryField: GeometryField
-    }.items()))
+    _field_mapping = ClassLookupDict(_geo_field_mapping)
 
 
 class GeoFeatureModelListSerializer(ListSerializer):
