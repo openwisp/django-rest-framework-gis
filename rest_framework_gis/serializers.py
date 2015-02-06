@@ -1,11 +1,20 @@
-from collections import OrderedDict
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
 
 from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
 from rest_framework.utils.field_mapping import ClassLookupDict
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+
 from .fields import GeometryField
+
+_geo_field_mapping = ModelSerializer._field_mapping.mapping
+_geo_field_mapping.update({
+    django_GeometryField: GeometryField
+})
 
 
 class GeoModelSerializer(ModelSerializer):
@@ -14,9 +23,7 @@ class GeoModelSerializer(ModelSerializer):
     for GeoDjango fields to be serialized as GeoJSON
     compatible data
     """
-    _field_mapping = ClassLookupDict(dict(ModelSerializer._field_mapping.mapping.items() + {
-        django_GeometryField: GeometryField
-    }.items()))
+    _field_mapping = ClassLookupDict(_geo_field_mapping)
 
 
 class GeoFeatureModelListSerializer(ListSerializer):
