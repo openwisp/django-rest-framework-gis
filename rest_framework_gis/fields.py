@@ -22,7 +22,6 @@ class GeometryField(Field):
         super(GeometryField, self).__init__(**kwargs)
         self.style = {'base_template': 'textarea.html'}
 
-
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
@@ -47,4 +46,3 @@ class GeometryField(Field):
         if data in [u'']:
             self.fail('required')
         return super(GeometryField, self).validate_empty_values(data)
-

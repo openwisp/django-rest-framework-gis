@@ -17,12 +17,17 @@ DATABASES = {
 SECRET_KEY = 'fn)t*+$)ugeyip6-#txyy$5wf2ervc0d2n#h)qb)y5@ly$t*@w'
 
 INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'django.contrib.admin',
+
     # rest framework
     'rest_framework',
     'rest_framework_gis',
-    
+
     # test app
     'django_restframework_gis_tests'
 )

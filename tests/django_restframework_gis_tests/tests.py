@@ -830,3 +830,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, '<textarea name="geometry"')
         self.assertContains(response, '&quot;type&quot;: &quot;Point&quot;')
         self.assertContains(response, '&quot;coordinates&quot;: [')
+        # textarea input should contain valid GeoJSON indented for readability
+        # doesn't seem possible with DRF 3.0
+        # let's wait for DRF 3.1
+        #self.assertNotContains(response, 'u&#39;type&#39;: u&#39;Point&#39;, u&#39;coordinates&#39;:')

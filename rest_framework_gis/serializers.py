@@ -6,11 +6,13 @@ from rest_framework.utils.field_mapping import ClassLookupDict
 
 try:
     from collections import OrderedDict
+# python 2.6
 except ImportError:
     from ordereddict import OrderedDict
 
 from .fields import GeometryField
 
+# map drf-gis GeometryField to GeoDjango Geometry Field
 _geo_field_mapping = ModelSerializer._field_mapping.mapping
 _geo_field_mapping.update({
     django_GeometryField: GeometryField
@@ -27,7 +29,6 @@ class GeoModelSerializer(ModelSerializer):
 
 
 class GeoFeatureModelListSerializer(ListSerializer):
-
     @property
     def data(self):
         return super(ListSerializer, self).data
@@ -36,10 +37,10 @@ class GeoFeatureModelListSerializer(ListSerializer):
         """
         Add GeoJSON compatible formatting to a serialized queryset list
         """
-        ret = {}
-        ret["type"] = "FeatureCollection"
-        ret["features"] = super(GeoFeatureModelListSerializer, self).to_representation(data)
-        return ret
+        return OrderedDict((
+            ("type", "FeatureCollection"),
+            ("features", super(GeoFeatureModelListSerializer, self).to_representation(data))
+        ))
 
 
 class GeoFeatureModelSerializer(GeoModelSerializer):
@@ -48,7 +49,6 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
     that outputs geojson-ready data as
     features and feature collections
     """
-
     @classmethod
     def many_init(cls, *args, **kwargs):
         child_serializer = cls(*args, **kwargs)
