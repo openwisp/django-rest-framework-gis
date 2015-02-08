@@ -4,6 +4,20 @@ from setuptools.command.test import test
 from rest_framework_gis import get_version
 
 
+def get_install_requires():
+    """
+    parse requirements.txt, ignore links, exclude comments
+    """
+    requirements = []
+    for line in open('requirements.txt').readlines():
+        # skip to next iteration if comment or empty line
+        if line.startswith('#') or line == '' or line.startswith('http') or line.startswith('git'):
+            continue
+        # add line to requirements
+        requirements.append(line)
+    return requirements
+
+
 setup(
     name='djangorestframework-gis',
     version=get_version(),
@@ -16,9 +30,7 @@ setup(
     platforms=['Platform Indipendent'],
     keywords=['django', 'rest-framework', 'gis', 'geojson'],
     packages=find_packages(exclude=['tests', 'tests.*']),
-    install_requires=[
-        "djangorestframework>=2.3.14"
-    ],
+    install_requires=get_install_requires(),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
