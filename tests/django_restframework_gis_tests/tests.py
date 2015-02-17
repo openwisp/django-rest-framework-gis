@@ -9,6 +9,7 @@ except ImportError:
 
 
 import urllib
+import sys
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.core.urlresolvers import reverse
@@ -244,7 +245,10 @@ class TestRestFrameworkGis(TestCase):
                 }
         }
         response = self.client.get(url)
-        self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
+        if sys.version_info>(3,0,0):
+            self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
+        else:
+            self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
 
         response = self.client.get(url, HTTP_ACCEPT='text/html')
         self.assertContains(response, "Kool geojson test")
