@@ -9,6 +9,7 @@ except ImportError:
 
 
 import urllib
+import sys
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.core.urlresolvers import reverse
@@ -222,15 +223,31 @@ class TestRestFrameworkGis(TestCase):
 
     def test_geojson_format(self):
         """ test geojson format """
-        location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
+        location = Location.objects.create(name='geojson test', geometry='POINT (135.0 45.0)')
 
         url = reverse('api_geojson_location_details', args=[location.id])
+        expected = {
+            'id': location.id,
+            'type': 'Feature',
+            'properties': {
+                'details': "http://testserver/geojson/%s/" % location.id,
+                'name': 'geojson test',
+                'fancy_name': 'Kool geojson test',
+                'slug': 'geojson-test',
+            },
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [
+                    135.0,
+                    45.0,
+                ],
+            }
+        }
         response = self.client.get(url)
-        self.assertEqual(response.data['type'], "Feature")
-        self.assertEqual(response.data['properties']['name'], "geojson test")
-        self.assertEqual(response.data['properties']['fancy_name'], "Kool geojson test")
-        self.assertEqual(response.data['geometry']['type'], "Point")
-        self.assertEqual(json.dumps(response.data['geometry']['coordinates']), "[10.1, 10.1]")
+        if sys.version_info>(3,0,0):
+            self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
+        else:
+            self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
 
         response = self.client.get(url, HTTP_ACCEPT='text/html')
         self.assertContains(response, "Kool geojson test")
