@@ -93,19 +93,26 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         ret["properties"] = OrderedDict()
 
         for field in fields:
-            field_name = field.field_name
-            if field.read_only and instance is None:
+            try:
+                attribute = field.get_attribute(instance)
+            except SkipField:
                 continue
-            value = field.to_representation(field.get_attribute(instance))
-            if self.Meta.id_field is not False and field_name == self.Meta.id_field:
-                ret["id"] = value
-            elif field_name == self.Meta.geo_field:
-                ret["geometry"] = value
-            elif not getattr(field, 'write_only', False):
-                ret["properties"][field_name] = value
-
-            ret[field_name] = value
-
+            if attribute is None:
+                # We skip `to_representation` for `None` values so that
+                # fields do not have to explicitly deal with that case.
+                ret[field.field_name] = None
+            else:
+                if field.read_only and instance is None:
+                    continue
+                value = field.to_representation(field.get_attribute(instance))
+                if self.Meta.id_field is not False and field.field_name == self.Meta.id_field:
+                    ret["id"] = value
+                elif field.field_name == self.Meta.geo_field:
+                    ret["geometry"] = value
+                elif not getattr(field, 'write_only', False):
+                    ret["properties"][field.field_name] = value
+                ret[field.field_name] = value
+            
         if self.Meta.id_field is False:
             ret.pop(self.Meta.model._meta.pk.name)
 
