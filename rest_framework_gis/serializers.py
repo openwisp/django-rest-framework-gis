@@ -104,11 +104,6 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             elif not getattr(field, 'write_only', False):
                 ret["properties"][field_name] = value
 
-            ret[field_name] = value
-
-        if self.Meta.id_field is False:
-            ret.pop(self.Meta.model._meta.pk.name)
-
         return ret
 
     def to_internal_value(self, data):
