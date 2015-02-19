@@ -6,19 +6,26 @@ django-rest-framework-gis
 Geographic add-ons for Django Rest Framework - `Mailing
 List <https://groups.google.com/forum/#!forum/django-rest-framework-gis>`__.
 
-Install
--------
+Install last stable version from pypi
+-------------------------------------
 
 .. code-block:: bash
 
     pip install djangorestframework-gis
+
+Install development version
+---------------------------
+
+.. code-block:: bash
+
+    pip install https://github.com/djangonauts/django-rest-framework-gis/tarball/master
 
 Compatibility with DRF, Django and Python
 -----------------------------------------
 
 ===============  ============================ ==================== ==================
 DRF-gis version  DRF version                  Django version       Python version
-**0.8**          **3.0.4**                    **1.5.x** to **1.7** **2.6** to **3.4**
+**0.8 (dev)**    **3.0.4**                    **1.5.x** to **1.7** **2.6** to **3.4**
 **0.7**          **2.4.3**                    **1.5.x** to **1.7** **2.6** to **3.4**
 **0.6**          **2.4.3**                    **1.5.x** to **1.7** **2.6** to **3.4**
 **0.5**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6** to **3.4**
