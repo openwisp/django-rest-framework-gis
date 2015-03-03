@@ -4,7 +4,7 @@ django-rest-framework-gis
 |Build Status| |Coverage Status| |Code Health| |Requirements Status| |PyPI version| |PyPI downloads|
 
 Geographic add-ons for Django Rest Framework - `Mailing
-List <https://groups.google.com/forum/#!forum/django-rest-framework-gis>`__.
+List <http://bit.ly/1M4sLTp>`__.
 
 Install last stable version from pypi
 -------------------------------------
