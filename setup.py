@@ -1,6 +1,7 @@
+import sys
+import os
 from setuptools import setup, find_packages
 from setuptools.command.test import test
-
 from rest_framework_gis import get_version
 
 
@@ -16,6 +17,15 @@ def get_install_requires():
         # add line to requirements
         requirements.append(line)
     return requirements
+
+
+if sys.argv[-1] == 'publish':
+    os.system("python setup.py sdist upload")
+    args = {'version': get_version()}
+    print("You probably want to also tag the version now:")
+    print("  git tag -a %(version)s -m 'version %(version)s'" % args)
+    print("  git push --tags")
+    sys.exit()
 
 
 setup(
