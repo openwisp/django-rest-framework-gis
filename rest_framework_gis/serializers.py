@@ -13,7 +13,10 @@ except ImportError:
 from .fields import GeometryField
 
 # map drf-gis GeometryField to GeoDjango Geometry Field
-_geo_field_mapping = ModelSerializer._field_mapping.mapping
+try:
+    _geo_field_mapping = ModelSerializer._field_mapping.mapping
+except AttributeError:
+    _geo_field_mapping = ModelSerializer.serializer_field_mapping
 _geo_field_mapping.update({
     django_GeometryField: GeometryField
 })
