@@ -16,7 +16,6 @@ __all__ = [
 
 class LocationGeoSerializer(gis_serializers.GeoModelSerializer):
     """ location geo serializer  """
-
     details = serializers.HyperlinkedIdentityField(view_name='api_location_details')
 
     class Meta:
@@ -24,7 +23,10 @@ class LocationGeoSerializer(gis_serializers.GeoModelSerializer):
         geo_field = 'geometry'
 
 
-class PaginatedLocationGeoSerializer(pagination.PaginationSerializer):
+class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
+    page_size_query_param = 'limit'
+    page_size = 40
+    max_page_size = 10000
 
     class Meta:
         object_serializer_class = LocationGeoSerializer
@@ -32,7 +34,6 @@ class PaginatedLocationGeoSerializer(pagination.PaginationSerializer):
 
 class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     """ location geo serializer  """
-
     details = serializers.HyperlinkedIdentityField(view_name='api_geojson_location_details')
     fancy_name = serializers.SerializerMethodField()
 
@@ -46,7 +47,6 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
 
 class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
     """ use slug as id attribute  """
-
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -56,14 +56,16 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
 
 class LocationGeoFeatureFalseIDSerializer(LocationGeoFeatureSerializer):
     """ id attribute set as False """
-
     class Meta:
         model = Location
         geo_field = 'geometry'
         id_field = False
 
 
-class PaginatedLocationGeoFeatureSerializer(pagination.PaginationSerializer):
+class PaginatedLocationGeoFeatureSerializer(pagination.PageNumberPagination):
+    page_size_query_param = 'limit'
+    page_size = 40
+    max_page_size = 10000
 
     class Meta:
         object_serializer_class = LocationGeoFeatureSerializer

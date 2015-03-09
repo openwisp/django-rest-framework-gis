@@ -32,6 +32,11 @@ INSTALLED_APPS = (
     'django_restframework_gis_tests'
 )
 
+MIDDLEWARE_CLASSES = [
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+]
+
 ROOT_URLCONF = 'urls'
 
 TIME_ZONE = 'Europe/Rome'

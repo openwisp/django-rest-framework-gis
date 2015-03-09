@@ -10,13 +10,11 @@ class LocationList(generics.ListCreateAPIView):
     model = Location
     serializer_class = LocationGeoSerializer
     queryset = Location.objects.all()
-    pagination_serializer_class = PaginatedLocationGeoSerializer
-    paginate_by_param = 'limit'
-    paginate_by = 40
-    
+    pagination_class = PaginatedLocationGeoSerializer
+
 location_list = LocationList.as_view()
-    
-    
+
+
 class LocationDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     serializer_class = LocationGeoSerializer
@@ -29,10 +27,8 @@ class GeojsonLocationList(generics.ListCreateAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
-    pagination_serializer_class = PaginatedLocationGeoFeatureSerializer
-    paginate_by_param = 'limit'
-    paginate_by = 40
-    
+    pagination_class = PaginatedLocationGeoFeatureSerializer
+
 geojson_location_list = GeojsonLocationList.as_view()
 
 
