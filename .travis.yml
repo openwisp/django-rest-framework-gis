@@ -10,6 +10,7 @@ python:
   - "2.6"
 
 env:
+  - DJANGO="https://www.djangoproject.com/download/1.8b1/tarball/"
   - DJANGO="django==1.7.5"
   - DJANGO="django==1.7.5"
   - DJANGO="django==1.6.10"
@@ -19,6 +20,8 @@ matrix:
   exclude:
     - python: "2.6"
       env: DJANGO="django==1.7.5"
+    - python: "2.6"
+      env: DJANGO="https://www.djangoproject.com/download/1.8b1/tarball/"
 
 branches:
   only:
