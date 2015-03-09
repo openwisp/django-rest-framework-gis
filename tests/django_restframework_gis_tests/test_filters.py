@@ -370,7 +370,7 @@ class TestRestFrameworkGis(TestCase):
 
         url_params = "?contains_properly=%s" % quoted_param
 
-        response = self.client.get(self.geojson_contained_in_geometry + url_params)
+        response = self.client.get('{0}{1}'.format(self.geojson_contained_in_geometry, url_params))
         self.assertEqual(len(response.data), 1)
 
         geometry_response = GEOSGeometry(json.dumps(response.data[0]['geometry']))

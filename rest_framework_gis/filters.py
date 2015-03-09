@@ -6,7 +6,7 @@ from django.contrib.gis import forms
 
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
-from math import cos, pi 
+from math import cos, pi
 
 from .tilenames import tile_edges
 
@@ -17,6 +17,13 @@ except ImportError:
         'restframework-gis filters depend on package "django-filter" '
         'which is missing. Install with "pip install django-filter".'
     )
+
+try:
+    # django >= 1.8
+    from django.contrib.gis.db.models.lookups import gis_lookups
+except ImportError:
+    # django <= 1.7
+    gis_lookups = models.sql.query.ALL_TERMS
 
 
 __all__ = [
@@ -78,12 +85,12 @@ class GeoFilterSet(django_filters.FilterSet):
 
     def __new__(cls, *args, **kwargs):
         cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
-        cls.LOOKUP_TYPES = sorted(models.sql.query.ALL_TERMS)
+        cls.LOOKUP_TYPES = sorted(gis_lookups)
         return super(GeoFilterSet, cls).__new__(cls)
 
 
 class TMSTileFilter(InBBoxFilter):
-    tile_param = 'tile' # The URL query paramater which contains the tile address
+    tile_param = 'tile'  # The URL query paramater which contains the tile address
 
     def get_filter_bbox(self, request):
         tile_string = request.QUERY_PARAMS.get(self.tile_param, None)
@@ -102,7 +109,7 @@ class TMSTileFilter(InBBoxFilter):
 
 class DistanceToPointFilter(BaseFilterBackend):
     dist_param = 'dist'
-    point_param = 'point'  # The URL query parameter which contains the 
+    point_param = 'point'  # The URL query parameter which contains the
 
     def get_filter_point(self, request):
         point_string = request.QUERY_PARAMS.get(self.point_param, None)
@@ -121,31 +128,31 @@ class DistanceToPointFilter(BaseFilterBackend):
     def dist_to_deg(self, distance, latitude):
         """
         distance = distance in meters
-        latitude = latitude in degrees 
+        latitude = latitude in degrees
 
         at the equator, the distance of one degree is equal in latitude and longitude.
         at higher latitudes, a degree longitude is shorter in length, proportional to cos(latitude)
         http://en.wikipedia.org/wiki/Decimal_degrees
 
         This function is part of a distance filter where the database 'distance' is in degrees.
-        There's no good single-valued answer to this problem. 
-        The distance/ degree is quite constant N/S around the earth (latitude), 
+        There's no good single-valued answer to this problem.
+        The distance/ degree is quite constant N/S around the earth (latitude),
         but varies over a huge range E/W (longitude).
 
-        Split the difference: I'm going to average the the degrees latitude and degrees longitude 
-        corresponding to the given distance. At high latitudes, this will be too short N/S 
-        and too long E/W. It splits the errors between the two axes.  
+        Split the difference: I'm going to average the the degrees latitude and degrees longitude
+        corresponding to the given distance. At high latitudes, this will be too short N/S
+        and too long E/W. It splits the errors between the two axes.
 
         Errors are < 25 percent for latitudes < 60 degrees N/S.
         """
         #   d * (180 / pi) / earthRadius   ==> degrees longitude
         #   (degrees longitude) / cos(latitude)  ==> degrees latitude
-        lat = latitude if latitude >= 0 else -1*latitude 
+        lat = latitude if latitude >= 0 else -1*latitude
         rad2deg = 180/pi
         earthRadius = 6378160.0
         latitudeCorrection = 0.5 * (1 + cos(lat * pi / 180))
         return (distance / (earthRadius * latitudeCorrection) * rad2deg)
-    
+
     def filter_queryset(self, request, queryset, view):
         filter_field = getattr(view, 'distance_filter_field', None)
         convert_distance_input = getattr(view, 'distance_filter_convert_meters', False)
@@ -166,8 +173,8 @@ class DistanceToPointFilter(BaseFilterBackend):
             raise ParseError("Not valid distance string in parameter %s."
                              % self.dist_param)
 
-        if (convert_distance_input): 
+        if (convert_distance_input):
             # Warning:  assumes that the point is (lon,lat)
             dist = self.dist_to_deg(dist, point[1])
-            
+
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
