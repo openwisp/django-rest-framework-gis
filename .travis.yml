@@ -25,7 +25,6 @@ matrix:
 branches:
   only:
     - master
-    - drf-3.0
 
 # command to install requirements
 install:
