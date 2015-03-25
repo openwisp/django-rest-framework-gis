@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.8.1
+-------------
+
+- Added compatibility with django-rest-framework 3.1.x
+- Added compatibility with django 1.8 (RC1)
+
 Version 0.8
 -----------
 
