@@ -11,7 +11,7 @@ except ImportError:
 import urllib
 import sys
 from django.test import TestCase
-from django.contrib.gis.geos import GEOSGeometry, Polygon
+from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 from django.core.urlresolvers import reverse
 
 from .models import Location
@@ -489,3 +489,37 @@ class TestRestFrameworkGis(TestCase):
         # doesn't seem possible with DRF 3.0
         # let's wait for DRF 3.1
         #self.assertNotContains(response, 'u&#39;type&#39;: u&#39;Point&#39;, u&#39;coordinates&#39;:')
+
+    def test_patch_geojson_location(self):
+        location = Location.objects.create(name='geojson patch test', geometry='POINT (135.0 45.0)')
+
+        url = reverse('api_geojson_location_details', args=[location.id])
+        data = {
+            "properties": {
+                "name":"geojson successful patch test"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [10.1, 10.1]
+            } 
+        }
+        response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        location_reloaded = Location.objects.get(pk=location.id)
+        self.assertEquals(location_reloaded.name, 'geojson successful patch test')
+        self.assertEquals(location_reloaded.geometry, Point(10.1, 10.1))
+
+    def test_patch_geojson_location_wo_changing_geometry(self):
+        location = Location.objects.create(name='geojson patch test', geometry='POINT (135.0 45.0)')
+
+        url = reverse('api_geojson_location_details', args=[location.id])
+        data = {
+            "properties": {
+                "name":"geojson successful patch test"
+            }
+        }
+        response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        location_reloaded = Location.objects.get(pk=location.id)
+        self.assertEquals(location_reloaded.name, 'geojson successful patch test')
+        self.assertEquals(location_reloaded.geometry, Point(135.0, 45.0))

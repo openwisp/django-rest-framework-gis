@@ -120,13 +120,15 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             features = data['features']
             for feature in features:
                 _dict = feature["properties"]
-                geom = { self.Meta.geo_field: feature["geometry"] }
-                _dict.update(geom)
+                if 'geometry' in feature:
+                    geom = { self.Meta.geo_field: feature["geometry"] }
+                    _dict.update(geom)
                 _unformatted_data.append(_dict)
         elif 'properties' in data:
             _dict = data["properties"]
-            geom = { self.Meta.geo_field: data["geometry"] }
-            _dict.update(geom)
+            if 'geometry' in data:
+                geom = { self.Meta.geo_field: data["geometry"] }
+                _dict.update(geom)
             _unformatted_data = _dict
         else:
             _unformatted_data = data
