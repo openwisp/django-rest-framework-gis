@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.8.2
+-------------
+
+- `#53 <https://github.com/djangonauts/django-rest-framework-gis/pull/53>`_: Added support for PATCH requests in ``GeoFeatureModelSerializer``
+
 Version 0.8.1
 -------------
 
