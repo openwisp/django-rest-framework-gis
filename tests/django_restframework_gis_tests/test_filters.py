@@ -141,6 +141,10 @@ class TestRestFrameworkGis(TestCase):
         point_on_treasure_island = [-122.3692, 37.8244]
         point_on_angel_island = [-122.4326, 37.86091]
 
+        url_params = '?dist=%0.4f&point=hello&format=json' % (distance)
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
+        self.assertEqual(response.status, 400)
+
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
 
         treasure_island_geojson = """{
