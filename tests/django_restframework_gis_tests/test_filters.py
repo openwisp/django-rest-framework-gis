@@ -143,7 +143,7 @@ class TestRestFrameworkGis(TestCase):
 
         url_params = '?dist=%0.4f&point=hello&format=json' % (distance)
         response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
-        self.assertEqual(response.status, 400)
+        self.assertEqual(response.status_code, 400)
 
         url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (distance, point_on_alcatraz[0], point_on_alcatraz[1])
 
