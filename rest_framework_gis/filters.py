@@ -120,7 +120,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             (x,y) = (float(n) for n in point_string.split(','))
         except ValueError:
             raise ParseError("Not valid geometry string in parameter %s."
-                             % self.point_string)
+                             % self.point_param)
 
         p = Point(x,y)
         return p
