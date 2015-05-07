@@ -121,3 +121,28 @@ class GeojsonLocationContainedInGeometry(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
 geojson_contained_in_geometry = GeojsonLocationContainedInGeometry.as_view()
+
+
+class GeojsonBoxedLocationDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = BoxedLocation
+    serializer_class = BoxedLocationGeoFeatureSerializer
+    queryset = BoxedLocation.objects.all()
+
+geojson_boxedlocation_details = GeojsonBoxedLocationDetails.as_view()
+
+
+class GeojsonBoxedLocationList(generics.ListCreateAPIView):
+    model = BoxedLocation
+    serializer_class = BoxedLocationGeoFeatureSerializer
+    queryset = BoxedLocation.objects.all()
+    #pagination_class = PaginatedLocationGeoFeatureSerializer
+
+geojson_boxedlocation_list = GeojsonBoxedLocationList.as_view()
+
+
+class GeojsonLocationBboxList(generics.ListCreateAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureBboxSerializer
+    queryset = Location.objects.all()
+
+geojson_location_bbox_list = GeojsonLocationBboxList.as_view()

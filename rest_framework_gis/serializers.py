@@ -1,5 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
+from django.contrib.gis.geos import Polygon
 
 from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
 from rest_framework.utils.field_mapping import ClassLookupDict
@@ -69,17 +70,35 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         self.Meta.id_field = getattr(self.Meta, 'id_field', self.Meta.model._meta.pk.name)
         if self.Meta.geo_field is None:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
-        # make sure geo_field is included in fields
-        if hasattr(self.Meta, 'exclude'):
-            if self.Meta.geo_field in self.Meta.exclude:
-                raise ImproperlyConfigured("You cannot exclude your 'geo_field'.")
-        if hasattr(self.Meta, 'fields'):
-            if self.Meta.geo_field not in self.Meta.fields:
-                if type(self.Meta.fields) is tuple:
-                    additional_fields = (self.Meta.geo_field, )
-                else:
-                    additional_fields = [self.Meta.geo_field, ]
-                self.Meta.fields += additional_fields
+
+        def check_excludes(field_name, field_role):
+            """make sure the field is not excluded"""
+            if hasattr(self.Meta, 'exclude'):
+                if field_name in self.Meta.exclude:
+                    raise ImproperlyConfigured("You cannot exclude your '{0}'.".format(field_role))
+
+        def add_to_fields(field_name):
+            """Make sure the field is included in the fields"""
+            if hasattr(self.Meta, 'fields'):
+                if field_name not in self.Meta.fields:
+                    if type(self.Meta.fields) is tuple:
+                        additional_fields = (field_name, )
+                    else:
+                        additional_fields = [field_name, ]
+                    self.Meta.fields += additional_fields
+
+        check_excludes(self.Meta.geo_field, 'geo_field')
+        add_to_fields(self.Meta.geo_field)
+
+        self.Meta.bbox_geo_field = getattr(self.Meta, 'bbox_geo_field', None)
+        if self.Meta.bbox_geo_field:
+            check_excludes(self.Meta.bbox_geo_field, 'bbox_geo_field')
+            add_to_fields(self.Meta.bbox_geo_field)
+
+        self.Meta.auto_bbox = getattr(self.Meta, 'auto_bbox', False)
+        if self.Meta.bbox_geo_field and self.Meta.auto_bbox:
+            raise ImproperlyConfigured("You must eiher define a 'bbox_geo_field' or 'auto_bbox', but you can not set both")
+
 
     def to_representation(self, instance):
         """
@@ -94,43 +113,60 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         ret["type"] = "Feature"
         ret["geometry"] = {}
         ret["properties"] = OrderedDict()
+        if self.Meta.bbox_geo_field or self.Meta.auto_bbox:
+            ret["bbox"] = None
 
         for field in fields:
             field_name = field.field_name
             if field.read_only and instance is None:
                 continue
             value = field.get_attribute(instance)
+            value_repr = None
             if value:
-                value = field.to_representation(value)
+                if field_name == self.Meta.bbox_geo_field:
+                    # check for GEOSGeometry specfifc properties to generate the extent
+                    # of the geometry. 
+                    if hasattr(value, 'extent'):
+                        value_repr = value.extent
+                else:
+                    value_repr = field.to_representation(value)
             if self.Meta.id_field is not False and field_name == self.Meta.id_field:
-                ret["id"] = value
+                ret["id"] = value_repr
             elif field_name == self.Meta.geo_field:
-                ret["geometry"] = value
+                ret["geometry"] = value_repr
+                if self.Meta.auto_bbox and value:
+                    ret['bbox'] = value.extent
+            elif field_name == self.Meta.bbox_geo_field:
+                ret["bbox"] = value_repr
             elif not getattr(field, 'write_only', False):
-                ret["properties"][field_name] = value
+                ret["properties"][field_name] = value_repr
 
         return ret
+
 
     def to_internal_value(self, data):
         """
         Override the parent method to first remove the GeoJSON formatting
         """
+        def make_unformated_data(feature):
+            _dict = feature["properties"]
+            if 'geometry' in feature:
+                geom = { self.Meta.geo_field: feature["geometry"] }
+                _dict.update(geom)
+            if self.Meta.bbox_geo_field and 'bbox' in feature:
+                # build a polygon from the bbox
+                _dict.update({self.Meta.bbox_geo_field: Polygon.from_bbox(feature['bbox'])})
+            return _dict
+
         if 'features' in data:
             _unformatted_data = []
             features = data['features']
             for feature in features:
-                _dict = feature["properties"]
-                if 'geometry' in feature:
-                    geom = { self.Meta.geo_field: feature["geometry"] }
-                    _dict.update(geom)
-                _unformatted_data.append(_dict)
+                _unformatted_data.append(make_unformated_data(feature))
         elif 'properties' in data:
-            _dict = data["properties"]
-            if 'geometry' in data:
-                geom = { self.Meta.geo_field: data["geometry"] }
-                _dict.update(geom)
-            _unformatted_data = _dict
+            _unformatted_data = make_unformated_data(data)
         else:
             _unformatted_data = data
 
         return super(GeoFeatureModelSerializer, self).to_internal_value(_unformatted_data)
+

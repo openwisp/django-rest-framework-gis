@@ -501,7 +501,7 @@ class TestRestFrameworkGis(TestCase):
             "geometry": {
                 "type": "Point",
                 "coordinates": [10.1, 10.1]
-            } 
+            }
         }
         response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)

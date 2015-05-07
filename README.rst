@@ -212,6 +212,42 @@ your model, like **"slug"**:
             id_field = "slug"
             fields = ('slug', 'address', 'city', 'state')
 
+The GeoJSON specification allows a feature to contain a 
+`boundingbox of a feature <http://geojson.org/geojson-spec.html#geojson-objects>`__. 
+``GeoFeatureModelSerializer`` allows two different ways to fill this property. The first
+is using the **``geo_field``** to calculate the bounding box of a feature. This only allows
+read access for a REST client and can be achieved using **``auto_bbox``**. Example:
+
+.. code-block:: python
+
+    from rest_framework_gis.serializers import GeoFeatureModelSerializer
+
+    class LocationSerializer(GeoFeatureModelSerializer):
+        class Meta:
+            auto_bbox = True
+            model = Location
+            geo_field = 'geometry'
+
+
+The second approach uses the **``bbox_geo_field``** to specify an addional 
+GeometryField of the model which will be used to calculate the bounding box. This allows 
+boundingboxes differ from the exact extent of a features geometry. Additionally this 
+enables read and write access for the REST client. Bounding boxes send from the client will
+be saved as Polygons. Example:
+
+.. code-block:: python
+
+    from rest_framework_gis.serializers import GeoFeatureModelSerializer
+
+    class LocationSerializer(GeoFeatureModelSerializer):
+
+        class Meta:
+            model = BoxedLocation
+            geo_field = 'geometry'
+            bbox_geo_field = 'bbox_geometry'
+            fields = ['name', 'id']
+
+
 Filters
 -------
 
