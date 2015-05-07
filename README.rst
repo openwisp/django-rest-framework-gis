@@ -414,5 +414,5 @@ Contributing
    :target: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master
 .. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.png
    :target: http://badge.fury.io/py/djangorestframework-gis
-.. |PyPI downloads| image:: https://pypip.in/d/djangorestframework-gis/badge.png
+.. |PyPI downloads| image:: https://img.shields.io/pypi/dm/djangorestframework-gis.svg
     :target: http://badge.fury.io/py/djangorestframework-gis
