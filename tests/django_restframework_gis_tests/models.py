@@ -8,12 +8,14 @@ __all__ = [
 ]
 
 
-class Location(models.Model):
+class BaseModel(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(max_length=128, unique=True, blank=True)
     geometry = models.GeometryField()
-
     objects = models.GeoManager()
+
+    class Meta:
+        abstract = True
 
     def __unicode__(self):
         return self.name
@@ -31,31 +33,12 @@ class Location(models.Model):
 
     def save(self, *args, **kwargs):
         self._generate_slug()
-        super(Location, self).save(*args, **kwargs)
+        super(BaseModel, self).save(*args, **kwargs)
 
 
-class LocatedFile(models.Model):
-    name = models.CharField(max_length=32)
-    slug = models.SlugField(max_length=128, unique=True, blank=True)
+class Location(BaseModel):
+    pass
+
+
+class LocatedFile(BaseModel):
     file = models.FileField(upload_to='located_files', blank=True, null=True)
-    geometry = models.GeometryField()
-
-    objects = models.GeoManager()
-
-    def __unicode__(self):
-        return self.name
-
-    def _generate_slug(self):
-        if self.slug == '' or self.slug is None:
-            try:
-                name = unicode(self.name)
-            except NameError:
-                name = self.name
-            self.slug = slugify(name)
-
-    def clean(self):
-        self._generate_slug()
-
-    def save(self, *args, **kwargs):
-        self._generate_slug()
-        super(LocatedFile, self).save(*args, **kwargs)
