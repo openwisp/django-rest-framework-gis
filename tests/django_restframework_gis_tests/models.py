@@ -34,7 +34,7 @@ class Location(models.Model):
 class LocatedFile(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(max_length=128, unique=True, blank=True)
-    file = models.FileField(blank=True, null=True)
+    file = models.FileField(upload_to='located_files', blank=True, null=True)
     geometry = models.GeometryField()
 
     objects = models.GeoManager()
@@ -61,7 +61,7 @@ class LocatedFile(models.Model):
 class LocatedImage(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(max_length=128, unique=True, blank=True)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(upload_to='located_images', blank=True, null=True)
     geometry = models.GeometryField()
 
     objects = models.GeoManager()
