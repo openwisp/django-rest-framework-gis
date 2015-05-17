@@ -100,7 +100,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             if field.read_only and instance is None:
                 continue
             value = field.get_attribute(instance)
-            if value:
+            if value is not None:
                 value = field.to_representation(value)
             if self.Meta.id_field is not False and field_name == self.Meta.id_field:
                 ret["id"] = value
