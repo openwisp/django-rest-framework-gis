@@ -122,6 +122,15 @@ class GeojsonLocationContainedInGeometry(generics.ListAPIView):
 
 geojson_contained_in_geometry = GeojsonLocationContainedInGeometry.as_view()
 
+
+class GeojsonLocatedFileDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = LocatedFile
+    serializer_class = LocatedFileGeoFeatureSerializer
+    queryset = LocatedFile.objects.all()
+
+geojson_located_file_details = GeojsonLocatedFileDetails.as_view()
+
+
 class GeojsonLocatedImageDetails(generics.RetrieveUpdateDestroyAPIView):
     model = LocatedImage
     serializer_class = LocatedImageGeoFeatureSerializer

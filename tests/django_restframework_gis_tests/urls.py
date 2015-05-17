@@ -10,6 +10,7 @@ urlpatterns = patterns('django_restframework_gis_tests.views',
     url(r'^geojson/(?P<pk>[0-9]+)/$', 'geojson_location_details', name='api_geojson_location_details'),
     url(r'^geojson/(?P<slug>[-\w]+)/$', 'geojson_location_slug_details', name='api_geojson_location_slug_details'),
     url(r'^geojson-falseid/(?P<pk>[0-9]+)/$', 'geojson_location_falseid_details', name='api_geojson_location_falseid_details'),
+    url(r'^geojson-file/(?P<pk>[0-9]+)/$', 'geojson_located_file_details', name='api_geojson_located_file_details'),
     url(r'^geojson-image/(?P<pk>[0-9]+)/$', 'geojson_located_image_details', name='api_geojson_located_image_details'),
 
     # Filters
