@@ -12,8 +12,6 @@ __all__ = [
     'LocationGeoFeatureFalseIDSerializer',
     'PaginatedLocationGeoFeatureSerializer',
     'LocatedFileGeoFeatureSerializer',
-    'LocatedImageGeoFeatureSerializer',
-
 ]
 
 
@@ -82,20 +80,6 @@ class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer)
 
     def get_fancy_name(self, obj):
         return u'Nice %s' % obj.name
-
-    class Meta:
-        model = Location
-        geo_field = 'geometry'
-
-
-class LocatedImageGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
-    """ located image geo serializer  """
-    details = serializers.HyperlinkedIdentityField(view_name='api_geojson_located_image_details')
-    fancy_name = serializers.SerializerMethodField()
-    image = serializers.ImageField(allow_empty_file=True)
-
-    def get_fancy_name(self, obj):
-        return u'Fresh %s' % obj.name
 
     class Meta:
         model = Location

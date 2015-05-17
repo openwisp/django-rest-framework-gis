@@ -3,4 +3,3 @@ djangorestframework>=3.0.4
 coverage
 coveralls
 django-filter
-Pillow

@@ -14,7 +14,7 @@ from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 from django.core.urlresolvers import reverse
 
-from .models import Location, LocatedFile, LocatedImage
+from .models import Location, LocatedFile
 
 
 class TestRestFrameworkGis(TestCase):
@@ -281,13 +281,6 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.data['properties']['file'], None)
 
-    def test_geojson_imagefield_attribute(self):
-        located_image = LocatedImage.objects.create(name='geojson imagefield test', geometry='POINT (10.1 10.1)')
-
-        url = reverse('api_geojson_located_image_details', args=[located_image.id])
-        response = self.client.get(url)
-        self.assertEqual(response.data['properties']['image'], None)
-
     def test_post_geojson_location_list(self):
         self.assertEqual(Location.objects.count(), 0)
 
@@ -515,7 +508,7 @@ class TestRestFrameworkGis(TestCase):
             "geometry": {
                 "type": "Point",
                 "coordinates": [10.1, 10.1]
-            } 
+            }
         }
         response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
