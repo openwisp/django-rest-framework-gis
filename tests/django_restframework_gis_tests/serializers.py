@@ -11,6 +11,8 @@ __all__ = [
     'LocationGeoFeatureSlugSerializer',
     'LocationGeoFeatureFalseIDSerializer',
     'PaginatedLocationGeoFeatureSerializer',
+    'LocatedImageGeoFeatureSerializer',
+
 ]
 
 
@@ -69,3 +71,17 @@ class PaginatedLocationGeoFeatureSerializer(pagination.PageNumberPagination):
 
     class Meta:
         object_serializer_class = LocationGeoFeatureSerializer
+
+
+class LocatedImageGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
+    """ location geo serializer  """
+    details = serializers.HyperlinkedIdentityField(view_name='api_geojson_located_image_details')
+    fancy_name = serializers.SerializerMethodField()
+    image = serializers.ImageField(allow_empty_file=True)
+
+    def get_fancy_name(self, obj):
+        return u'Fresh %s' % obj.name
+
+    class Meta:
+        model = Location
+        geo_field = 'geometry'

@@ -121,3 +121,11 @@ class GeojsonLocationContainedInGeometry(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend,)
 
 geojson_contained_in_geometry = GeojsonLocationContainedInGeometry.as_view()
+
+class GeojsonLocatedImageDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = LocatedImage
+    serializer_class = LocatedImageGeoFeatureSerializer
+    queryset = LocatedImage.objects.all()
+
+geojson_located_image_details = GeojsonLocatedImageDetails.as_view()
+
