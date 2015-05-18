@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.9 [unreleased]
+------------------------
+
+- `#55 <https://github.com/djangonauts/django-rest-framework-gis/pull/55>`_: Fixed exception in ``DistanceToPointFilter`` in case of invalid point
+- `#58 <https://github.com/djangonauts/django-rest-framework-gis/pull/58>`_: Fixed handling of ``None`` values in ``GeoFeatureModelSerializer`` to avoid problems with ``FileField`` and ``ImageField``
+- `#57 <https://github.com/djangonauts/django-rest-framework-gis/pull/57>`_: Added support for GeoJSON Bounding Boxes in ``GeoFeatureModelSerializer``
+
 Version 0.8.2
 -------------
 
