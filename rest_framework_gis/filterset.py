@@ -1,4 +1,1 @@
-from .filters import GeoFilterSet
-
-
-
+from .filters import GeoFilterSet  # noqa

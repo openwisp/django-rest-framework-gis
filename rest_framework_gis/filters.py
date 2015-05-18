@@ -1,3 +1,5 @@
+from math import cos, pi
+
 from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.db import models
@@ -6,7 +8,6 @@ from django.contrib.gis import forms
 
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
-from math import cos, pi
 
 from .tilenames import tile_edges
 
@@ -117,12 +118,12 @@ class DistanceToPointFilter(BaseFilterBackend):
             return None
 
         try:
-            (x,y) = (float(n) for n in point_string.split(','))
+            (x, y) = (float(n) for n in point_string.split(','))
         except ValueError:
             raise ParseError("Not valid geometry string in parameter %s."
                              % self.point_param)
 
-        p = Point(x,y)
+        p = Point(x, y)
         return p
 
     def dist_to_deg(self, distance, latitude):

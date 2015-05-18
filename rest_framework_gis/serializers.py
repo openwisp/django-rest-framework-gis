@@ -82,9 +82,9 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
             if hasattr(self.Meta, 'fields'):
                 if field_name not in self.Meta.fields:
                     if type(self.Meta.fields) is tuple:
-                        additional_fields = (field_name, )
+                        additional_fields = (field_name,)
                     else:
-                        additional_fields = [field_name, ]
+                        additional_fields = [field_name]
                     self.Meta.fields += additional_fields
 
         check_excludes(self.Meta.geo_field, 'geo_field')
@@ -97,7 +97,9 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
 
         self.Meta.auto_bbox = getattr(self.Meta, 'auto_bbox', False)
         if self.Meta.bbox_geo_field and self.Meta.auto_bbox:
-            raise ImproperlyConfigured("You must eiher define a 'bbox_geo_field' or 'auto_bbox', but you can not set both")
+            raise ImproperlyConfigured(
+                "You must eiher define a 'bbox_geo_field' or 'auto_bbox', but you can not set both"
+            )
 
     def to_representation(self, instance):
         """
@@ -151,7 +153,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         def make_unformated_data(feature):
             _dict = feature["properties"]
             if 'geometry' in feature:
-                geom = { self.Meta.geo_field: feature["geometry"] }
+                geom = {self.Meta.geo_field: feature["geometry"]}
                 _dict.update(geom)
             if self.Meta.bbox_geo_field and 'bbox' in feature:
                 # build a polygon from the bbox

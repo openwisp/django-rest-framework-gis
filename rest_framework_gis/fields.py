@@ -1,9 +1,4 @@
-# rest_framework_gis/fields.py
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import json
 
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import OGRException
@@ -25,7 +20,6 @@ class GeometryField(Field):
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
-
         # Get GeoDjango geojson serialization and then convert it _back_ to
         # a Python object
         return json.loads(GEOSGeometry(value).geojson)
@@ -33,14 +27,11 @@ class GeometryField(Field):
     def to_internal_value(self, value):
         if value == '' or value is None:
             return value
-
         if isinstance(value, GEOSGeometry):
             # value already has the correct representation
             return value
-
         if isinstance(value, dict):
             value = json.dumps(value)
-
         try:
             return GEOSGeometry(value).geojson
         except (ValueError, GEOSException, OGRException, TypeError):

@@ -1,7 +1,6 @@
 import sys
 import os
 from setuptools import setup, find_packages
-from setuptools.command.test import test
 from rest_framework_gis import get_version
 
 

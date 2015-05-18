@@ -1,14 +1,6 @@
-"""
-unit tests for restframework_gis
-"""
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
-
+import json
 import urllib
+
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.core.urlresolvers import reverse
@@ -16,8 +8,10 @@ from django.core.urlresolvers import reverse
 from .models import Location
 
 
-class TestRestFrameworkGis(TestCase):
-
+class TestRestFrameworkGisFilters(TestCase):
+    """
+    unit tests for filters feature in restframework_gis
+    """
     def setUp(self):
         self.location_contained_in_bbox_list_url = reverse('api_geojson_location_list_contained_in_bbox_filter')
         self.location_overlaps_bbox_list_url = reverse('api_geojson_location_list_overlaps_bbox_filter')

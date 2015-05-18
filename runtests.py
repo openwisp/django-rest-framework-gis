@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys
+import os
+import sys
+
 sys.path.insert(0, "tests")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
