@@ -34,6 +34,10 @@ class GeometryField(Field):
         if value == '' or value is None:
             return value
 
+        if isinstance(value, GEOSGeometry):
+            # value already has the correct representation
+            return value
+
         if isinstance(value, dict):
             value = json.dumps(value)
 

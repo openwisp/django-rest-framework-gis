@@ -4,7 +4,8 @@ from django.utils.text import slugify
 
 __all__ = [
     'Location',
-    'LocatedFile'
+    'LocatedFile',
+    'BoxedLocation'
 ]
 
 
@@ -42,3 +43,7 @@ class Location(BaseModel):
 
 class LocatedFile(BaseModel):
     file = models.FileField(upload_to='located_files', blank=True, null=True)
+
+
+class BoxedLocation(BaseModel):
+    bbox_geometry = models.PolygonField()

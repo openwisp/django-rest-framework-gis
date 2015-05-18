@@ -12,6 +12,8 @@ __all__ = [
     'LocationGeoFeatureFalseIDSerializer',
     'PaginatedLocationGeoFeatureSerializer',
     'LocatedFileGeoFeatureSerializer',
+    'BoxedLocationGeoFeatureSerializer',
+    'LocationGeoFeatureBboxSerializer',
 ]
 
 
@@ -84,3 +86,21 @@ class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer)
     class Meta:
         model = Location
         geo_field = 'geometry'
+
+
+class BoxedLocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
+    """ location geo serializer  """
+    details = serializers.HyperlinkedIdentityField(view_name='api_geojson_boxedlocation_details')
+
+    class Meta:
+        model = BoxedLocation
+        geo_field = 'geometry'
+        bbox_geo_field = 'bbox_geometry'
+        fields = ['name', 'details', 'id']
+
+
+class LocationGeoFeatureBboxSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = Location
+        geo_field = 'geometry'
+        auto_bbox = True

@@ -1,9 +1,10 @@
 from rest_framework import generics
 from rest_framework.filters import DjangoFilterBackend
+from rest_framework_gis.filters import *
 
 from .models import *
 from .serializers import *
-from rest_framework_gis.filters import *
+
 
 
 class LocationList(generics.ListCreateAPIView):
@@ -112,7 +113,6 @@ class LocationFilter(GeoFilterSet):
     class Meta:
         model = Location
 
-
 class GeojsonLocationContainedInGeometry(generics.ListAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationGeoSerializer
@@ -129,3 +129,28 @@ class GeojsonLocatedFileDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = LocatedFile.objects.all()
 
 geojson_located_file_details = GeojsonLocatedFileDetails.as_view()
+
+
+class GeojsonBoxedLocationDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = BoxedLocation
+    serializer_class = BoxedLocationGeoFeatureSerializer
+    queryset = BoxedLocation.objects.all()
+
+geojson_boxedlocation_details = GeojsonBoxedLocationDetails.as_view()
+
+
+class GeojsonBoxedLocationList(generics.ListCreateAPIView):
+    model = BoxedLocation
+    serializer_class = BoxedLocationGeoFeatureSerializer
+    queryset = BoxedLocation.objects.all()
+    #pagination_class = PaginatedLocationGeoFeatureSerializer
+
+geojson_boxedlocation_list = GeojsonBoxedLocationList.as_view()
+
+
+class GeojsonLocationBboxList(generics.ListCreateAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureBboxSerializer
+    queryset = Location.objects.all()
+
+geojson_location_bbox_list = GeojsonLocationBboxList.as_view()
