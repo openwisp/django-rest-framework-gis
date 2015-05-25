@@ -11,7 +11,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-from .fields import GeometryField
+from .fields import GeometryField, GeometrySerializerMethodField
 
 # map drf-gis GeometryField to GeoDjango Geometry Field
 try:

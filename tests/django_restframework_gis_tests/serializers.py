@@ -14,6 +14,7 @@ __all__ = [
     'LocatedFileGeoFeatureSerializer',
     'BoxedLocationGeoFeatureSerializer',
     'LocationGeoFeatureBboxSerializer',
+    'LocationGeoFeatureMethodSerializer',
 ]
 
 
@@ -104,3 +105,19 @@ class LocationGeoFeatureBboxSerializer(gis_serializers.GeoFeatureModelSerializer
         model = Location
         geo_field = 'geometry'
         auto_bbox = True
+
+
+class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
+    new_geometry = gis_serializers.GeometrySerializerMethodField()
+
+    class Meta:
+        model = Location
+        geo_field = 'new_geometry'
+        fields = ['name', 'slug', 'id']
+
+    def get_new_geometry(self, obj):
+        from django.contrib.gis.geos import Point
+        if obj.name.startswith('hidden'):
+            return Point(0., 0.)
+        else:
+            return obj.geometry

@@ -40,10 +40,20 @@ DRF-gis version  DRF version                  Django version       Python versio
 Fields
 ------
 
+GeometryField
+~~~~~~~~~~~~~
+
 Provides a GeometryField, which is a subclass of Django Rest Framework
 (from now on **DRF**) ``WritableField``. This field handles GeoDjango
 geometry fields, providing custom ``to_native`` and ``from_native``
 methods for GeoJSON input/output.
+
+GeometrySerializerMethodField
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Provides a GeometrySerializerMethodField, which is a subclass of DRF
+``SerializerMethodField`` and handles values which are computed with a serializer method and are used as a ``geo_field``. See example bellow.
+
 
 Serializers
 -----------
@@ -181,6 +191,31 @@ to be serialized as the "geometry". For example:
             # you can also explicitly declare which fields you want to include
             # as with a ModelSerializer.
             fields = ('id', 'address', 'city', 'state')
+
+**``geo_field``** may also be an instance of ``GeometrySerializerMethodField`` mentioned above.
+In this case you can compute its value during serialization. For example,
+
+.. code-block:: python
+
+    from rest_framework_gis.serializers import GeoFeatureModelSerializer, GeometrySerializerMethodField
+
+    class LocationSerializer(GeoFeatureModelSerializer):
+        """ A class to serialize locations as GeoJSON compatible data """
+
+        other_point = GeometrySerializerMethodField()
+        """ A field which contains a geometry value and can be used as geo_field """
+
+        def get_other_point(self, obj):
+                return Point(obj.point.lat / 2, obj.point.lon / 2)
+
+        class Meta:
+            model = Location
+            geo_field = 'other_point'
+
+            # you can also explicitly declare which fields you want to include
+            # as with a ModelSerializer.
+            fields = ('id', 'address', 'city', 'state')
+
 
 The primary key of the model (usually the "id" attribute) is
 automatically put outside the "properties" object (before "type") unless
