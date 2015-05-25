@@ -4,7 +4,7 @@ from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import OGRException
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from rest_framework.fields import Field
+from rest_framework.fields import Field, SerializerMethodField
 
 
 class GeometryField(Field):
@@ -55,3 +55,9 @@ class JsonDict(dict):
 
     def __str__(self):
         return self._geojson_string
+
+
+class GeometrySerializerMethodField(SerializerMethodField):
+    def to_representation(self, value):
+        value = super(GeometrySerializerMethodField, self).to_representation(value)
+        return json.loads(GEOSGeometry(value).geojson)

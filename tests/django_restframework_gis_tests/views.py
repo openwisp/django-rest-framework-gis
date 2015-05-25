@@ -90,6 +90,14 @@ class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
 geojson_location_details = GeojsonLocationDetails.as_view()
 
 
+class GeojsonLocationDetailsHidden(generics.RetrieveUpdateDestroyAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureMethodSerializer
+    queryset = Location.objects.all()
+
+geojson_location_details_hidden = GeojsonLocationDetailsHidden.as_view()
+
+
 class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     lookup_field = 'slug'

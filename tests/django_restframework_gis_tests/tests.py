@@ -472,3 +472,20 @@ class TestRestFrameworkGis(TestCase):
         location_reloaded = Location.objects.get(pk=location.id)
         self.assertEquals(location_reloaded.name, 'geojson successful patch test')
         self.assertEquals(location_reloaded.geometry, Point(135.0, 45.0))
+
+    def test_geometry_serializer_method_field(self):
+        location = Location.objects.create(name='geometry serializer method test', geometry='POINT (135.0 45.0)')
+        location_loaded = Location.objects.get(pk=location.id)
+        self.assertEqual(location_loaded.name, 'geometry serializer method test')
+        self.assertEqual(location_loaded.geometry, Point(135.0, 45.0))
+        url = reverse('api_geojson_location_details_hidden', args=[location.id])
+        data = {
+            "properties": {
+                "name":"hidden geometry"
+            }
+        }
+        response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['properties']['name'], 'hidden geometry')
+        self.assertEqual(response.data['geometry']['type'], 'Point')
+        self.assertEqual(response.data['geometry']['coordinates'], [0.0, 0.0])
