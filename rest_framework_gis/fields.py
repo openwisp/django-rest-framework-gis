@@ -1,5 +1,5 @@
 import json
-
+import ast
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import OGRException
 from django.core.exceptions import ValidationError
@@ -33,7 +33,7 @@ class GeometryField(Field):
         if isinstance(value, dict):
             value = json.dumps(value)
         try:
-            return GEOSGeometry(value).geojson
+            return GEOSGeometry(json.dumps(ast.literal_eval(value))).geojson
         except (ValueError, GEOSException, OGRException, TypeError):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
 
