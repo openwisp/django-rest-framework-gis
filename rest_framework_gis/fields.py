@@ -7,6 +7,11 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field
 
 
+class JSONDict(dict):
+    def __str__(self):
+        return json.dumps(self)
+
+
 class GeometryField(Field):
     """
     A field to handle GeoDjango Geometry fields
@@ -22,7 +27,7 @@ class GeometryField(Field):
             return value
         # Get GeoDjango geojson serialization and then convert it _back_ to
         # a Python object
-        return json.loads(GEOSGeometry(value).geojson)
+        return JSONDict(json.loads(GEOSGeometry(value).geojson))
 
     def to_internal_value(self, value):
         if value == '' or value is None:
