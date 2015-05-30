@@ -1,5 +1,5 @@
 import json
-import ast
+
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import OGRException
 from django.core.exceptions import ValidationError
