@@ -33,7 +33,7 @@ setup(
     version=get_version(),
     license='BSD',
     author='Douglas Meehan',
-    author_email='dmeehan@gmail.com',
+    author_email='django-rest-framework-gis@googlegroups.com',
     description='Geographic add-ons for Django Rest Framework',
     url='https://github.com/djangonauts/django-rest-framework-gis',
     download_url='https://github.com/djangonauts/django-rest-framework-gis/releases',
