@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9 [unreleased]
+Version 0.9 [2015-05-31]
 ------------------------
 
 - `#55 <https://github.com/djangonauts/django-rest-framework-gis/pull/55>`_: Fixed exception in ``DistanceToPointFilter`` in case of invalid point
