@@ -41,7 +41,7 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     fancy_name = serializers.SerializerMethodField()
 
     def get_fancy_name(self, obj):
-        return u'Kool %s' % obj.name
+        return 'Kool %s' % obj.name
 
     class Meta:
         model = Location
@@ -81,7 +81,7 @@ class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer)
     file = serializers.FileField(allow_empty_file=True)
 
     def get_fancy_name(self, obj):
-        return u'Nice %s' % obj.name
+        return 'Nice %s' % obj.name
 
     class Meta:
         model = Location

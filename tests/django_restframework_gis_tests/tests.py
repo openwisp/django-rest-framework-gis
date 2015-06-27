@@ -130,16 +130,16 @@ class TestRestFrameworkGis(TestCase):
     def test_post_location_list_empty_geometry(self):
         data = { 'name': 'empty input test' }
         response = self.client.post(self.location_list_url, data)
-        self.assertEqual(response.data['geometry'][0], u'This field is required.')
+        self.assertEqual(response.data['geometry'][0], 'This field is required.')
         data = { 'name': 'empty input test', 'geometry': '' }
         response = self.client.post(self.location_list_url, data)
-        self.assertEqual(response.data['geometry'][0], u'This field is required.')
+        self.assertEqual(response.data['geometry'][0], 'This field is required.')
         data = { 'name': 'empty input test' }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
-        self.assertEqual(response.data['geometry'][0], u'This field is required.')
+        self.assertEqual(response.data['geometry'][0], 'This field is required.')
         data = { 'name': 'empty input test', 'geometry': '' }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
-        self.assertEqual(response.data['geometry'][0], u'This field is required.')
+        self.assertEqual(response.data['geometry'][0], 'This field is required.')
 
     def test_post_location_list_invalid_WKT(self):
         data = {
