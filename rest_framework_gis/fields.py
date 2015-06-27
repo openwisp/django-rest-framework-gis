@@ -7,11 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field
 
 
-class JSONDict(dict):
-    def __str__(self):
-        return json.dumps(self)
-
-
 class GeometryField(Field):
     """
     A field to handle GeoDjango Geometry fields
@@ -25,10 +20,7 @@ class GeometryField(Field):
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
-        return JSONDict(json.loads(GEOSGeometry(value).geojson))
-        # Get GeoDjango geojson serialization and then convert it _back_ to
-        # a Python object
-        return json.loads(GEOSGeometry(value).geojson)
+        return JsonDict(GEOSGeometry(value).geojson)
 
     def to_internal_value(self, value):
         if value == '' or value is None:
@@ -47,3 +39,19 @@ class GeometryField(Field):
         if data == '':
             self.fail('required')
         return super(GeometryField, self).validate_empty_values(data)
+
+
+class JsonDict(dict):
+    """
+    Takes GeoDjango geojson in input and converts it _back_ to a Python object
+    Retains the geojson string for python 2,
+    see: https://github.com/djangonauts/django-rest-framework-gis/pull/60
+
+    TODO: remove this when python 2 will be deprecated
+    """
+    def __init__(self, data):
+        self._geojson_string = data
+        super(JsonDict, self).__init__(json.loads(data))
+
+    def __str__(self):
+        return self._geojson_string
