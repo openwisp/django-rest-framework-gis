@@ -38,6 +38,6 @@ class GeometryField(Field):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
 
     def validate_empty_values(self, data):
-        if data in [u'']:
+        if data == '':
             self.fail('required')
         return super(GeometryField, self).validate_empty_values(data)
