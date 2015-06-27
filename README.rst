@@ -23,19 +23,22 @@ Install development version
 Compatibility with DRF, Django and Python
 -----------------------------------------
 
-===============  ============================ ==================== ==================
+===============  ============================ ==================== ==================================
 DRF-gis version  DRF version                  Django version       Python version
-**0.9**          **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
-**0.8.2**        **3.0.4** to **3.1.1**       **1.5.x** to **1.8** **2.6** to **3.4**
-**0.8.1**        **3.0.4** to **3.1.1**       **1.5.x** to **1.8** **2.6** to **3.4**
-**0.8**          **3.0.4**                    **1.5.x** to **1.7** **2.6** to **3.4**
-**0.7**          **2.4.3**                    **1.5.x** to **1.7** **2.6** to **3.4**
-**0.6**          **2.4.3**                    **1.5.x** to **1.7** **2.6** to **3.4**
-**0.5**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6** to **3.4**
-**0.4**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6** to **3.4**
+**0.9.1**        **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
+**0.9**          **3.1.X**                    **1.5.x** to **1.8** **2.6**, **2.7**, **3.3**, **3.4**
+**0.9**          **3.1.X**                    **1.5.x** to **1.8** **2.6**, **2.7**, **3.3**, **3.4**
+**0.9**          **3.1.X**                    **1.5.x** to **1.8** **2.6**, **2.7**, **3.3**, **3.4**
+**0.8.2**        **3.0.4** to **3.1.1**       **1.5.x** to **1.8** **2.6**, **2.7**, **3.3**, **3.4**
+**0.8.1**        **3.0.4** to **3.1.1**       **1.5.x** to **1.8** **2.6**, **2.7**, **3.3**, **3.4**
+**0.8**          **3.0.4**                    **1.5.x** to **1.7** **2.6**, **2.7**, **3.3**, **3.4**
+**0.7**          **2.4.3**                    **1.5.x** to **1.7** **2.6**, **2.7**, **3.3**, **3.4**
+**0.6**          **2.4.3**                    **1.5.x** to **1.7** **2.6**, **2.7**, **3.3**, **3.4**
+**0.5**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6**, **2.7**, **3.3**, **3.4**
+**0.4**          from **2.3.14** to **2.4.2** **1.5.x** to **1.7** **2.6**, **2.7**, **3.3**, **3.4**
 **0.3**          from **2.3.14** to **2.4.2** **1.5.x**, **1.6.x** **2.6**, **2.7**
 **0.2**          from **2.2.2** to **2.3.13** **1.5.x**, **1.6.x** **2.6**, **2.7**
-===============  ============================ ==================== ==================
+===============  ============================ ==================== ==================================
 
 Fields
 ------
@@ -213,8 +216,8 @@ your model, like **"slug"**:
             id_field = "slug"
             fields = ('slug', 'address', 'city', 'state')
 
-The GeoJSON specification allows a feature to contain a 
-`boundingbox of a feature <http://geojson.org/geojson-spec.html#geojson-objects>`__. 
+The GeoJSON specification allows a feature to contain a
+`boundingbox of a feature <http://geojson.org/geojson-spec.html#geojson-objects>`__.
 ``GeoFeatureModelSerializer`` allows two different ways to fill this property. The first
 is using the **``geo_field``** to calculate the bounding box of a feature. This only allows
 read access for a REST client and can be achieved using **``auto_bbox``**. Example:
@@ -230,9 +233,9 @@ read access for a REST client and can be achieved using **``auto_bbox``**. Examp
             geo_field = 'geometry'
 
 
-The second approach uses the **``bbox_geo_field``** to specify an addional 
-GeometryField of the model which will be used to calculate the bounding box. This allows 
-boundingboxes differ from the exact extent of a features geometry. Additionally this 
+The second approach uses the **``bbox_geo_field``** to specify an addional
+GeometryField of the model which will be used to calculate the bounding box. This allows
+boundingboxes differ from the exact extent of a features geometry. Additionally this
 enables read and write access for the REST client. Bounding boxes send from the client will
 be saved as Polygons. Example:
 
