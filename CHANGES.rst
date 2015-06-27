@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.9.1 [unreleased]
+--------------------------
+
+- `#63 <https://github.com/djangonauts/django-rest-framework-gis/issues/63>`_: added compatibility with python 3.2 and updated compatibility table in README
+- `#60 <https://github.com/djangonauts/django-rest-framework-gis/pull/60>`_: ensure GeoJSON is rendered correctly in browsable API when using python 2
+- `#62 <https://github.com/djangonauts/django-rest-framework-gis/issues/62>`_: updated django-rest-framework requirement to 3.1.3
+
 Version 0.9 [2015-05-31]
 ------------------------
 
