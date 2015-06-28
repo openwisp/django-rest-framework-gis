@@ -46,7 +46,7 @@ Fields
 GeometryField
 ~~~~~~~~~~~~~
 
-Provides a GeometryField, which is a subclass of Django Rest Framework
+Provides a ``GeometryField``, which is a subclass of Django Rest Framework
 (from now on **DRF**) ``WritableField``. This field handles GeoDjango
 geometry fields, providing custom ``to_native`` and ``from_native``
 methods for GeoJSON input/output.
@@ -54,9 +54,9 @@ methods for GeoJSON input/output.
 GeometrySerializerMethodField
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Provides a GeometrySerializerMethodField, which is a subclass of DRF
-``SerializerMethodField`` and handles values which are computed with a serializer method and are used as a ``geo_field``. See example bellow.
-
+Provides a ``GeometrySerializerMethodField``, which is a subclass of DRF
+``SerializerMethodField`` and handles values which are computed with a serializer
+method and are used as a ``geo_field``. `See example below <https://github.com/djangonauts/django-rest-framework-gis#using-geometryserializermethodfield-as-geo_field>`__.
 
 Serializers
 -----------
@@ -177,6 +177,9 @@ serializer)
         }
     }
 
+Specifying the geometry field: "geo_field"
+##########################################
+
 ``GeoFeatureModelSerializer`` requires you to define a **``geo_field``**
 to be serialized as the "geometry". For example:
 
@@ -195,30 +198,32 @@ to be serialized as the "geometry". For example:
             # as with a ModelSerializer.
             fields = ('id', 'address', 'city', 'state')
 
-**``geo_field``** may also be an instance of ``GeometrySerializerMethodField`` mentioned above.
-In this case you can compute its value during serialization. For example,
+Using GeometrySerializerMethodField as "geo_field"
+##################################################
+
+**``geo_field``** may also be an instance of ``GeometrySerializerMethodField``.
+In this case you can compute its value during serialization. For example:
 
 .. code-block:: python
 
+    from django.contrib.gis.geos import Point
     from rest_framework_gis.serializers import GeoFeatureModelSerializer, GeometrySerializerMethodField
 
     class LocationSerializer(GeoFeatureModelSerializer):
         """ A class to serialize locations as GeoJSON compatible data """
 
+        # a field which contains a geometry value and can be used as geo_field
         other_point = GeometrySerializerMethodField()
-        """ A field which contains a geometry value and can be used as geo_field """
 
         def get_other_point(self, obj):
-                return Point(obj.point.lat / 2, obj.point.lon / 2)
+            return Point(obj.point.lat / 2, obj.point.lon / 2)
 
         class Meta:
             model = Location
             geo_field = 'other_point'
 
-            # you can also explicitly declare which fields you want to include
-            # as with a ModelSerializer.
-            fields = ('id', 'address', 'city', 'state')
-
+Specifying the ID: "id_field"
+#############################
 
 The primary key of the model (usually the "id" attribute) is
 automatically put outside the "properties" object (before "type") unless
@@ -247,9 +252,12 @@ your model, like **"slug"**:
 
         class Meta:
             model = Location
-            geo_field = "point"
-            id_field = "slug"
+            geo_field = 'point'
+            id_field = 'slug'
             fields = ('slug', 'address', 'city', 'state')
+
+Bounding Box: "auto_bbox" and "bbox_geo_field"
+##############################################
 
 The GeoJSON specification allows a feature to contain a
 `boundingbox of a feature <http://geojson.org/geojson-spec.html#geojson-objects>`__.
@@ -263,9 +271,9 @@ read access for a REST client and can be achieved using **``auto_bbox``**. Examp
 
     class LocationSerializer(GeoFeatureModelSerializer):
         class Meta:
-            auto_bbox = True
             model = Location
             geo_field = 'geometry'
+            auto_bbox = True
 
 
 The second approach uses the **``bbox_geo_field``** to specify an addional
@@ -284,8 +292,6 @@ be saved as Polygons. Example:
             model = BoxedLocation
             geo_field = 'geometry'
             bbox_geo_field = 'bbox_geometry'
-            fields = ['name', 'id']
-
 
 Filters
 -------
