@@ -32,7 +32,7 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install ordereddict; fi
   - pip install $DJANGO
   - pip install -r requirements-test.txt
-  - python setup.py -q install
+  - python setup.py -q develop
 
 before_script:
   - createdb django_restframework_gis
