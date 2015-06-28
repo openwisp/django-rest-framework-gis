@@ -1,3 +1,5 @@
+from django.contrib.gis.geos import Point
+
 from rest_framework import pagination, serializers
 from rest_framework_gis import serializers as gis_serializers
 
@@ -110,14 +112,13 @@ class LocationGeoFeatureBboxSerializer(gis_serializers.GeoFeatureModelSerializer
 class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
     new_geometry = gis_serializers.GeometrySerializerMethodField()
 
-    class Meta:
-        model = Location
-        geo_field = 'new_geometry'
-        fields = ['name', 'slug', 'id']
-
     def get_new_geometry(self, obj):
-        from django.contrib.gis.geos import Point
         if obj.name.startswith('hidden'):
             return Point(0., 0.)
         else:
             return obj.geometry
+
+    class Meta:
+        model = Location
+        geo_field = 'new_geometry'
+        fields = ['name', 'slug', 'id']

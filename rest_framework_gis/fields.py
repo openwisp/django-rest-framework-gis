@@ -7,6 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field, SerializerMethodField
 
 
+__all__ = ['GeometryField', 'GeometrySerializerMethodField']
+
+
 class GeometryField(Field):
     """
     A field to handle GeoDjango Geometry fields
@@ -41,6 +44,12 @@ class GeometryField(Field):
         return super(GeometryField, self).validate_empty_values(data)
 
 
+class GeometrySerializerMethodField(SerializerMethodField):
+    def to_representation(self, value):
+        value = super(GeometrySerializerMethodField, self).to_representation(value)
+        return JsonDict(GEOSGeometry(value).geojson)
+
+
 class JsonDict(dict):
     """
     Takes GeoDjango geojson in input and converts it _back_ to a Python object
@@ -55,9 +64,3 @@ class JsonDict(dict):
 
     def __str__(self):
         return self._geojson_string
-
-
-class GeometrySerializerMethodField(SerializerMethodField):
-    def to_representation(self, value):
-        value = super(GeometrySerializerMethodField, self).to_representation(value)
-        return json.loads(GEOSGeometry(value).geojson)
