@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9.1 [unreleased]
+Version 0.9.1 [2015-06-28]
 --------------------------
 
 - `#63 <https://github.com/djangonauts/django-rest-framework-gis/issues/63>`_: added compatibility with python 3.2 and updated compatibility table in README
