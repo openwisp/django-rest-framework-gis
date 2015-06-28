@@ -128,7 +128,7 @@ class TestRestFrameworkGisFilters(TestCase):
         self.assertEqual(Location.objects.count(), 0)
 
         # Filter parameters
-        distance = 5000 #meters
+        distance = 5000  # meters
         point_inside_ggpark = [-122.49034881591797, 37.76949349270407]
         point_on_golden_gate_bridge = [-122.47894, 37.8199]
         point_on_alcatraz = [-122.4222, 37.82667]
@@ -379,3 +379,56 @@ class TestRestFrameworkGisFilters(TestCase):
         # try without any param, should return both
         response = self.client.get(self.geojson_contained_in_geometry)
         self.assertEqual(len(response.data), 2)
+
+    def test_inBBOXFilter_filtering_none(self):
+        url_params = '?in_bbox=&format=json'
+        response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
+        self.assertDictEqual(response.data, {'type':'FeatureCollection','features':[]})
+
+    def test_inBBOXFilter_ValueError(self):
+        url_params = '?in_bbox=0&format=json'
+        response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
+        self.assertEqual(response.data['detail'], 'Invalid bbox string supplied for parameter in_bbox')
+
+    def test_inBBOXFilter_filter_field_none(self):
+        from .views import GeojsonLocationContainedInBBoxList as view
+        original_value = view.bbox_filter_field
+        view.bbox_filter_field = None
+        url_params = '?in_bbox=0,0,0,0&format=json'
+        response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
+        self.assertDictEqual(response.data, {'type':'FeatureCollection','features':[]})
+        view.bbox_filter_field = original_value
+
+    def test_TileFilter_filtering_none(self):
+        url_params = '?tile=&format=json'
+        response = self.client.get(self.location_contained_in_tile_list_url + url_params)
+        self.assertEqual(response.data, {'type':'FeatureCollection','features':[]})
+
+    def test_TileFilter_ValueError(self):
+        url_params = '?tile=1/0&format=json'
+        response = self.client.get(self.location_contained_in_tile_list_url + url_params)
+        self.assertEqual(response.data['detail'], 'Invalid tile string supplied for parameter tile')
+
+    def test_DistanceToPointFilter_filtering_none(self):
+        url_params = '?dist=%0.4f&point=&format=json' % 5000
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
+        self.assertDictEqual(response.data, {'type':'FeatureCollection','features':[]})
+
+    def test_DistanceToPointFilter_filter_field_none(self):
+        from .views import GeojsonLocationWithinDistanceOfPointList as view
+        original_value = view.distance_filter_field
+        view.distance_filter_field = None
+        url_params = '?dist=%0.4f&point=&format=json' % 5000
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
+        self.assertDictEqual(response.data, {'type':'FeatureCollection','features':[]})
+        view.distance_filter_field = original_value
+
+    def test_DistanceToPointFilter_ValueError_point(self):
+        url_params = '?dist=500.0&point=hello&format=json'
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
+        self.assertEqual(response.data['detail'], 'Invalid geometry string supplied for parameter point')
+
+    def test_DistanceToPointFilter_ValueError_distance(self):
+        url_params = '?dist=wrong&point=12.0,42.0&format=json'
+        response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
+        self.assertEqual(response.data['detail'], 'Invalid distance string supplied for parameter dist')

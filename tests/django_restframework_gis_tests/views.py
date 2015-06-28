@@ -151,7 +151,6 @@ class GeojsonBoxedLocationList(generics.ListCreateAPIView):
     model = BoxedLocation
     serializer_class = BoxedLocationGeoFeatureSerializer
     queryset = BoxedLocation.objects.all()
-    #pagination_class = PaginatedLocationGeoFeatureSerializer
 
 geojson_boxedlocation_list = GeojsonBoxedLocationList.as_view()
 

@@ -41,7 +41,7 @@ before_script:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - coverage run --source=rest_framework_gis,django_restframework_gis_tests runtests.py
+  - coverage run --source=rest_framework_gis runtests.py
 
 after_success:
   coveralls

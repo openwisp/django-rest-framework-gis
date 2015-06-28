@@ -5,11 +5,16 @@ unit tests for restframework_gis
 import urllib
 import sys
 import json
+
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ImproperlyConfigured
+
+from rest_framework_gis import serializers as gis_serializers
 
 from .models import Location, LocatedFile
+from .serializers import LocationGeoSerializer
 
 
 class TestRestFrameworkGis(TestCase):
@@ -489,3 +494,33 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['properties']['name'], 'hidden geometry')
         self.assertEqual(response.data['geometry']['type'], 'Point')
         self.assertEqual(response.data['geometry']['coordinates'], [0.0, 0.0])
+
+    def test_filterset(self):
+        from rest_framework_gis.filterset import GeoFilterSet
+
+    def test_geometry_field_to_representation_none(self):
+        self._create_locations()
+        f = LocationGeoSerializer(instance=self.l1).fields['geometry']
+        self.assertIsNone(f.to_representation(None))
+
+    def test_geometry_field_to_internal_value_none(self):
+        self._create_locations()
+        f = LocationGeoSerializer(instance=self.l1).fields['geometry']
+        self.assertIsNone(f.to_internal_value(None))
+
+    def test_no_geo_field_improperly_configured(self):
+        class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
+            class Meta:
+                model = Location
+        with self.assertRaises(ImproperlyConfigured):
+            LocationGeoFeatureSerializer()
+
+    def test_exclude_geo_field_improperly_configured(self):
+        self._create_locations()
+        class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
+            class Meta:
+                model = Location
+                geo_field = 'geometry'
+                exclude = ('geometry', )
+        with self.assertRaises(ImproperlyConfigured):
+            LocationGeoFeatureSerializer(instance=self.l1)

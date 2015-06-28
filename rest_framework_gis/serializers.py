@@ -8,7 +8,7 @@ from rest_framework.utils.field_mapping import ClassLookupDict
 try:
     from collections import OrderedDict
 # python 2.6
-except ImportError:
+except ImportError:  # pragma: no cover
     from ordereddict import OrderedDict
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
@@ -68,14 +68,13 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
         self.Meta.id_field = getattr(self.Meta, 'id_field', self.Meta.model._meta.pk.name)
-        if self.Meta.geo_field is None:
+        if not hasattr(self.Meta, 'geo_field') or not self.Meta.geo_field:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
 
         def check_excludes(field_name, field_role):
             """make sure the field is not excluded"""
-            if hasattr(self.Meta, 'exclude'):
-                if field_name in self.Meta.exclude:
-                    raise ImproperlyConfigured("You cannot exclude your '{0}'.".format(field_role))
+            if hasattr(self.Meta, 'exclude') and field_name in self.Meta.exclude:
+                raise ImproperlyConfigured("You cannot exclude your '{0}'.".format(field_role))
 
         def add_to_fields(field_name):
             """Make sure the field is included in the fields"""
@@ -119,9 +118,6 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
 
         for field in fields:
             field_name = field.field_name
-            if field.read_only and instance is None:
-                continue
-
             value = field.get_attribute(instance)
             value_repr = None
 
@@ -160,12 +156,7 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
                 _dict.update({self.Meta.bbox_geo_field: Polygon.from_bbox(feature['bbox'])})
             return _dict
 
-        if 'features' in data:
-            _unformatted_data = []
-            features = data['features']
-            for feature in features:
-                _unformatted_data.append(make_unformated_data(feature))
-        elif 'properties' in data:
+        if 'properties' in data:
             _unformatted_data = make_unformated_data(data)
         else:
             _unformatted_data = data

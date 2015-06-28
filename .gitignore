@@ -10,3 +10,4 @@ tests/static/
 ._*
 *.DS_Store
 *.komodoproject
+/htmlcov

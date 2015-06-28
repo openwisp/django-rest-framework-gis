@@ -13,16 +13,16 @@ from .tilenames import tile_edges
 
 try:
     import django_filters
-except ImportError:
+except ImportError:  # pragma: no cover
     raise ImproperlyConfigured(
         'restframework-gis filters depend on package "django-filter" '
         'which is missing. Install with "pip install django-filter".'
     )
 
-try:
+try:  # pragma: no cover
     # django >= 1.8
     from django.contrib.gis.db.models.lookups import gis_lookups
-except ImportError:
+except ImportError:  # pragma: no cover
     # django <= 1.7
     gis_lookups = models.sql.query.ALL_TERMS
 
@@ -48,8 +48,7 @@ class InBBoxFilter(BaseFilterBackend):
         try:
             p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
         except ValueError:
-            raise ParseError("Not valid bbox string in parameter %s."
-                             % self.bbox_param)
+            raise ParseError('Invalid bbox string supplied for parameter {0}'.format(self.bbox_param))
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
         return x
@@ -101,8 +100,7 @@ class TMSTileFilter(InBBoxFilter):
         try:
             z, x, y = (int(n) for n in tile_string.split('/'))
         except ValueError:
-            raise ParseError("Not valid tile string in parameter %s."
-                             % self.tile_param)
+            raise ParseError('Invalid tile string supplied for parameter {0}'.format(self.tile_param))
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
         return bbox
@@ -120,8 +118,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         try:
             (x, y) = (float(n) for n in point_string.split(','))
         except ValueError:
-            raise ParseError("Not valid geometry string in parameter %s."
-                             % self.point_param)
+            raise ParseError('Invalid geometry string supplied for parameter {0}'.format(self.point_param))
 
         p = Point(x, y)
         return p
@@ -148,8 +145,8 @@ class DistanceToPointFilter(BaseFilterBackend):
         """
         #   d * (180 / pi) / earthRadius   ==> degrees longitude
         #   (degrees longitude) / cos(latitude)  ==> degrees latitude
-        lat = latitude if latitude >= 0 else -1*latitude
-        rad2deg = 180/pi
+        lat = latitude if latitude >= 0 else -1 * latitude
+        rad2deg = 180 / pi
         earthRadius = 6378160.0
         latitudeCorrection = 0.5 * (1 + cos(lat * pi / 180))
         return (distance / (earthRadius * latitudeCorrection) * rad2deg)
@@ -171,8 +168,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         try:
             dist = float(dist_string)
         except ValueError:
-            raise ParseError("Not valid distance string in parameter %s."
-                             % self.dist_param)
+            raise ParseError('Invalid distance string supplied for parameter {0}'.format(self.dist_param))
 
         if (convert_distance_input):
             # Warning:  assumes that the point is (lon,lat)

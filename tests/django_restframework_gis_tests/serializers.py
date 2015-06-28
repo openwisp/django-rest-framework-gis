@@ -57,7 +57,7 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
         model = Location
         geo_field = 'geometry'
         id_field = 'slug'
-        fields = ['name', 'slug']
+        fields = ('name', 'slug')
 
 
 class LocationGeoFeatureFalseIDSerializer(LocationGeoFeatureSerializer):

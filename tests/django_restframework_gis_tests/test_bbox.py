@@ -2,8 +2,12 @@ import json
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ImproperlyConfigured
+
+from rest_framework_gis import serializers as gis_serializers
 
 from .models import BoxedLocation, Location
+from .serializers import LocationGeoSerializer
 
 
 class TestRestFrameworkGisBBox(TestCase):
@@ -64,3 +68,14 @@ class TestRestFrameworkGisBBox(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data['features']), 1)
         self.assertEqual(response.data['features'][0]['bbox'], self.l1.geometry.extent)
+
+    def test_bbox_improperly_configured(self):
+        self._create_locations()
+        class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
+            class Meta:
+                model = Location
+                geo_field = 'geometry'
+                bbox_geo_field  = 'geometry'
+                auto_bbox = True
+        with self.assertRaises(ImproperlyConfigured):
+            LocationGeoFeatureSerializer(instance=self.l1)
