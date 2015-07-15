@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9.2 [unreleased]
+Version 0.9.2 [2015-07-15]
 --------------------------
 
 - `#59 <https://github.com/djangonauts/django-rest-framework-gis/pull/59>`_: Added GeometrySerializerMethodField
