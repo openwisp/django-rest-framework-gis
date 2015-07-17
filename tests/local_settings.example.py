@@ -1,7 +1,7 @@
-from settings import *
-
-# RENAME THIS FILE local_settings.py IF YOU NEED TO CUSTOMIZE SOME SETTINGS
+# RENAME THIS FILE TO local_settings.py IF YOU NEED TO CUSTOMIZE SOME SETTINGS
 # BUT DO NOT COMMIT
+
+TEST_PERFORMANCE = True
 
 #DATABASES = {
 #    'default': {
@@ -21,18 +21,18 @@ from settings import *
 #    'django.contrib.messages',
 #    'django.contrib.staticfiles',
 #    'django.contrib.gis',
-#    
+#
 #    # geodjango widgets
 #    'olwidget',
-#    
+#
 #    # admin
 #    #'grappelli',
 #    'django.contrib.admin',
-#    
+#
 #    # rest framework
 #    'rest_framework',
 #    'rest_framework_gis',
-#    
+#
 #    # test app
 #    'django_restframework_gis_tests'
 #)
