@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.9.3 [unreleased]
+--------------------------
+
+- `04fd1bf <https://github.com/djangonauts/django-rest-framework-gis/commit/04fd1bf>`_: Added GeoJsonPagination
+
 Version 0.9.2 [2015-07-15]
 --------------------------
 
