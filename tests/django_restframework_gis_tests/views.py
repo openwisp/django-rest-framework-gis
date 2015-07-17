@@ -7,7 +7,6 @@ from .models import *
 from .serializers import *
 
 
-
 class LocationList(generics.ListCreateAPIView):
     model = Location
     serializer_class = LocationGeoSerializer

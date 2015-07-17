@@ -20,6 +20,20 @@ Install development version
 
     pip install https://github.com/djangonauts/django-rest-framework-gis/tarball/master
 
+Setup
+-----
+
+Add ``rest_framework_gis`` in ``settings.INSTALLED_APPS``, after ``rest_framework``:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        # ...
+        'rest_framework',
+        'rest_framework_gis',
+        # ...
+    ]
+
 Compatibility with DRF, Django and Python
 -----------------------------------------
 
@@ -53,6 +67,9 @@ Provides a ``GeometryField``, which is a subclass of Django Rest Framework
 geometry fields, providing custom ``to_native`` and ``from_native``
 methods for GeoJSON input/output.
 
+**New in 0.9.3:** there is no need to define this field explicitly in your serializer,
+it's mapped automatically during initialization in ``rest_framework_gis.apps.AppConfig.ready()``.
+
 GeometrySerializerMethodField
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -63,8 +80,11 @@ method and are used as a ``geo_field``. `See example below <https://github.com/d
 Serializers
 -----------
 
-GeoModelSerializer
-~~~~~~~~~~~~~~~~~~
+GeoModelSerializer (DEPRECATED)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Deprecated, will be removed in 1.0**: Using this serializer is not needed anymore since 0.9.3 if you add
+``rest_framework_gis`` in ``settings.INSTALLED_APPS``
 
 Provides a ``GeoModelSerializer``, which is a sublass of DRF
 ``ModelSerializer``. This serializer updates the field\_mapping
@@ -114,7 +134,7 @@ In contrast, the ``GeoModelSerializer`` will output:
 GeoFeatureModelSerializer
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``GeoFeatureModelSerializer`` is a subclass of ``GeoModelSerializer``
+``GeoFeatureModelSerializer`` is a subclass of ``rest_framework.ModelSerializer``
 which will output data in a format that is **GeoJSON** compatible. Using
 the above example, the ``GeoFeatureModelSerializer`` will output:
 

@@ -12,3 +12,17 @@ def get_version():
         if VERSION[3] != 'final':
             version = '%s %s' % (version, VERSION[3])
     return version
+
+
+default_app_config = 'rest_framework_gis.apps.AppConfig'
+
+# retain support for django 1.5 and 1.6
+try:
+    import django
+    import os
+
+    if os.environ.get('DJANGO_SETTINGS_MODULE') and django.get_version() < '1.7':
+        from .apps import AppConfig
+        AppConfig().ready()
+except ImportError:
+    pass

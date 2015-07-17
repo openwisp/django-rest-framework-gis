@@ -19,22 +19,18 @@ __all__ = [
 ]
 
 
-class LocationGeoSerializer(gis_serializers.GeoModelSerializer):
+class LocationGeoSerializer(serializers.ModelSerializer):
     """ location geo serializer  """
     details = serializers.HyperlinkedIdentityField(view_name='api_location_details')
 
     class Meta:
         model = Location
-        geo_field = 'geometry'
 
 
 class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
     page_size_query_param = 'limit'
     page_size = 40
     max_page_size = 10000
-
-    class Meta:
-        object_serializer_class = LocationGeoSerializer
 
 
 class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):

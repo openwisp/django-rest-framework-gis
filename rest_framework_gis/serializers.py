@@ -1,30 +1,28 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.contrib.gis.db.models.fields import GeometryField as django_GeometryField
 from django.contrib.gis.geos import Polygon
 
 from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
-from rest_framework.utils.field_mapping import ClassLookupDict
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
 from .utils import OrderedDict
 
-# map drf-gis GeometryField to GeoDjango Geometry Field
-try:
-    _geo_field_mapping = ModelSerializer._field_mapping.mapping
-except AttributeError:
-    _geo_field_mapping = ModelSerializer.serializer_field_mapping
-_geo_field_mapping.update({
-    django_GeometryField: GeometryField
-})
-
 
 class GeoModelSerializer(ModelSerializer):
     """
-    A subclass of DFR ModelSerializer that adds support
-    for GeoDjango fields to be serialized as GeoJSON
-    compatible data
+    Deprecated, will be removed in django-rest-framework-gis 1.0
     """
-    _field_mapping = ClassLookupDict(_geo_field_mapping)
+    def __init__(self, *args, **kwargs):
+        # TODO: remove in 1.0
+        from .apps import AppConfig
+        import warnings
+        import rest_framework_gis
+        AppConfig('rest_framework_gis', rest_framework_gis).ready()
+        warnings.simplefilter('always', DeprecationWarning)
+        warnings.warn('\nGeoModelSerializer is deprecated, '
+                      'add "rest_framework_gis" to settings.INSTALLED_APPS and use '
+                      '"rest_framework.ModelSerializer" instead',
+                      DeprecationWarning)
+        super(GeoModelSerializer, self).__init__(*args, **kwargs)
 
 
 class GeoFeatureModelListSerializer(ListSerializer):
@@ -42,9 +40,9 @@ class GeoFeatureModelListSerializer(ListSerializer):
         ))
 
 
-class GeoFeatureModelSerializer(GeoModelSerializer):
+class GeoFeatureModelSerializer(ModelSerializer):
     """
-    A subclass of GeoModelSerializer
+    A subclass of ModelSerializer
     that outputs geojson-ready data as
     features and feature collections
     """
