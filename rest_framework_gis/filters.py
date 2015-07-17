@@ -41,7 +41,7 @@ class InBBoxFilter(BaseFilterBackend):
     bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
 
     def get_filter_bbox(self, request):
-        bbox_string = request.QUERY_PARAMS.get(self.bbox_param, None)
+        bbox_string = request.query_params.get(self.bbox_param, None)
         if not bbox_string:
             return None
 
@@ -93,7 +93,7 @@ class TMSTileFilter(InBBoxFilter):
     tile_param = 'tile'  # The URL query paramater which contains the tile address
 
     def get_filter_bbox(self, request):
-        tile_string = request.QUERY_PARAMS.get(self.tile_param, None)
+        tile_string = request.query_params.get(self.tile_param, None)
         if not tile_string:
             return None
 
@@ -111,7 +111,7 @@ class DistanceToPointFilter(BaseFilterBackend):
     point_param = 'point'  # The URL query parameter which contains the
 
     def get_filter_point(self, request):
-        point_string = request.QUERY_PARAMS.get(self.point_param, None)
+        point_string = request.query_params.get(self.point_param, None)
         if not point_string:
             return None
 
@@ -164,7 +164,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             return queryset
 
         # distance in meters
-        dist_string = request.QUERY_PARAMS.get(self.dist_param, 1000)
+        dist_string = request.query_params.get(self.dist_param, 1000)
         try:
             dist = float(dist_string)
         except ValueError:
