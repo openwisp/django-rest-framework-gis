@@ -493,7 +493,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['properties']['name'], 'hidden geometry')
         self.assertEqual(response.data['geometry']['type'], 'Point')
-        self.assertEqual(response.data['geometry']['coordinates'], [0.0, 0.0])
+        self.assertEqual(response.data['geometry']['coordinates'], (0.0, 0.0))
 
     def test_filterset(self):
         from rest_framework_gis.filterset import GeoFilterSet

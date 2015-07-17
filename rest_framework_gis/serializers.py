@@ -100,18 +100,17 @@ class GeoFeatureModelSerializer(GeoModelSerializer):
         Serialize objects -> primitives.
         """
         ret = OrderedDict()
-        fields = [field for field in self.fields.values() if not field.write_only]
 
         # geo structure
-        if self.Meta.id_field is not False:
-            ret["id"] = ""
         ret["type"] = "Feature"
-        ret["geometry"] = {}
         ret["properties"] = OrderedDict()
         if self.Meta.bbox_geo_field or self.Meta.auto_bbox:
             ret["bbox"] = None
 
-        for field in fields:
+        for field in self.fields.values():
+            if field.write_only:
+                continue
+
             field_name = field.field_name
             value = field.get_attribute(instance)
             value_repr = None

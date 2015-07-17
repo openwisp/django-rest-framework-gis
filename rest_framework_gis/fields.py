@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field, SerializerMethodField
 
+from .utils import OrderedDict
+
 
 __all__ = ['GeometryField', 'GeometrySerializerMethodField']
 
@@ -23,7 +25,7 @@ class GeometryField(Field):
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
-        return JsonDict(GEOSGeometry(value).geojson)
+        return GeoJsonDict(value)
 
     def to_internal_value(self, value):
         if value == '' or value is None:
@@ -47,20 +49,23 @@ class GeometryField(Field):
 class GeometrySerializerMethodField(SerializerMethodField):
     def to_representation(self, value):
         value = super(GeometrySerializerMethodField, self).to_representation(value)
-        return JsonDict(GEOSGeometry(value).geojson)
+        return GeoJsonDict(value)
 
 
-class JsonDict(dict):
+class GeoJsonDict(OrderedDict):
     """
-    Takes GeoDjango geojson in input and converts it _back_ to a Python object
-    Retains the geojson string for python 2,
-    see: https://github.com/djangonauts/django-rest-framework-gis/pull/60
-
-    TODO: remove this when python 2 will be deprecated
+    Used for serializing GIS values to GeoJSON values
+    TODO: remove this when support for python 2.6/2.7 will be dropped
     """
-    def __init__(self, data):
-        self._geojson_string = data
-        super(JsonDict, self).__init__(json.loads(data))
+    def __init__(self, geometry):
+        super(GeoJsonDict, self).__init__((
+            ('type', geometry.geom_type),
+            ('coordinates', geometry.coords),
+        ))
 
     def __str__(self):
-        return self._geojson_string
+        """
+        Avoid { 'type': u'Point', 'coordinates': [12, 32] } in python 2.6/2.7
+        see: https://github.com/djangonauts/django-rest-framework-gis/pull/60
+        """
+        return json.dumps(self)
