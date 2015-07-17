@@ -1,4 +1,6 @@
+sudo: false
 language: python
+cache: pip
 
 services:
   - postgresql
@@ -11,17 +13,17 @@ python:
   - "2.6"
 
 env:
-  - DJANGO="django==1.8.2"
-  - DJANGO="django==1.7.8"
+  - DJANGO="django==1.8.3"
+  - DJANGO="django==1.7.9"
   - DJANGO="django==1.6.11"
   - DJANGO="django==1.5.12"
 
 matrix:
   exclude:
     - python: "2.6"
-      env: DJANGO="django==1.7.8"
+      env: DJANGO="django==1.7.9"
     - python: "2.6"
-      env: DJANGO="django==1.8.2"
+      env: DJANGO="django==1.8.3"
 
 branches:
   only:
@@ -37,7 +39,6 @@ install:
 before_script:
   - createdb django_restframework_gis
   - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis;"
-  - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis_topology;"
 
 # command to run tests, e.g. python setup.py test
 script:
