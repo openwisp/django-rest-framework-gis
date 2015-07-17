@@ -5,13 +5,8 @@ from django.contrib.gis.geos import Polygon
 from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
 from rest_framework.utils.field_mapping import ClassLookupDict
 
-try:
-    from collections import OrderedDict
-# python 2.6
-except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict
-
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
+from .utils import OrderedDict
 
 # map drf-gis GeometryField to GeoDjango Geometry Field
 try:

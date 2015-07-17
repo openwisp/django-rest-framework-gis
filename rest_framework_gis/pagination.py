@@ -1,11 +1,7 @@
-try:
-    from collections import OrderedDict
-# python 2.6
-except ImportError:  # pragma: no cover
-    from ordereddict import OrderedDict
-
 from rest_framework import pagination
 from rest_framework.response import Response
+
+from .utils import OrderedDict
 
 
 class GeoJsonPagination(pagination.PageNumberPagination):
