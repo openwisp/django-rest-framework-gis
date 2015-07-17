@@ -25,6 +25,7 @@ Compatibility with DRF, Django and Python
 
 ===============  ============================ ==================== ==================================
 DRF-gis version  DRF version                  Django version       Python version
+**0.9.3**        **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
 **0.9.2**        **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
 **0.9.1**        **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
 **0.9**          **3.1.X**                    **1.5.x** to **1.8** **2.6**, **2.7**, **3.3**, **3.4**
@@ -137,9 +138,6 @@ the above example, the ``GeoFeatureModelSerializer`` will output:
 
 If you are serializing an object list, ``GeoFeatureModelSerializer``
 will create a ``FeatureCollection``:
-
-(**NOTE:** This currenty does not work with the default pagination
-serializer)
 
 .. code-block:: javascript
 
@@ -293,6 +291,54 @@ be saved as Polygons. Example:
             model = BoxedLocation
             geo_field = 'geometry'
             bbox_geo_field = 'bbox_geometry'
+
+Pagination
+----------
+
+We provide a ``GeoJsonPagination`` class.
+
+GeoJsonPagination
+~~~~~~~~~~~~~~~~~
+
+Based on ``rest_framework.pagination.PageNumberPagination``.
+
+Code example:
+
+.. code-block:: python
+
+    from rest_framework_gis.pagination import GeoJsonPagination
+    # --- other omitted imports --- #
+
+    class GeojsonLocationList(generics.ListCreateAPIView):
+        # -- other omitted view attributes --- #
+        pagination_class = GeoJsonPagination
+
+Example result response (cut to one element only instead of 10):
+
+.. code-block:: javascript
+
+    {
+        "type": "FeatureCollection",
+        "count": 25,
+        "next": "http://localhost:8000/geojson/?page=2",
+        "previous": null,
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        42.0,
+                        50.0
+                    ]
+                },
+                "properties": {
+                    "name": "test"
+                }
+            }
+        ]
+    }
+
 
 Filters
 -------

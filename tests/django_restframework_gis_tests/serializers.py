@@ -12,7 +12,6 @@ __all__ = [
     'LocationGeoFeatureSerializer',
     'LocationGeoFeatureSlugSerializer',
     'LocationGeoFeatureFalseIDSerializer',
-    'PaginatedLocationGeoFeatureSerializer',
     'LocatedFileGeoFeatureSerializer',
     'BoxedLocationGeoFeatureSerializer',
     'LocationGeoFeatureBboxSerializer',
@@ -66,15 +65,6 @@ class LocationGeoFeatureFalseIDSerializer(LocationGeoFeatureSerializer):
         model = Location
         geo_field = 'geometry'
         id_field = False
-
-
-class PaginatedLocationGeoFeatureSerializer(pagination.PageNumberPagination):
-    page_size_query_param = 'limit'
-    page_size = 40
-    max_page_size = 10000
-
-    class Meta:
-        object_serializer_class = LocationGeoFeatureSerializer
 
 
 class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):

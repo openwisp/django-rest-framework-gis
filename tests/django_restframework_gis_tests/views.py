@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.filters import DjangoFilterBackend
 from rest_framework_gis.filters import *
+from rest_framework_gis.pagination import GeoJsonPagination
 
 from .models import *
 from .serializers import *
@@ -28,7 +29,8 @@ class GeojsonLocationList(generics.ListCreateAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
-    pagination_class = PaginatedLocationGeoFeatureSerializer
+    pagination_class = GeoJsonPagination
+    paginate_by_param = 'page_size'
 
 geojson_location_list = GeojsonLocationList.as_view()
 

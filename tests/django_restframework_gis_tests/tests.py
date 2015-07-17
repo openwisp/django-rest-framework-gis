@@ -524,3 +524,14 @@ class TestRestFrameworkGis(TestCase):
                 exclude = ('geometry', )
         with self.assertRaises(ImproperlyConfigured):
             LocationGeoFeatureSerializer(instance=self.l1)
+
+    def test_geojson_pagination(self):
+        self._create_locations()
+        response = self.client.get(self.geojson_location_list_url)
+        self.assertEqual(response.data['type'], 'FeatureCollection')
+        self.assertEqual(len(response.data['features']), 2)
+        response = self.client.get('{0}?page_size=1'.format(self.geojson_location_list_url))
+        self.assertEqual(response.data['type'], 'FeatureCollection')
+        self.assertEqual(len(response.data['features']), 1)
+        self.assertIn('next', response.data)
+        self.assertIn('previous', response.data)
