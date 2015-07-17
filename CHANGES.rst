@@ -4,7 +4,9 @@ Changelog
 Version 0.9.3 [unreleased]
 --------------------------
 
-- `04fd1bf <https://github.com/djangonauts/django-rest-framework-gis/commit/04fd1bf>`_: Added GeoJsonPagination
+- `04fd1bf <https://github.com/djangonauts/django-rest-framework-gis/commit/04fd1bf>`_: Added ``GeoJsonPagination``
+- `fe47d86 <https://github.com/djangonauts/django-rest-framework-gis/commit/fe47d86>`_: Improved ``ValidationError`` message of ``GeometryField``
+- `a3ddd3d <https://github.com/djangonauts/django-rest-framework-gis/commit/a3ddd3d>`_: Improved serialization performance between 25% and 29%
 
 Version 0.9.2 [2015-07-15]
 --------------------------
