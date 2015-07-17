@@ -21,7 +21,7 @@ class TestRestFrameworkGis(TestCase):
     def setUp(self):
         self.location_list_url = reverse('api_location_list')
         self.geojson_location_list_url = reverse('api_geojson_location_list')
-        self.geos_error_message = 'Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'
+        self.geos_error_message = 'Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'
 
     def _create_locations(self):
         self.l1 = Location.objects.create(id=1, name='l1', slug='l1', geometry='POINT (13.0078125000020002 42.4234565179379999)')

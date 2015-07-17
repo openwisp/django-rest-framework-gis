@@ -36,7 +36,7 @@ class GeometryField(Field):
         try:
             return GEOSGeometry(value).geojson
         except (ValueError, GEOSException, OGRException, TypeError):
-            raise ValidationError(_('Invalid format: string or unicode input unrecognized as WKT EWKT, and HEXEWKB.'))
+            raise ValidationError(_('Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'))
 
     def validate_empty_values(self, data):
         if data == '':
