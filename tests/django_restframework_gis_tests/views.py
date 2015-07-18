@@ -99,6 +99,14 @@ class GeojsonLocationDetailsHidden(generics.RetrieveUpdateDestroyAPIView):
 geojson_location_details_hidden = GeojsonLocationDetailsHidden.as_view()
 
 
+class GeojsonLocationDetailsNone(generics.RetrieveUpdateDestroyAPIView):
+    model = Location
+    serializer_class = NoneGeoFeatureMethodSerializer
+    queryset = Location.objects.all()
+
+geojson_location_details_none = GeojsonLocationDetailsNone.as_view()
+
+
 class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     lookup_field = 'slug'

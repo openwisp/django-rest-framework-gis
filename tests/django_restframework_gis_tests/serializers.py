@@ -16,6 +16,7 @@ __all__ = [
     'BoxedLocationGeoFeatureSerializer',
     'LocationGeoFeatureBboxSerializer',
     'LocationGeoFeatureMethodSerializer',
+    'NoneGeoFeatureMethodSerializer',
 ]
 
 
@@ -103,6 +104,17 @@ class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializ
             return Point(0., 0.)
         else:
             return obj.geometry
+
+    class Meta:
+        model = Location
+        geo_field = 'new_geometry'
+
+
+class NoneGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
+    new_geometry = gis_serializers.GeometrySerializerMethodField()
+
+    def get_new_geometry(self, obj):
+        return None
 
     class Meta:
         model = Location

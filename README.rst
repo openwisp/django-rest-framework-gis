@@ -241,6 +241,8 @@ In this case you can compute its value during serialization. For example:
             model = Location
             geo_field = 'other_point'
 
+Serializer for ``geo_field`` may also return ``None`` value, which will translate to ``null`` value for geojson ``geometry`` field.
+
 Specifying the ID: "id_field"
 #############################
 
