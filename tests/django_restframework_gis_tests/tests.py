@@ -495,6 +495,16 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['geometry']['type'], 'Point')
         self.assertEqual(response.data['geometry']['coordinates'], (0.0, 0.0))
 
+    def test_geometry_serializer_method_field_none(self):
+        location = Location.objects.create(name='None value', geometry='POINT (135.0 45.0)')
+        location_loaded = Location.objects.get(pk=location.id)
+        self.assertEqual(location_loaded.geometry, Point(135.0, 45.0))
+        url = reverse('api_geojson_location_details_none', args=[location.id])
+        response = self.client.generic('GET', url, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['properties']['name'], 'None value')
+        self.assertEqual(response.data['geometry'], None)
+
     def test_filterset(self):
         from rest_framework_gis.filterset import GeoFilterSet
 
