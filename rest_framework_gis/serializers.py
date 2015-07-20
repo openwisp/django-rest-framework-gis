@@ -113,7 +113,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
             value = field.get_attribute(instance)
             value_repr = None
 
-            if value:
+            if value is not None:
                 if field_name == self.Meta.bbox_geo_field:
                     # check for GEOSGeometry specfifc properties to generate the extent
                     # of the geometry.
