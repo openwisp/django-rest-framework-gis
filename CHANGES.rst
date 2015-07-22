@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9.3 [unreleased]
+Version 0.9.3 [2015-07-22]
 --------------------------
 
 - `04fd1bf <https://github.com/djangonauts/django-rest-framework-gis/commit/04fd1bf>`_: Added ``GeoJsonPagination``
@@ -9,7 +9,7 @@ Version 0.9.3 [unreleased]
 - `a3ddd3d <https://github.com/djangonauts/django-rest-framework-gis/commit/a3ddd3d>`_: **Improved serialization performance between 25% and 29%**
 - `fb6ed36 <https://github.com/djangonauts/django-rest-framework-gis/commit/fb6ed36>`_: ``GeoModelSerializer`` deprecated because obsolete
 - `#66 <https://github.com/djangonauts/django-rest-framework-gis/pull/66>`_: geometry now allows ``None`` values according to the **GeoJSON spec**
-- `#67 <https://github.com/djangonauts/django-rest-framework-gis/pull/67>`_: distinguished ``False`` or empty string values from ``None`` in ``GeoFeatureModelSerializer``
+- `#67 <https://github.com/djangonauts/django-rest-framework-gis/pull/67>`_: discern ``False`` or empty string values from ``None`` in ``GeoFeatureModelSerializer``
 
 Version 0.9.2 [2015-07-15]
 --------------------------
