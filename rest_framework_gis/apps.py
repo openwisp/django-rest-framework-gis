@@ -1,6 +1,7 @@
 try:
     from django.apps import AppConfig as BaseConfig
-except ImportError:  # django <= 1.6
+except ImportError:  # pragma: nocover
+    # django <= 1.6
     class BaseConfig(object):
         pass
 

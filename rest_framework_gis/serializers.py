@@ -11,7 +11,7 @@ class GeoModelSerializer(ModelSerializer):
     """
     Deprecated, will be removed in django-rest-framework-gis 1.0
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pragma: no cover
         # TODO: remove in 1.0
         from .apps import AppConfig
         import warnings
@@ -97,10 +97,12 @@ class GeoFeatureModelSerializer(ModelSerializer):
         """
         Serialize objects -> primitives.
         """
+        # prepare OrderedDict geojson structure
         ret = OrderedDict()
-
-        # geo structure
+        if self.Meta.id_field is not False:
+            ret["id"] = None
         ret["type"] = "Feature"
+        ret["geometry"] = None
         ret["properties"] = OrderedDict()
         if self.Meta.bbox_geo_field or self.Meta.auto_bbox:
             ret["bbox"] = None
