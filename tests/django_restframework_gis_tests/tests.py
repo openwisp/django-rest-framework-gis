@@ -122,6 +122,21 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
 
+    def test_post_location_list_EWKT(self):
+        self.assertEqual(Location.objects.count(), 0)
+        data = {
+            'name': 'EWKT input test',
+            'geometry': 'SRID=28992;POINT(221160 600204)'
+        }
+        response = self.client.post(self.location_list_url, data)
+        expected_coords = (6.381495826183805, 53.384066927384985)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Location.objects.count(), 1)
+        self.assertEquals(
+            Location.objects.get(name='EWKT input test').geometry.coords,
+            expected_coords
+        )
+
     def test_post_location_list_WKT_as_json(self):
         self.assertEqual(Location.objects.count(), 0)
         data = {
