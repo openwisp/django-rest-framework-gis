@@ -560,3 +560,15 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(len(response.data['features']), 1)
         self.assertIn('next', response.data)
         self.assertIn('previous', response.data)
+
+    def test_pickle(self):
+        import pickle
+        from rest_framework_gis.fields import GeoJsonDict
+        geometry = GEOSGeometry('POINT (30 10)')
+        geojsondict = GeoJsonDict((
+            ('type', geometry.geom_type),
+            ('coordinates', geometry.coords),
+        ))
+        pickled = pickle.dumps(geojsondict)
+        restored = pickle.loads(pickled)
+        self.assertEqual(restored, geojsondict)

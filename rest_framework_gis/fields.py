@@ -25,7 +25,11 @@ class GeometryField(Field):
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
             return value
-        return GeoJsonDict(value)
+        # we expect value to be a GEOSGeometry instance
+        return GeoJsonDict((
+            ('type', value.geom_type),
+            ('coordinates', value.coords),
+        ))
 
     def to_internal_value(self, value):
         if value == '' or value is None:
@@ -50,7 +54,11 @@ class GeometrySerializerMethodField(SerializerMethodField):
     def to_representation(self, value):
         value = super(GeometrySerializerMethodField, self).to_representation(value)
         if value is not None:
-            return GeoJsonDict(value)
+            # we expect value to be a GEOSGeometry instance
+            return GeoJsonDict((
+                ('type', value.geom_type),
+                ('coordinates', value.coords),
+            ))
         else:
             return None
 
@@ -60,15 +68,12 @@ class GeoJsonDict(OrderedDict):
     Used for serializing GIS values to GeoJSON values
     TODO: remove this when support for python 2.6/2.7 will be dropped
     """
-    def __init__(self, geometry):
-        super(GeoJsonDict, self).__init__((
-            ('type', geometry.geom_type),
-            ('coordinates', geometry.coords),
-        ))
 
     def __str__(self):
         """
-        Avoid { 'type': u'Point', 'coordinates': [12, 32] } in python 2.6/2.7
+        Avoid displaying strings like
+        ``{ 'type': u'Point', 'coordinates': [12, 32] }``
+        in DRF browsable UI inputs (python 2.6/2.7)
         see: https://github.com/djangonauts/django-rest-framework-gis/pull/60
         """
         return json.dumps(self)
