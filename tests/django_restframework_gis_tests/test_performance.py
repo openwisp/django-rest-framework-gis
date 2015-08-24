@@ -1,6 +1,11 @@
+import sys
 from django.conf import settings
 
-if settings.TEST_PERFORMANCE:
+# this test must be run explicitly
+# either by calling:
+# django test --keepdb django_restframework_gis_tests.test_performance
+# or by setting ``settings.TEST_PERFORMANCE`` to ``True``
+if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TEST_PERFORMANCE:
     from django.test import TestCase
     from django.core.urlresolvers import reverse
     from rest_framework.renderers import JSONRenderer
