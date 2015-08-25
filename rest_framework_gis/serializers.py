@@ -11,18 +11,6 @@ class GeoModelSerializer(ModelSerializer):
     """
     Deprecated, will be removed in django-rest-framework-gis 1.0
     """
-    def __init__(self, *args, **kwargs):  # pragma: no cover
-        # TODO: remove in 1.0
-        from .apps import AppConfig
-        import warnings
-        import rest_framework_gis
-        AppConfig('rest_framework_gis', rest_framework_gis).ready()
-        warnings.simplefilter('always', DeprecationWarning)
-        warnings.warn('\nGeoModelSerializer is deprecated, '
-                      'add "rest_framework_gis" to settings.INSTALLED_APPS and use '
-                      '"rest_framework.ModelSerializer" instead',
-                      DeprecationWarning)
-        super(GeoModelSerializer, self).__init__(*args, **kwargs)
 
 
 class GeoFeatureModelListSerializer(ListSerializer):

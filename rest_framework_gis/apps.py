@@ -3,7 +3,8 @@ try:
 except ImportError:  # pragma: nocover
     # django <= 1.6
     class BaseConfig(object):
-        pass
+        def __init__(self, *args):
+            pass
 
 
 class AppConfig(BaseConfig):
