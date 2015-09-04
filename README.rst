@@ -366,12 +366,12 @@ source for the `properties` field when rendering it to JSON.
 
 
 When the serializer renders GeoJSON, it calls the method
-`get_feature_properties` for each object in the database. This function
+``get_feature_properties`` for each object in the database. This function
 should return a dictionary containing the attributes for the feature. In the
 case of a HStore field, this function is easily implemented.
 
 The reverse is also required: mapping a GeoJSON formatted structure to
-attributes of your model. This task is done by `unformat_geojson`. It should
+attributes of your model. This task is done by ``unformat_geojson``. It should
 return a dictionary with your model attributes as keys, and the corresponding
 values retrieved from the GeoJSON feature data.
 
