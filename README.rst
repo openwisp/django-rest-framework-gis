@@ -314,6 +314,68 @@ be saved as Polygons. Example:
             geo_field = 'geometry'
             bbox_geo_field = 'bbox_geometry'
 
+
+Custom GeoJSON properties source
+################################
+
+In GeoJSON each feature can have a `properties` field containing the
+attributes of the feature. By default this field is filled with the
+attributes from your Django model, excluding the id, geometry and bounding
+box fields. It is possible to override this behaviour and implement a custom
+source for this `properties` field.
+
+In the following example we will use a Django model which uses a PostgreSQL
+HStore field to store the attributes of a feature. This field should be the
+source for the `properties` field when rendering it to JSON.
+
+.. code-block:: python
+
+    # models.py
+    class Link(models.Model):
+        """
+            Metadata is stored in a PostgreSQL HStore field, which allows us to
+            store arbitrary key-value pairs with a link record.
+        """
+
+        metadata = HStoreField(blank=True, null=True, default={})
+
+        geo = models.LineStringField()
+        objects = models.GeoManager()
+
+    # serializers.py
+    class NetworkGeoSerializer(GeoFeatureModelSerializer):
+        class Meta:
+            model = models.Link
+            geo_field = 'geo'
+            auto_bbox = True
+
+        def get_feature_properties(self, instance):
+            return instance.metadata  # This is a PostgreSQL HStore field, which django maps to a dict
+
+        def unformat_geojson(self, feature):
+            attribs = {
+                self.Meta.geo_field: feature["geometry"],
+                "metadata": feature["properties"]
+            }
+
+            if self.Meta.bbox_geo_field and "bbox" in feature:
+                attribs[self.Meta.bbox_geo_field] = Polygon.from_bbox(
+                    feature["bbox"])
+
+            return attribs
+
+
+When the serializer renders GeoJSON, it calls the method
+`get_feature_properties` for each object in the database. This function
+should return a dictionary containing the attributes for the feature. In the
+case of a HStore field, this function is easily implemented.
+
+The reverse is also required: mapping a GeoJSON formatted structure to
+attributes of your model. This task is done by `unformat_geojson`. It should
+return a dictionary with your model attributes as keys, and the corresponding
+values retrieved from the GeoJSON feature data.
+
+
 Pagination
 ----------
 
