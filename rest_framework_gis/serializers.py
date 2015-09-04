@@ -132,8 +132,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
 
             if not field.write_only:
                 value = field.get_attribute(instance)
-                ret["bbox"] = (value.extent if hasattr(value, 'extent') else
-                               None)
+                ret["bbox"] = value.extent if hasattr(value, 'extent') else None
 
         ret["properties"] = self.get_feature_properties(instance)
 
@@ -149,8 +148,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         else:
             _unformatted_data = data
 
-        return super(GeoFeatureModelSerializer, self).to_internal_value(
-            _unformatted_data)
+        return super(GeoFeatureModelSerializer, self).to_internal_value(_unformatted_data)
 
     def get_feature_properties(self, instance):
         """
@@ -201,8 +199,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
             attribs[self.Meta.geo_field] = feature['geometry']
 
         if self.Meta.bbox_geo_field and 'bbox' in feature:
-            attribs[self.Meta.bbox_geo_field] = Polygon.from_bbox(
-                feature['bbox'])
+            attribs[self.Meta.bbox_geo_field] = Polygon.from_bbox(feature['bbox'])
 
         return attribs
 
