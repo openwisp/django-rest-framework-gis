@@ -4,6 +4,8 @@ Changelog
 Version 0.9.4 [unreleased]
 --------------------------
 
+- `#68 <https://github.com/djangonauts/django-rest-framework-gis/issues/68>`_: ensure not having drf-gis in ``INSTALLED_APPS`` works anyway
+- `#76 <https://github.com/djangonauts/django-rest-framework-gis/issues/76>`_: avoid pickle errors in ``GeoJsonDict``
 - `#75 <https://github.com/djangonauts/django-rest-framework-gis/pull/75>`_: return ``GEOSGeometry`` instead of geojson property
 
 Version 0.9.3 [2015-07-22]
