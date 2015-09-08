@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9.4 [unreleased]
+Version 0.9.4 [2015-09-08]
 --------------------------
 
 - `#68 <https://github.com/djangonauts/django-rest-framework-gis/issues/68>`_: ensure not having drf-gis in ``INSTALLED_APPS`` works anyway
