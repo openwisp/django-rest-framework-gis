@@ -39,6 +39,7 @@ Compatibility with DRF, Django and Python
 
 ===============  ============================ ==================== ==================================
 DRF-gis version  DRF version                  Django version       Python version
+**0.9.5**        **3.1.X** to **3.2.X**       **1.5.x** to **1.8** **2.6** to **3.4**
 **0.9.4**        **3.1.X** to **3.2.X**       **1.5.x** to **1.8** **2.6** to **3.4**
 **0.9.3**        **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
 **0.9.2**        **3.1.X**                    **1.5.x** to **1.8** **2.6** to **3.4**
@@ -200,7 +201,7 @@ will create a ``FeatureCollection``:
 Specifying the geometry field: "geo_field"
 ##########################################
 
-``GeoFeatureModelSerializer`` requires you to define a **``geo_field``**
+``GeoFeatureModelSerializer`` requires you to define a ``geo_field``
 to be serialized as the "geometry". For example:
 
 .. code-block:: python
@@ -221,7 +222,7 @@ to be serialized as the "geometry". For example:
 Using GeometrySerializerMethodField as "geo_field"
 ##################################################
 
-**``geo_field``** may also be an instance of ``GeometrySerializerMethodField``.
+``geo_field`` may also be an instance of ``GeometrySerializerMethodField``.
 In this case you can compute its value during serialization. For example:
 
 .. code-block:: python
@@ -249,7 +250,7 @@ Specifying the ID: "id_field"
 
 The primary key of the model (usually the "id" attribute) is
 automatically put outside the "properties" object (before "type") unless
-**``id_field``** is set to False:
+``id_field`` is set to False:
 
 .. code-block:: python
 
@@ -263,7 +264,7 @@ automatically put outside the "properties" object (before "type") unless
             id_field = False
             fields = ('id', 'address', 'city', 'state')
 
-You could also set the **``id_field``** to some other unique field in
+You could also set the ``id_field`` to some other unique field in
 your model, like **"slug"**:
 
 .. code-block:: python
@@ -284,8 +285,8 @@ Bounding Box: "auto_bbox" and "bbox_geo_field"
 The GeoJSON specification allows a feature to contain a
 `boundingbox of a feature <http://geojson.org/geojson-spec.html#geojson-objects>`__.
 ``GeoFeatureModelSerializer`` allows two different ways to fill this property. The first
-is using the **``geo_field``** to calculate the bounding box of a feature. This only allows
-read access for a REST client and can be achieved using **``auto_bbox``**. Example:
+is using the ``geo_field`` to calculate the bounding box of a feature. This only allows
+read access for a REST client and can be achieved using ``auto_bbox``. Example:
 
 .. code-block:: python
 
@@ -298,7 +299,7 @@ read access for a REST client and can be achieved using **``auto_bbox``**. Examp
             auto_bbox = True
 
 
-The second approach uses the **``bbox_geo_field``** to specify an addional
+The second approach uses the ``bbox_geo_field`` to specify an addional
 GeometryField of the model which will be used to calculate the bounding box. This allows
 boundingboxes differ from the exact extent of a features geometry. Additionally this
 enables read and write access for the REST client. Bounding boxes send from the client will
@@ -319,27 +320,24 @@ be saved as Polygons. Example:
 Custom GeoJSON properties source
 ################################
 
-In GeoJSON each feature can have a `properties` field containing the
+In GeoJSON each feature can have a ``properties`` member containing the
 attributes of the feature. By default this field is filled with the
 attributes from your Django model, excluding the id, geometry and bounding
-box fields. It is possible to override this behaviour and implement a custom
-source for this `properties` field.
+box fields. It's possible to override this behaviour and implement a custom
+source for the ``properties`` member.
 
-In the following example we will use a Django model which uses a PostgreSQL
-HStore field to store the attributes of a feature. This field should be the
-source for the `properties` field when rendering it to JSON.
+The following example shows how to use a PostgreSQL HStore field as a source for
+the ``properties`` member:
 
 .. code-block:: python
 
     # models.py
     class Link(models.Model):
         """
-            Metadata is stored in a PostgreSQL HStore field, which allows us to
-            store arbitrary key-value pairs with a link record.
+        Metadata is stored in a PostgreSQL HStore field, which allows us to
+        store arbitrary key-value pairs with a link record.
         """
-
         metadata = HStoreField(blank=True, null=True, default={})
-
         geo = models.LineStringField()
         objects = models.GeoManager()
 
@@ -351,20 +349,19 @@ source for the `properties` field when rendering it to JSON.
             auto_bbox = True
 
         def get_properties(self, instance):
-            return instance.metadata  # This is a PostgreSQL HStore field, which django maps to a dict
+            # This is a PostgreSQL HStore field, which django maps to a dict
+            return instance.metadata
 
         def unformat_geojson(self, feature):
-            attribs = {
+            attrs = {
                 self.Meta.geo_field: feature["geometry"],
                 "metadata": feature["properties"]
             }
 
             if self.Meta.bbox_geo_field and "bbox" in feature:
-                attribs[self.Meta.bbox_geo_field] = Polygon.from_bbox(
-                    feature["bbox"])
+                attrs[self.Meta.bbox_geo_field] = Polygon.from_bbox(feature["bbox"])
 
-            return attribs
-
+            return attrs
 
 When the serializer renders GeoJSON, it calls the method
 ``get_properties`` for each object in the database. This function
@@ -375,7 +372,6 @@ The reverse is also required: mapping a GeoJSON formatted structure to
 attributes of your model. This task is done by ``unformat_geojson``. It should
 return a dictionary with your model attributes as keys, and the corresponding
 values retrieved from the GeoJSON feature data.
-
 
 Pagination
 ----------
