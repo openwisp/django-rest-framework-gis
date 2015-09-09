@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.9.5 [unreleased]
+--------------------------
+
+- `#71 <https://github.com/djangonauts/django-rest-framework-gis/pull/71>`_: added possibility to override GeoJSON properties in ``GeoFeatureModelSerializer``
+- `52e15a5 <https://github.com/djangonauts/django-rest-framework-gis/commit/52e15a5>`_: Added default ``page_size_query_param`` in ``GeoJsonPagination``
+
 Version 0.9.4 [2015-09-08]
 --------------------------
 
