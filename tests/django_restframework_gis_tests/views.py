@@ -29,7 +29,6 @@ class GeojsonLocationList(generics.ListCreateAPIView):
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
     pagination_class = GeoJsonPagination
-    paginate_by_param = 'page_size'
 
 geojson_location_list = GeojsonLocationList.as_view()
 

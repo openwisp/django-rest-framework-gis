@@ -8,6 +8,8 @@ class GeoJsonPagination(pagination.PageNumberPagination):
     """
     A geoJSON implementation of a pagination serializer.
     """
+    page_size_query_param = 'page_size'
+
     def get_paginated_response(self, data):
         return Response(OrderedDict([
             ('type', 'FeatureCollection'),
