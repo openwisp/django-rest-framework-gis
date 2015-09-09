@@ -81,6 +81,9 @@ class GeoFeatureModelSerializer(ModelSerializer):
                 "You must eiher define a 'bbox_geo_field' or 'auto_bbox', but you can not set both"
             )
 
+    def postprocess_properties(self, properties):
+        return properties
+
     def to_representation(self, instance):
         """
         Serialize objects -> primitives.
@@ -91,55 +94,51 @@ class GeoFeatureModelSerializer(ModelSerializer):
             ret["id"] = None
         ret["type"] = "Feature"
         ret["geometry"] = None
-        ret["properties"] = OrderedDict()
         if self.Meta.bbox_geo_field or self.Meta.auto_bbox:
             ret["bbox"] = None
 
-        for field in self.fields.values():
-            if field.write_only:
-                continue
+        if not hasattr(self, 'geo_field'):
+            self.geo_field = self.fields.pop(self.Meta.geo_field) if self.Meta.geo_field in self.fields else None
 
-            field_name = field.field_name
-            value = field.get_attribute(instance)
-            value_repr = None
+        if not hasattr(self, 'bbox_geo_field'):
+            self.bbox_geo_field = self.fields.pop(self.Meta.bbox_geo_field) if self.Meta.bbox_geo_field in self.fields else None
 
-            if value is not None:
-                if field_name == self.Meta.bbox_geo_field:
-                    # check for GEOSGeometry specfifc properties to generate the extent
-                    # of the geometry.
-                    if hasattr(value, 'extent'):
-                        value_repr = value.extent
-                else:
-                    value_repr = field.to_representation(value)
+        properties = super(GeoFeatureModelSerializer, self).to_representation(instance)
 
-            if self.Meta.id_field is not False and field_name == self.Meta.id_field:
-                ret["id"] = value_repr
-            elif field_name == self.Meta.geo_field:
-                ret["geometry"] = value_repr
-                if self.Meta.auto_bbox and value:
-                    ret['bbox'] = value.extent
-            elif field_name == self.Meta.bbox_geo_field:
-                ret["bbox"] = value_repr
-            elif not getattr(field, 'write_only', False):
-                ret["properties"][field_name] = value_repr
+        if self.Meta.id_field in self.fields:
+            ret['id'] = properties.pop(self.Meta.id_field)
+
+        ret['properties'] = self.postprocess_properties(properties)
+
+        if self.geo_field is not None and not self.geo_field.write_only:
+            value = self.geo_field.get_attribute(instance)
+            ret['geometry'] = self.geo_field.to_representation(value)
+            if self.Meta.auto_bbox:
+                ret['bbox'] = value.extent
+
+        if self.bbox_geo_field is not None and not self.bbox_geo_field.write_only:
+            value = self.bbox_geo_field.get_attribute(instance)
+            if hasattr(value, 'extent'):
+                ret['bbox'] = value.extent
+
         return ret
+
+    def preprocess_properties(self, properties):
+        return properties
 
     def to_internal_value(self, data):
         """
         Override the parent method to first remove the GeoJSON formatting
         """
-        def make_unformated_data(feature):
-            _dict = feature["properties"]
-            if 'geometry' in feature:
-                geom = {self.Meta.geo_field: feature["geometry"]}
-                _dict.update(geom)
-            if self.Meta.bbox_geo_field and 'bbox' in feature:
-                # build a polygon from the bbox
-                _dict.update({self.Meta.bbox_geo_field: Polygon.from_bbox(feature['bbox'])})
-            return _dict
 
         if 'properties' in data:
-            _unformatted_data = make_unformated_data(data)
+            _unformatted_data = self.preprocess_properties(data['properties'])
+            if 'geometry' in data:
+                _unformatted_data[self.Meta.geo_field] = data['geometry']
+
+            if self.Meta.bbox_geo_field and 'bbox' in data:
+                # build a polygon from the bbox
+                _unformatted_data[self.Meta.bbox_geo_field] = Polygon.from_bbox(data['bbox'])
         else:
             _unformatted_data = data
 
