@@ -86,59 +86,47 @@ class GeoFeatureModelSerializer(ModelSerializer):
         Serialize objects -> primitives.
         """
         # prepare OrderedDict geojson structure
-        ret = OrderedDict()
-        if self.Meta.id_field is not False:
-            ret["id"] = None
-        ret["type"] = "Feature"
-        ret["geometry"] = None
-        ret["properties"] = OrderedDict()
-        if self.Meta.bbox_geo_field or self.Meta.auto_bbox:
-            ret["bbox"] = None
+        feature = OrderedDict()
+        # the list of fields that will be processed by get_properties
+        # we will remove fields that have been already processed
+        # to increase performance on large numbers
+        fields = list(self.fields.values())
 
-        id_field = self.Meta.id_field
-        geo_field = self.Meta.geo_field
-        bbox_field = self.Meta.bbox_geo_field
-        if id_field is not False and id_field in self.fields:
-            field = self.fields[id_field]
+        # optional id attribute
+        if self.Meta.id_field:
+            field = self.fields[self.Meta.id_field]
+            value = field.get_attribute(instance)
+            feature["id"] = field.to_representation(value)
+            fields.remove(field)
 
-            if not field.write_only:
-                value = field.get_attribute(instance)
-                ret["id"] = field.to_representation(value)
+        # required type attribute
+        # must be "Feature" according to GeoJSON spec
+        feature["type"] = "Feature"
 
-        if geo_field in self.fields:
-            field = self.fields[geo_field]
+        # required geometry attribute
+        # MUST be present in output according to GeoJSON spec
+        field = self.fields[self.Meta.geo_field]
+        geo_value = field.get_attribute(instance)
+        feature["geometry"] = field.to_representation(geo_value)
+        fields.remove(field)
+        # Bounding Box
+        # if auto_bbox feature is enabled
+        # bbox will be determined automatically automatically
+        if self.Meta.auto_bbox and geo_value:
+            feature["bbox"] = geo_value.extent
+        # otherwise it can be determined via another field
+        elif self.Meta.bbox_geo_field:
+            field = self.fields[self.Meta.bbox_geo_field]
+            value = field.get_attribute(instance)
+            feature["bbox"] = value.extent if hasattr(value, 'extent') else None
+            fields.remove(field)
 
-            if not field.write_only:
-                value = field.get_attribute(instance)
-                ret["geometry"] = field.to_representation(value)
+        # GeoJSON properties
+        feature["properties"] = self.get_properties(instance, fields)
 
-                if self.Meta.auto_bbox and value:
-                    ret["bbox"] = value.extent
+        return feature
 
-        if bbox_field in self.fields:
-            field = self.fields[bbox_field]
-
-            if not field.write_only:
-                value = field.get_attribute(instance)
-                ret["bbox"] = value.extent if hasattr(value, 'extent') else None
-
-        ret["properties"] = self.get_feature_properties(instance)
-
-        return ret
-
-    def to_internal_value(self, data):
-        """
-        Override the parent method to first remove the GeoJSON formatting
-        """
-
-        if 'properties' in data:
-            _unformatted_data = self.unformat_geojson(data)
-        else:
-            _unformatted_data = data
-
-        return super(GeoFeatureModelSerializer, self).to_internal_value(_unformatted_data)
-
-    def get_feature_properties(self, instance):
+    def get_properties(self, instance, fields):
         """
         Get the feature metadata which will be used for the GeoJSON
         "properties" key.
@@ -147,25 +135,27 @@ class GeoFeatureModelSerializer(ModelSerializer):
         the ID, the geometry and the bounding box.
 
         :param instance: The current Django model instance
+        :param fields: The list of fields to process (fields already processed have been removed)
         :return: OrderedDict containing the properties of the current feature
         :rtype: OrderedDict
         """
-        exclude = [
-            field_name for field_name in (self.Meta.id_field,
-                                          self.Meta.geo_field,
-                                          self.Meta.bbox_geo_field)
-            if field_name
-        ]
         properties = OrderedDict()
 
-        for field in self.fields.values():
-            if field.write_only or field.field_name in exclude:
+        for field in fields:
+            if field.write_only:
                 continue
-
             value = field.get_attribute(instance)
             properties[field.field_name] = field.to_representation(value)
 
         return properties
+
+    def to_internal_value(self, data):
+        """
+        Override the parent method to first remove the GeoJSON formatting
+        """
+        if 'properties' in data:
+            data = self.unformat_geojson(data)
+        return super(GeoFeatureModelSerializer, self).to_internal_value(data)
 
     def unformat_geojson(self, feature):
         """
@@ -181,14 +171,12 @@ class GeoFeatureModelSerializer(ModelSerializer):
         :return: A new dictionary which maps the GeoJSON values to
                  serializer fields
         """
-        attribs = feature["properties"]
+        attrs = feature["properties"]
 
         if 'geometry' in feature:
-            attribs[self.Meta.geo_field] = feature['geometry']
+            attrs[self.Meta.geo_field] = feature['geometry']
 
         if self.Meta.bbox_geo_field and 'bbox' in feature:
-            attribs[self.Meta.bbox_geo_field] = Polygon.from_bbox(feature['bbox'])
+            attrs[self.Meta.bbox_geo_field] = Polygon.from_bbox(feature['bbox'])
 
-        return attribs
-
-
+        return attrs

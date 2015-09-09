@@ -350,7 +350,7 @@ source for the `properties` field when rendering it to JSON.
             geo_field = 'geo'
             auto_bbox = True
 
-        def get_feature_properties(self, instance):
+        def get_properties(self, instance):
             return instance.metadata  # This is a PostgreSQL HStore field, which django maps to a dict
 
         def unformat_geojson(self, feature):
@@ -367,7 +367,7 @@ source for the `properties` field when rendering it to JSON.
 
 
 When the serializer renders GeoJSON, it calls the method
-``get_feature_properties`` for each object in the database. This function
+``get_properties`` for each object in the database. This function
 should return a dictionary containing the attributes for the feature. In the
 case of a HStore field, this function is easily implemented.
 
