@@ -81,102 +81,65 @@ class GeoFeatureModelSerializer(ModelSerializer):
                 "You must eiher define a 'bbox_geo_field' or 'auto_bbox', but you can not set both"
             )
 
+    def postprocess_properties(self, properties):
+        return properties
+
     def to_representation(self, instance):
         """
         Serialize objects -> primitives.
         """
         # prepare OrderedDict geojson structure
-        feature = OrderedDict()
-        # the list of fields that will be processed by get_properties
-        # we will remove fields that have been already processed
-        # to increase performance on large numbers
-        fields = list(self.fields.values())
+        ret = OrderedDict()
+        if self.Meta.id_field is not False:
+            ret["id"] = None
+        ret["type"] = "Feature"
+        ret["geometry"] = None
+        if self.Meta.bbox_geo_field or self.Meta.auto_bbox:
+            ret["bbox"] = None
 
-        # optional id attribute
-        if self.Meta.id_field:
-            field = self.fields[self.Meta.id_field]
-            value = field.get_attribute(instance)
-            feature["id"] = field.to_representation(value)
-            fields.remove(field)
+        if not hasattr(self, 'geo_field'):
+            self.geo_field = self.fields.pop(self.Meta.geo_field) if self.Meta.geo_field in self.fields else None
 
-        # required type attribute
-        # must be "Feature" according to GeoJSON spec
-        feature["type"] = "Feature"
+        if not hasattr(self, 'bbox_geo_field'):
+            self.bbox_geo_field = self.fields.pop(self.Meta.bbox_geo_field) if self.Meta.bbox_geo_field in self.fields else None
 
-        # required geometry attribute
-        # MUST be present in output according to GeoJSON spec
-        field = self.fields[self.Meta.geo_field]
-        geo_value = field.get_attribute(instance)
-        feature["geometry"] = field.to_representation(geo_value)
-        fields.remove(field)
-        # Bounding Box
-        # if auto_bbox feature is enabled
-        # bbox will be determined automatically automatically
-        if self.Meta.auto_bbox and geo_value:
-            feature["bbox"] = geo_value.extent
-        # otherwise it can be determined via another field
-        elif self.Meta.bbox_geo_field:
-            field = self.fields[self.Meta.bbox_geo_field]
-            value = field.get_attribute(instance)
-            feature["bbox"] = value.extent if hasattr(value, 'extent') else None
-            fields.remove(field)
+        properties = super(GeoFeatureModelSerializer, self).to_representation(instance)
 
-        # GeoJSON properties
-        feature["properties"] = self.get_properties(instance, fields)
+        if self.Meta.id_field in self.fields:
+            ret['id'] = properties.pop(self.Meta.id_field)
 
-        return feature
+        ret['properties'] = self.postprocess_properties(properties)
 
-    def get_properties(self, instance, fields):
-        """
-        Get the feature metadata which will be used for the GeoJSON
-        "properties" key.
+        if self.geo_field is not None and not self.geo_field.write_only:
+            value = self.geo_field.get_attribute(instance)
+            ret['geometry'] = self.geo_field.to_representation(value)
+            if self.Meta.auto_bbox:
+                ret['bbox'] = value.extent
 
-        By default it returns all serializer fields excluding those used for
-        the ID, the geometry and the bounding box.
+        if self.bbox_geo_field is not None and not self.bbox_geo_field.write_only:
+            value = self.bbox_geo_field.get_attribute(instance)
+            if hasattr(value, 'extent'):
+                ret['bbox'] = value.extent
 
-        :param instance: The current Django model instance
-        :param fields: The list of fields to process (fields already processed have been removed)
-        :return: OrderedDict containing the properties of the current feature
-        :rtype: OrderedDict
-        """
-        properties = OrderedDict()
+        return ret
 
-        for field in fields:
-            if field.write_only:
-                continue
-            value = field.get_attribute(instance)
-            properties[field.field_name] = field.to_representation(value)
-
+    def preprocess_properties(self, properties):
         return properties
 
     def to_internal_value(self, data):
         """
         Override the parent method to first remove the GeoJSON formatting
         """
+
         if 'properties' in data:
-            data = self.unformat_geojson(data)
-        return super(GeoFeatureModelSerializer, self).to_internal_value(data)
+            _unformatted_data = self.preprocess_properties(data['properties'])
+            if 'geometry' in data:
+                _unformatted_data[self.Meta.geo_field] = data['geometry']
 
-    def unformat_geojson(self, feature):
-        """
-        This function should return a dictionary containing keys which maps
-        to serializer fields.
+            if self.Meta.bbox_geo_field and 'bbox' in data:
+                # build a polygon from the bbox
+                _unformatted_data[self.Meta.bbox_geo_field] = Polygon.from_bbox(data['bbox'])
+        else:
+            _unformatted_data = data
 
-        Remember that GeoJSON contains a key "properties" which contains the
-        feature metadata. This should be flattened to make sure this
-        metadata is stored in the right serializer fields.
-
-        :param feature: The dictionary containing the feature data directly
-                        from the GeoJSON data.
-        :return: A new dictionary which maps the GeoJSON values to
-                 serializer fields
-        """
-        attrs = feature["properties"]
-
-        if 'geometry' in feature:
-            attrs[self.Meta.geo_field] = feature['geometry']
-
-        if self.Meta.bbox_geo_field and 'bbox' in feature:
-            attrs[self.Meta.bbox_geo_field] = Polygon.from_bbox(feature['bbox'])
-
-        return attrs
+        return super(GeoFeatureModelSerializer, self).to_internal_value(_unformatted_data)
