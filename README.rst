@@ -348,7 +348,7 @@ the ``properties`` member:
             geo_field = 'geo'
             auto_bbox = True
 
-        def get_properties(self, instance):
+        def get_properties(self, instance, fields):
             # This is a PostgreSQL HStore field, which django maps to a dict
             return instance.metadata
 
