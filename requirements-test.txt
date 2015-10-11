@@ -1,6 +1,6 @@
 psycopg2
 djangorestframework>=3.0.4
-coverage
+coverage==3.7.1
 coveralls
 django-filter
 contexttimer
