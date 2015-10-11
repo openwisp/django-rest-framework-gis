@@ -613,13 +613,13 @@ Contributing
 8. Document your changes
 9. Send pull request
 
-.. |Build Status| image:: https://travis-ci.org/djangonauts/django-rest-framework-gis.png?branch=master
+.. |Build Status| image:: https://travis-ci.org/djangonauts/django-rest-framework-gis.svg?branch=master
    :target: https://travis-ci.org/djangonauts/django-rest-framework-gis
-.. |Coverage Status| image:: https://coveralls.io/repos/djangonauts/django-rest-framework-gis/badge.png
+.. |Coverage Status| image:: https://coveralls.io/repos/djangonauts/django-rest-framework-gis/badge.svg
    :target: https://coveralls.io/r/djangonauts/django-rest-framework-gis
-.. |Requirements Status| image:: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements.png?branch=master
+.. |Requirements Status| image:: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements.svg?branch=master
    :target: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master
-.. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.png
+.. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.svg
    :target: http://badge.fury.io/py/djangorestframework-gis
 .. |PyPI downloads| image:: https://img.shields.io/pypi/dm/djangorestframework-gis.svg
     :target: http://badge.fury.io/py/djangorestframework-gis
