@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9.5 [unreleased]
+Version 0.9.5 [2015-10-12]
 --------------------------
 
 - `#71 <https://github.com/djangonauts/django-rest-framework-gis/pull/71>`_: added possibility to override GeoJSON properties in ``GeoFeatureModelSerializer``
