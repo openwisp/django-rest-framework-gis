@@ -259,9 +259,12 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['id'], location.slug)
 
     def test_geojson_false_id_attribute_slug(self):
-        location = Location.objects.create(name='geojson test', geometry='POINT (10.1 10.1)')
+        location = Location.objects.create(name='falseid test', geometry='POINT (10.1 10.1)')
         url = reverse('api_geojson_location_falseid_details', args=[location.id])
         response = self.client.get(url)
+        self.assertEqual(response.data['properties']['name'], 'falseid test')
+        with self.assertRaises(KeyError):
+            response.data['id']
         with self.assertRaises(KeyError):
             response.data['id']
 

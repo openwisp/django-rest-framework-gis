@@ -11,7 +11,7 @@ __all__ = [
     'PaginatedLocationGeoSerializer',
     'LocationGeoFeatureSerializer',
     'LocationGeoFeatureSlugSerializer',
-    'LocationGeoFeatureFalseIDSerializer',
+    'LocationGeoFeatureFalseIdSerializer',
     'LocatedFileGeoFeatureSerializer',
     'BoxedLocationGeoFeatureSerializer',
     'LocationGeoFeatureBboxSerializer',
@@ -57,6 +57,7 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
 
 
 class LocationGeoFeatureFalseIDSerializer(LocationGeoFeatureSerializer):
+class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
     """ id attribute set as False """
     class Meta:
         model = Location

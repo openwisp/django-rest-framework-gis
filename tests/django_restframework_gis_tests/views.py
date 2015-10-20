@@ -115,12 +115,12 @@ class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
 geojson_location_slug_details = GeojsonLocationSlugDetails.as_view()
 
 
-class GeojsonLocationFalseIDDetails(generics.RetrieveUpdateDestroyAPIView):
+class GeojsonLocationFalseIdDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
-    serializer_class = LocationGeoFeatureFalseIDSerializer
+    serializer_class = LocationGeoFeatureFalseIdSerializer
     queryset = Location.objects.all()
 
-geojson_location_falseid_details = GeojsonLocationFalseIDDetails.as_view()
+geojson_location_falseid_details = GeojsonLocationFalseIdDetails.as_view()
 
 
 class LocationFilter(GeoFilterSet):
