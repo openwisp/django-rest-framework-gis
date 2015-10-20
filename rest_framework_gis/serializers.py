@@ -48,44 +48,44 @@ class GeoFeatureModelSerializer(ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
+        meta = getattr(self, 'Meta')
         default_id_field = None
         primary_key = self.Meta.model._meta.pk.name
         # use primary key as id_field when possible
-        if not hasattr(self.Meta, 'fields') or primary_key in self.Meta.fields:
+        if not hasattr(meta, 'fields') or primary_key in meta.fields:
             default_id_field = primary_key
-        self.Meta.id_field = getattr(self.Meta, 'id_field', default_id_field)
+        meta.id_field = getattr(meta, 'id_field', default_id_field)
 
-        if not hasattr(self.Meta, 'geo_field') or not self.Meta.geo_field:
+        if not hasattr(meta, 'geo_field') or not meta.geo_field:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
 
         def check_excludes(field_name, field_role):
             """make sure the field is not excluded"""
-            if hasattr(self.Meta, 'exclude') and field_name in self.Meta.exclude:
+            if hasattr(meta, 'exclude') and field_name in meta.exclude:
                 raise ImproperlyConfigured("You cannot exclude your '{0}'.".format(field_role))
 
         def add_to_fields(field_name):
             """Make sure the field is included in the fields"""
-            if hasattr(self.Meta, 'fields'):
-                if field_name not in self.Meta.fields:
-                    if type(self.Meta.fields) is tuple:
+            if hasattr(meta, 'fields'):
+                if field_name not in meta.fields:
+                    if type(meta.fields) is tuple:
                         additional_fields = (field_name,)
                     else:
                         additional_fields = [field_name]
-                    self.Meta.fields += additional_fields
+                    meta.fields += additional_fields
 
-        check_excludes(self.Meta.geo_field, 'geo_field')
-        add_to_fields(self.Meta.geo_field)
+        check_excludes(meta.geo_field, 'geo_field')
+        add_to_fields(meta.geo_field)
 
-        self.Meta.bbox_geo_field = getattr(self.Meta, 'bbox_geo_field', None)
-        if self.Meta.bbox_geo_field:
-            check_excludes(self.Meta.bbox_geo_field, 'bbox_geo_field')
-            add_to_fields(self.Meta.bbox_geo_field)
+        meta.bbox_geo_field = getattr(meta, 'bbox_geo_field', None)
+        if meta.bbox_geo_field:
+            check_excludes(meta.bbox_geo_field, 'bbox_geo_field')
+            add_to_fields(meta.bbox_geo_field)
 
-        self.Meta.auto_bbox = getattr(self.Meta, 'auto_bbox', False)
-        if self.Meta.bbox_geo_field and self.Meta.auto_bbox:
-            raise ImproperlyConfigured(
-                "You must eiher define a 'bbox_geo_field' or 'auto_bbox', but you can not set both"
-            )
+        meta.auto_bbox = getattr(meta, 'auto_bbox', False)
+        if meta.bbox_geo_field and meta.auto_bbox:
+            raise ImproperlyConfigured("You must eiher define a 'bbox_geo_field' or "
+                                       "'auto_bbox', but you can not set both")
 
     def to_representation(self, instance):
         """
