@@ -48,7 +48,13 @@ class GeoFeatureModelSerializer(ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
-        self.Meta.id_field = getattr(self.Meta, 'id_field', self.Meta.model._meta.pk.name)
+        default_id_field = None
+        primary_key = self.Meta.model._meta.pk.name
+        # use primary key as id_field when possible
+        if not hasattr(self.Meta, 'fields') or primary_key in self.Meta.fields:
+            default_id_field = primary_key
+        self.Meta.id_field = getattr(self.Meta, 'id_field', default_id_field)
+
         if not hasattr(self.Meta, 'geo_field') or not self.Meta.geo_field:
             raise ImproperlyConfigured("You must define a 'geo_field'.")
 

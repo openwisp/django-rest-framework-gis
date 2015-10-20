@@ -123,6 +123,14 @@ class GeojsonLocationFalseIdDetails(generics.RetrieveUpdateDestroyAPIView):
 geojson_location_falseid_details = GeojsonLocationFalseIdDetails.as_view()
 
 
+class GeojsonLocationNoIdDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureNoIdSerializer
+    queryset = Location.objects.all()
+
+geojson_location_noid_details = GeojsonLocationNoIdDetails.as_view()
+
+
 class LocationFilter(GeoFilterSet):
     contains_properly = GeometryFilter(name='geometry', lookup_type='contains_properly')
 

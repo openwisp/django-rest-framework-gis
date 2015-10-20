@@ -265,6 +265,12 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['properties']['name'], 'falseid test')
         with self.assertRaises(KeyError):
             response.data['id']
+
+    def test_geojson_no_id_attribute_slug(self):
+        location = Location.objects.create(name='noid test', geometry='POINT (10.1 10.1)')
+        url = reverse('api_geojson_location_noid_details', args=[location.id])
+        response = self.client.get(url)
+        self.assertEqual(response.data['properties']['name'], 'noid test')
         with self.assertRaises(KeyError):
             response.data['id']
 

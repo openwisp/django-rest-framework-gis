@@ -12,6 +12,7 @@ __all__ = [
     'LocationGeoFeatureSerializer',
     'LocationGeoFeatureSlugSerializer',
     'LocationGeoFeatureFalseIdSerializer',
+    'LocationGeoFeatureNoIdSerializer',
     'LocatedFileGeoFeatureSerializer',
     'BoxedLocationGeoFeatureSerializer',
     'LocationGeoFeatureBboxSerializer',
@@ -56,13 +57,23 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
         fields = ('name', 'slug')
 
 
-class LocationGeoFeatureFalseIDSerializer(LocationGeoFeatureSerializer):
-class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
+class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
     """ id attribute set as False """
     class Meta:
         model = Location
         geo_field = 'geometry'
         id_field = False
+
+
+class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
+    """
+    id attribute left out, issue #82
+    see: https://github.com/djangonauts/django-rest-framework-gis/issues/82
+    """
+    class Meta:
+        model = Location
+        geo_field = 'geometry'
+        fields = ('name',)
 
 
 class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
