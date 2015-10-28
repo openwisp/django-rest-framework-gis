@@ -228,6 +228,7 @@ class TestRestFrameworkGis(TestCase):
                 'details': "http://testserver/geojson/%s/" % location.id,
                 'name': 'geojson test',
                 'fancy_name': 'Kool geojson test',
+                'timestamp': None,
                 'slug': 'geojson-test',
             },
             'geometry': {

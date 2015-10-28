@@ -12,6 +12,7 @@ __all__ = [
 class BaseModel(models.Model):
     name = models.CharField(max_length=32)
     slug = models.SlugField(max_length=128, unique=True, blank=True)
+    timestamp = models.DateTimeField(null=True, blank=True)
     geometry = models.GeometryField()
     objects = models.GeoManager()
 
