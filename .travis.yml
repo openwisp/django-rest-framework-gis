@@ -6,6 +6,7 @@ services:
   - postgresql
 
 python:
+  - "3.5"
   - "3.4"
   - "3.3"
   - "3.2"
@@ -13,7 +14,7 @@ python:
   - "2.6"
 
 env:
-  - DJANGO="django==1.8.4"
+  - DJANGO="django==1.8.5"
   - DJANGO="django==1.7.10"
   - DJANGO="django==1.6.11"
   - DJANGO="django==1.5.12"
@@ -23,7 +24,7 @@ matrix:
     - python: "2.6"
       env: DJANGO="django==1.7.10"
     - python: "2.6"
-      env: DJANGO="django==1.8.4"
+      env: DJANGO="django==1.8.5"
 
 branches:
   only:
