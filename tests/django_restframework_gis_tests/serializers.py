@@ -54,7 +54,7 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
         model = Location
         geo_field = 'geometry'
         id_field = 'slug'
-        fields = ('name', 'slug')
+        fields = ('name', 'slug', 'timestamp')
 
 
 class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
@@ -98,7 +98,7 @@ class BoxedLocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerialize
         model = BoxedLocation
         geo_field = 'geometry'
         bbox_geo_field = 'bbox_geometry'
-        fields = ['name', 'details', 'id']
+        fields = ['name', 'details', 'id', 'timestamp']
 
 
 class LocationGeoFeatureBboxSerializer(gis_serializers.GeoFeatureModelSerializer):

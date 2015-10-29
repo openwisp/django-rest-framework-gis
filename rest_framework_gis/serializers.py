@@ -151,7 +151,10 @@ class GeoFeatureModelSerializer(ModelSerializer):
             if field.write_only:
                 continue
             value = field.get_attribute(instance)
-            properties[field.field_name] = field.to_representation(value)
+            value_repr = None
+            if value is not None:
+                value_repr = field.to_representation(value)
+            properties[field.field_name] = value_repr
 
         return properties
 
