@@ -132,10 +132,8 @@ class TestRestFrameworkGis(TestCase):
         expected_coords = (6.381495826183805, 53.384066927384985)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
-        self.assertEquals(
-            Location.objects.get(name='EWKT input test').geometry.coords,
-            expected_coords
-        )
+        for l, e in zip(Location.objects.get(name='EWKT input test').geometry.coords, expected_coords):
+            self.assertAlmostEqual(l, e, places=5)
 
     def test_post_location_list_WKT_as_json(self):
         self.assertEqual(Location.objects.count(), 0)
