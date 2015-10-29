@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Version 0.9.6 [unreleased]
+--------------------------
+
+- `#82 <https://github.com/djangonauts/django-rest-framework-gis/issues/82>`_: avoid ``KeyError`` id field not in ``fields`` (bug introduced in 0.9.5)
+- `fbaf9b1 <https://github.com/djangonauts/django-rest-framework-gis/commit/fbaf9b1>`_: improved documentation for new default ``id_field`` behaviour
+- `#84 <https://github.com/djangonauts/django-rest-framework-gis/pull/84>`_: switched to ``assertAlmostEqual`` in ``test_post_location_list_EWKT`` to ease testing for debian package
+- `#85 <https://github.com/djangonauts/django-rest-framework-gis/pull/85>`_: fixed serialization of properties holding ``None`` values (bug introduced in 0.9.5)
+- `#86 <https://github.com/djangonauts/django-rest-framework-gis/pull/86>`_: updated advertised compatibility to include **python 3.5**
+- `1d7bc32 <https://github.com/djangonauts/django-rest-framework-gis/commit/1d7bc32>`_: Updated requirements to include DRF 3.3
+
 Version 0.9.5 [2015-10-12]
 --------------------------
 
