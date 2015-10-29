@@ -249,8 +249,11 @@ Specifying the ID: "id_field"
 #############################
 
 The primary key of the model (usually the "id" attribute) is
-automatically put outside the "properties" object (before "type") unless
-``id_field`` is set to False:
+automatically used as the ``id`` field of each
+`GeoJSON Feature Object <https://tools.ietf.org/html/draft-butler-geojson#section-2.2>`_.
+
+The default behaviour follows the `GeoJSON RFC <https://tools.ietf.org/html/draft-butler-geojson>`_,
+but it can be disbaled by setting ``id_field`` to ``False``:
 
 .. code-block:: python
 
@@ -264,8 +267,7 @@ automatically put outside the "properties" object (before "type") unless
             id_field = False
             fields = ('id', 'address', 'city', 'state')
 
-You could also set the ``id_field`` to some other unique field in
-your model, like **"slug"**:
+The ``id_field`` can also be set to use some other unique field in your model, eg: ``slug``:
 
 .. code-block:: python
 
@@ -300,7 +302,7 @@ read access for a REST client and can be achieved using ``auto_bbox``. Example:
 
 
 The second approach uses the ``bbox_geo_field`` to specify an addional
-GeometryField of the model which will be used to calculate the bounding box. This allows
+``GeometryField`` of the model which will be used to calculate the bounding box. This allows
 boundingboxes differ from the exact extent of a features geometry. Additionally this
 enables read and write access for the REST client. Bounding boxes send from the client will
 be saved as Polygons. Example:
