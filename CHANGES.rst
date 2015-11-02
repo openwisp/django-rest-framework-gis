@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.9.6 [unreleased]
+Version 0.9.6 [2015-11-02]
 --------------------------
 
 - `#82 <https://github.com/djangonauts/django-rest-framework-gis/issues/82>`_: avoid ``KeyError`` id field not in ``fields`` (bug introduced in 0.9.5)
