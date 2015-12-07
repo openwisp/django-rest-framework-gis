@@ -1,10 +1,4 @@
-try:
-    from django.apps import AppConfig as BaseConfig
-except ImportError:  # pragma: nocover
-    # django <= 1.6
-    class BaseConfig(object):
-        def __init__(self, *args):
-            pass
+from django.apps import AppConfig as BaseConfig
 
 
 class AppConfig(BaseConfig):
