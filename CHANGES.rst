@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 0.10.0 [unreleased]
+Version 0.10.0 [2015-12-07]
 ---------------------------
 
 - `#87 <https://github.com/djangonauts/django-rest-framework-gis/issues/87>`_ dropped support for old django versions and python 2.6
