@@ -1,12 +1,11 @@
 import json
+from collections import OrderedDict
 
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import OGRException
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field, SerializerMethodField
-
-from .utils import OrderedDict
 
 
 __all__ = ['GeometryField', 'GeometrySerializerMethodField']

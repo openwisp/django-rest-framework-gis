@@ -1,10 +1,11 @@
+from collections import OrderedDict
+
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.geos import Polygon
 
 from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
-from .utils import OrderedDict
 
 
 class GeoModelSerializer(ModelSerializer):
