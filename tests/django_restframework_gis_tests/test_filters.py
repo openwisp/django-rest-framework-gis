@@ -1,11 +1,16 @@
 import json
 import urllib
 
+from unittest import skipIf
+
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.core.urlresolvers import reverse
 
 from .models import Location
+
+has_spatialite = settings.DATABASES['default']['ENGINE'] == 'django.contrib.gis.db.backends.spatialite'
 
 
 class TestRestFrameworkGisFilters(TestCase):
@@ -71,6 +76,7 @@ class TestRestFrameworkGisFilters(TestCase):
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)
 
+    @skipIf(has_spatialite, 'Skipped test for spatialite backend: not accurate enough')
     def test_TileFilter_filtering(self):
         """
         Checks that the TMSTileFilter returns only objects strictly contained
@@ -120,6 +126,7 @@ class TestRestFrameworkGisFilters(TestCase):
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)
 
+    @skipIf(has_spatialite, 'Skipped test for spatialite backend: missing feature "dwithin"')
     def test_DistanceToPointFilter_filtering(self):
         """
         Checks that the DistancFilter returns only objects within the given distance of the
@@ -259,6 +266,7 @@ class TestRestFrameworkGisFilters(TestCase):
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
 
+    @skipIf(has_spatialite, 'Skipped test for spatialite backend: missing feature "contains_properly"')
     def test_GeometryField_filtering(self):
         """ Checks that the GeometryField allows sane filtering. """
         self.assertEqual(Location.objects.count(), 0)
