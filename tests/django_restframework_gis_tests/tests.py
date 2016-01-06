@@ -5,6 +5,7 @@ unit tests for restframework_gis
 import urllib
 import sys
 import json
+import pickle
 
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
@@ -12,6 +13,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 
 from rest_framework_gis import serializers as gis_serializers
+from rest_framework_gis.fields import GeoJsonDict
 
 from .models import Location, LocatedFile
 from .serializers import LocationGeoSerializer
@@ -570,8 +572,6 @@ class TestRestFrameworkGis(TestCase):
         self.assertIn('previous', response.data)
 
     def test_pickle(self):
-        import pickle
-        from rest_framework_gis.fields import GeoJsonDict
         geometry = GEOSGeometry('POINT (30 10)')
         geojsondict = GeoJsonDict((
             ('type', geometry.geom_type),
