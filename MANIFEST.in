@@ -1,3 +1,3 @@
-include AUTHORS LICENSE README.rst requirements.txt
+include AUTHORS LICENSE README.rst CHANGES.rst requirements.txt runtests.py
 recursive-include tests *
 recursive-exclude * *.pyc *.swp
