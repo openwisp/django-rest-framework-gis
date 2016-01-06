@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.10.1 [2016-01-06]
+---------------------------
+
+- `#93 <https://github.com/djangonauts/django-rest-framework-gis/issues/93>`_ skipped a few tests if spatialite DB backend is being used
+- `#95 <https://github.com/djangonauts/django-rest-framework-gis/issues/95>`_ fixed misunderstanding regarding 0.9.6 DRF compatibility in README
+- `#96 <https://github.com/djangonauts/django-rest-framework-gis/issues/96>`_ added missing assets in python package source tarball
+
 Version 0.10.0 [2015-12-07]
 ---------------------------
 
