@@ -11,3 +11,6 @@ tests/static/
 *.DS_Store
 *.komodoproject
 /htmlcov
+__pycache__/
+*.pyc
+
