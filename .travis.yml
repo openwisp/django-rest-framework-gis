@@ -28,6 +28,7 @@ branches:
 install:
   - pip install $DJANGO
   - pip install -r requirements-test.txt
+  - if [ "$DJANGO" == "django>=1.7,<1.8" ]; then pip install django-filter==0.11.0; fi
   - python setup.py -q develop
 
 before_script:
