@@ -13,12 +13,8 @@ python:
 env:
   - DJANGO="django>=1.9,<1.10"
   - DJANGO="django>=1.8,<1.9"
-  - DJANGO="django>=1.7,<1.8"
 
-matrix:
-  exclude:
-    - python: "3.5"
-      env: DJANGO="django>=1.7,<1.8"
+
 
 branches:
   only:
@@ -28,7 +24,6 @@ branches:
 install:
   - pip install $DJANGO
   - pip install -r requirements-test.txt
-  - if [ "$DJANGO" == "django>=1.7,<1.8" ]; then pip install django-filter==0.11.0; fi
   - python setup.py -q develop
 
 before_script:
