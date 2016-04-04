@@ -113,12 +113,17 @@ class GeoFeatureModelSerializer(ModelSerializer):
         # required geometry attribute
         # MUST be present in output according to GeoJSON spec
         field = self.fields[self.Meta.geo_field]
-        geo_value = field.get_attribute(instance)
+        geojson_field = '{0}_geojson'.format(field.field_name)
+        if hasattr(instance, geojson_field):
+            geo_value = getattr(instance, geojson_field)
+        else:
+            geo_value = field.get_attribute(instance)
         feature["geometry"] = field.to_representation(geo_value)
         fields.remove(field)
         # Bounding Box
         # if auto_bbox feature is enabled
         # bbox will be determined automatically automatically
+        # TODO: this feature would break when using annotations
         if self.Meta.auto_bbox and geo_value:
             feature["bbox"] = geo_value.extent
         # otherwise it can be determined via another field

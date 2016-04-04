@@ -36,8 +36,12 @@ if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TES
                     geo_field = 'geometry'
             # create data
             self._create_data()
+            # geojson annotation experiment
+            # TODO: separate test with annotation from test without annotation
+            from django.contrib.gis.db.models.functions import AsGeoJSON
+            locations = Location.objects.all().annotate(geometry_geojson=AsGeoJSON('geometry'))
             # initialize serializer
-            serializer = PerfSerializer(Location.objects.all(), many=True)
+            serializer = PerfSerializer(locations, many=True)
             with Timer() as t:
                 JSONRenderer().render(serializer.data)
             # print results

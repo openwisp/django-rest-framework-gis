@@ -1,4 +1,6 @@
 import json
+import six
+import warnings
 from collections import OrderedDict
 
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
@@ -22,7 +24,7 @@ class GeometryField(Field):
         self.style = {'base_template': 'textarea.html'}
 
     def to_representation(self, value):
-        if isinstance(value, dict) or value is None:
+        if isinstance(value, (dict,) + six.string_types) or value is None:
             return value
         # we expect value to be a GEOSGeometry instance
         return GeoJsonDict((
