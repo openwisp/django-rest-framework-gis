@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from .django_restframework_gis_tests import views
+from . import views
 
 urlpatterns = [
     url(r'^$', views.location_list, name='api_location_list'),
