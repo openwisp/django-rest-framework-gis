@@ -341,7 +341,7 @@ the ``properties`` member:
         Metadata is stored in a PostgreSQL HStore field, which allows us to
         store arbitrary key-value pairs with a link record.
         """
-        metadata = HStoreField(blank=True, null=True, default={})
+        metadata = HStoreField(blank=True, null=True, default=dict)
         geo = models.LineStringField()
         objects = models.GeoManager()
 
