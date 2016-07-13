@@ -15,6 +15,11 @@ class GeoModelSerializer(ModelSerializer):
 
 
 class GeoFeatureModelListSerializer(ListSerializer):
+    def __init__(self, *args, **kwargs):
+        srid = kwargs.pop('srid', None)
+        super(GeoFeatureModelListSerializer, self).__init__(*args, **kwargs)
+        self.srid = srid
+
     @property
     def data(self):
         return super(ListSerializer, self).data
@@ -23,10 +28,15 @@ class GeoFeatureModelListSerializer(ListSerializer):
         """
         Add GeoJSON compatible formatting to a serialized queryset list
         """
-        return OrderedDict((
-            ("type", "FeatureCollection"),
-            ("features", super(GeoFeatureModelListSerializer, self).to_representation(data))
-        ))
+        od = OrderedDict((("type", "FeatureCollection"),))
+        if self.srid is not None:
+            od["crs"] = OrderedDict((
+                ("type", "name"),
+                ("properties", {"name": "EPSG:"+self.srid}),
+            ))
+        od["features"] = super(GeoFeatureModelListSerializer, self).to_representation(data)
+        return od
+
 
 
 class GeoFeatureModelSerializer(ModelSerializer):
@@ -44,8 +54,9 @@ class GeoFeatureModelSerializer(ModelSerializer):
             if key in LIST_SERIALIZER_KWARGS
         ]))
         meta = getattr(cls, 'Meta', None)
+        srid = getattr(meta, 'srid', None)
         list_serializer_class = getattr(meta, 'list_serializer_class', GeoFeatureModelListSerializer)
-        return list_serializer_class(*args, **list_kwargs)
+        return list_serializer_class(*args, srid=srid, **list_kwargs)
 
     def __init__(self, *args, **kwargs):
         super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
