@@ -84,7 +84,7 @@ class GeoFilterSet(django_filters.FilterSet):
     }
 
     def __new__(cls, *args, **kwargs):
-        cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
+        cls._meta.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
         cls.LOOKUP_TYPES = sorted(gis_lookups)
         return super(GeoFilterSet, cls).__new__(cls)
 
