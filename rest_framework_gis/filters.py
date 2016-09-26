@@ -84,7 +84,10 @@ class GeoFilterSet(django_filters.FilterSet):
     }
 
     def __new__(cls, *args, **kwargs):
-        cls._meta.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
+        try:
+            cls._meta.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
+        except AttributeError:  # Compatibility for django-filter < 0.15
+            cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
         cls.LOOKUP_TYPES = sorted(gis_lookups)
         return super(GeoFilterSet, cls).__new__(cls)
 
