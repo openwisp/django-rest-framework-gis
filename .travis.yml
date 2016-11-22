@@ -15,7 +15,6 @@ env:
   - DJANGO="django>=1.9,<1.10"
   - DJANGO="django>=1.8,<1.9"
 
-
 branches:
   only:
     - master
