@@ -5,33 +5,45 @@ cache: pip
 services:
   - postgresql
 
-python:
-  - "3.5"
-  - "3.4"
-  - "2.7"
+matrix:
+  include:
+    - python: 3.6
+      env: TOXENV=py36-django111
+    - python: 3.6
+      env: TOXENV=py36-django110
+    - python: 3.6
+      env: TOXENV=py36-django19
+    - python: 3.6
+      env: TOXENV=py36-django18
 
-env:
-  - DJANGO="django>=1.10,<1.11"
-  - DJANGO="django>=1.9,<1.10"
-  - DJANGO="django>=1.8,<1.9"
+    - python: 3.5
+      env: TOXENV=py35-django110
+
+    - python: 3.4
+      env: TOXENV=py34-django110
+
+    - python: 2.7
+      env: TOXENV=py27-django111
+    - python: 2.7
+      env: TOXENV=py27-django110
+    - python: 2.7
+      env: TOXENV=py27-django19
+    - python: 2.7
+      env: TOXENV=py27-django18
 
 branches:
   only:
     - master
 
-# command to install requirements
 install:
-  - pip install $DJANGO
-  - pip install -r requirements-test.txt
-  - python setup.py -q develop
+  - pip install coverage tox
 
 before_script:
   - createdb django_restframework_gis
   - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis;"
 
-# command to run tests, e.g. python setup.py test
 script:
-  - coverage run --source=rest_framework_gis runtests.py
+  - coverage run --source=rest_framework_gis $(command -v tox)
 
 after_success:
   coveralls
