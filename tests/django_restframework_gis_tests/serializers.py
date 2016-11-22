@@ -27,6 +27,7 @@ class LocationGeoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
+        exclude = []
 
 
 class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
@@ -46,6 +47,7 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = Location
         geo_field = 'geometry'
+        exclude = []
 
 
 class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
@@ -63,6 +65,7 @@ class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
         model = Location
         geo_field = 'geometry'
         id_field = False
+        exclude = []
 
 
 class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
@@ -88,6 +91,7 @@ class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer)
     class Meta:
         model = Location
         geo_field = 'geometry'
+        exclude = []
 
 
 class BoxedLocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
@@ -106,6 +110,7 @@ class LocationGeoFeatureBboxSerializer(gis_serializers.GeoFeatureModelSerializer
         model = Location
         geo_field = 'geometry'
         auto_bbox = True
+        exclude = []
 
 
 class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
@@ -120,6 +125,7 @@ class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializ
     class Meta:
         model = Location
         geo_field = 'new_geometry'
+        exclude = []
 
 
 class NoneGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
