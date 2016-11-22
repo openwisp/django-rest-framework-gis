@@ -429,6 +429,8 @@ Example result response (cut to one element only instead of 10):
 Filters
 -------
 
+**note**: this feature has been tested up to django-filter 1.0.
+
 We provide a ``GeometryFilter`` field as well as a ``GeoFilterSet``
 for usage with ``django_filter``. You simply provide, in the query
 string, one of the textual types supported by ``GEOSGeometry``. By
