@@ -1,7 +1,7 @@
 django-rest-framework-gis
 =========================
 
-|Build Status| |Coverage Status| |Requirements Status| |PyPI version| |PyPI downloads|
+|Build Status| |Coverage Status| |Requirements Status| |PyPI version|
 
 Geographic add-ons for Django Rest Framework - `Mailing
 List <http://bit.ly/1M4sLTp>`__.
@@ -625,5 +625,3 @@ Contributing
    :target: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master
 .. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.svg
    :target: http://badge.fury.io/py/djangorestframework-gis
-.. |PyPI downloads| image:: https://img.shields.io/pypi/dm/djangorestframework-gis.svg
-    :target: http://badge.fury.io/py/djangorestframework-gis
