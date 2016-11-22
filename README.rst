@@ -429,9 +429,7 @@ Example result response (cut to one element only instead of 10):
 Filters
 -------
 
-**note**: this feature is compatible with django-filter up to version 0.15.
-If you need compatibility with version django-filter 1.0 please send a patch
-(see `issue #120 <https://github.com/djangonauts/django-rest-framework-gis/issues/120>`_).
+**note**: this feature has been tested up to django-filter 1.0.
 
 We provide a ``GeometryFilter`` field as well as a ``GeoFilterSet``
 for usage with ``django_filter``. You simply provide, in the query
@@ -446,8 +444,8 @@ GeometryFilter
     from rest_framework_gis.filterset import GeoFilterSet
 
     class RegionFilter(GeoFilterSet):
-        slug = filters.CharFilter(name='slug', lookup_type='istartswith')
-        contains_geom = filters.GeometryFilter(name='geom', lookup_type='contains')
+        slug = filters.CharFilter(name='slug', lookup_expr='istartswith')
+        contains_geom = filters.GeometryFilter(name='geom', lookup_expr='contains')
 
         class Meta:
             model = Region
