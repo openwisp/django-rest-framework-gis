@@ -4,8 +4,8 @@ Changelog
 Version 0.11.0 [2016-11-22]
 ---------------------------
 
-- `#106 <https://github.com/djangonauts/django-rest-framework-gis/pull/106>`_ dropped support for django 1.7
-- `#117 <https://github.com/djangonauts/django-rest-framework-gis/pull/117>`_ added support for django-filter 0.15
+- `#106 <https://github.com/djangonauts/django-rest-framework-gis/pull/106>`_: dropped support for django 1.7
+- `#117 <https://github.com/djangonauts/django-rest-framework-gis/pull/117>`_: added support for django-filter 0.15
 - `6479949 <https://github.com/djangonauts/django-rest-framework-gis/commit/6479949>`_: fixed tests for latest DRF 3.5 version
 - `35e3b87 <https://github.com/djangonauts/django-rest-framework-gis/commit/35e3b87>`_: added official support to django 1.10
 
