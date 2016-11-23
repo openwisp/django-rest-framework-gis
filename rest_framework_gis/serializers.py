@@ -53,7 +53,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         default_id_field = None
         primary_key = self.Meta.model._meta.pk.name
         # use primary key as id_field when possible
-        if not hasattr(meta, 'fields') or primary_key in meta.fields:
+        if not hasattr(meta, 'fields') or meta.fields == '__all__' or primary_key in meta.fields:
             default_id_field = primary_key
         meta.id_field = getattr(meta, 'id_field', default_id_field)
 
@@ -67,7 +67,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
 
         def add_to_fields(field_name):
             """Make sure the field is included in the fields"""
-            if hasattr(meta, 'fields'):
+            if hasattr(meta, 'fields') and meta.fields != '__all__':
                 if field_name not in meta.fields:
                     if type(meta.fields) is tuple:
                         additional_fields = (field_name,)

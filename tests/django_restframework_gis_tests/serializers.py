@@ -27,7 +27,7 @@ class LocationGeoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        exclude = []
+        fields = '__all__'
 
 
 class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
@@ -47,7 +47,7 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = Location
         geo_field = 'geometry'
-        exclude = []
+        fields = '__all__'
 
 
 class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
@@ -65,7 +65,7 @@ class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
         model = Location
         geo_field = 'geometry'
         id_field = False
-        exclude = []
+        fields = '__all__'
 
 
 class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
