@@ -40,34 +40,45 @@ __all__ = [
 class InBBoxFilter(BaseFilterBackend):
     bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
 
-    def get_filter_bbox(self, request):
-        bbox_string = request.query_params.get(self.bbox_param, None)
+    def get_filter_bbox(self, request, query_param):
+        bbox_string = request.query_params.get(query_param, None)
         if not bbox_string:
             return None
 
         try:
             p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
         except ValueError:
-            raise ParseError('Invalid bbox string supplied for parameter {0}'.format(self.bbox_param))
+            raise ParseError('Invalid bbox string supplied for parameter {0}'.format(query_param))
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
         return x
 
     def filter_queryset(self, request, queryset, view):
-        filter_field = getattr(view, 'bbox_filter_field', None)
-        include_overlapping = getattr(view, 'bbox_filter_include_overlapping', False)
-        if include_overlapping:
-            geoDjango_filter = 'bboverlaps'
+        query_filter = {}
+        self.bbox_params = getattr(view,'bbox_params', {self.bbox_param: {'filter_field': getattr(view,'bbox_filter_field', None), 'include_overlapping': getattr(view,'bbox_filter_include_overlapping', False)}})
+        for query_param, filter_field_attributes in self.bbox_params.iteritems():
+            filter_field = filter_field_attributes['filter_field']
+            include_overlapping = filter_field_attributes['include_overlapping']
+            if include_overlapping:
+                geoDjango_filter = 'bboverlaps'
+            else:
+                geoDjango_filter = 'contained'
+
+            if not filter_field:
+                continue
+
+            bbox = self.get_filter_bbox(request, query_param)
+            if not bbox:
+                continue
+            # build the dict then return queryset filter that filters multiple attributes
+            # backwards compatibile because get_filter_bbox is private and untested method
+            query_filter['%s__%s' % (filter_field, geoDjango_filter)]= bbox
+        if query_filter == {}:
+            return queryset
         else:
-            geoDjango_filter = 'contained'
+            return queryset.filter(Q(**query_filter))
 
-        if not filter_field:
-            return queryset
 
-        bbox = self.get_filter_bbox(request)
-        if not bbox:
-            return queryset
-        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
 # backward compatibility
 InBBOXFilter = InBBoxFilter
 
@@ -98,17 +109,17 @@ class GeoFilterSet(django_filters.FilterSet):
 
 
 class TMSTileFilter(InBBoxFilter):
-    tile_param = 'tile'  # The URL query paramater which contains the tile address
+    bbox_param = 'tile'  # The URL query paramater which contains the tile address
 
-    def get_filter_bbox(self, request):
-        tile_string = request.query_params.get(self.tile_param, None)
+    def get_filter_bbox(self, request, query_param):
+        tile_string = request.query_params.get(self.bbox_param, None)
         if not tile_string:
             return None
 
         try:
             z, x, y = (int(n) for n in tile_string.split('/'))
         except ValueError:
-            raise ParseError('Invalid tile string supplied for parameter {0}'.format(self.tile_param))
+            raise ParseError('Invalid tile string supplied for parameter {0}'.format(self.bbox_param))
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
         return bbox

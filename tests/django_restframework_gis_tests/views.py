@@ -33,18 +33,39 @@ class GeojsonLocationList(generics.ListCreateAPIView):
 geojson_location_list = GeojsonLocationList.as_view()
 
 
-class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
+class GeojsonLocationContainedInBBoxListLegacy(generics.ListAPIView):
+    # Legacy test bbox view for one attribute bbox_filters
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
     bbox_filter_field = 'geometry'
     filter_backends = (InBBoxFilter,)
 
+geojson_location_contained_in_bbox_list_legacy = GeojsonLocationContainedInBBoxListLegacy.as_view()
+
+
+class GeojsonLocationOverlapsBBoxListLegacy(GeojsonLocationContainedInBBoxListLegacy):
+    bbox_filter_include_overlapping = True
+
+geojson_location_overlaps_bbox_list_legacy = GeojsonLocationOverlapsBBoxListLegacy.as_view()
+
+class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
+    # Test view for bbox_params hash
+    model = Location
+    serializer_class = LocationGeoFeatureSerializer
+    queryset = Location.objects.all()
+    bbox_params = {
+        'in_bbox': {'filter_field': 'geometry', 'include_overlapping': False},
+    }
+    filter_backends = (InBBoxFilter,)
+
 geojson_location_contained_in_bbox_list = GeojsonLocationContainedInBBoxList.as_view()
 
 
 class GeojsonLocationOverlapsBBoxList(GeojsonLocationContainedInBBoxList):
-    bbox_filter_include_overlapping = True
+    bbox_params = {
+        'in_bbox': {'filter_field': 'geometry', 'include_overlapping': True},
+    }
 
 geojson_location_overlaps_bbox_list = GeojsonLocationOverlapsBBoxList.as_view()
 

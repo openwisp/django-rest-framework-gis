@@ -70,6 +70,14 @@ urlpatterns = [
         views.geojson_location_overlaps_bbox_list,
         name='api_geojson_location_list_overlaps_bbox_filter'),
     url(
+        r'^filters/contained_in_bbox_legacy$',
+        views.geojson_location_contained_in_bbox_list_legacy,
+        name='api_geojson_location_list_contained_in_bbox_filter_legacy'),
+    url(
+        r'^filters/overlaps_bbox_legacy$',
+        views.geojson_location_overlaps_bbox_list_legacy,
+        name='api_geojson_location_list_overlaps_bbox_filter_legacy'),
+    url(
         r'^filters/contained_in_geometry$',
         views.geojson_contained_in_geometry,
         name='api_geojson_contained_in_geometry'),

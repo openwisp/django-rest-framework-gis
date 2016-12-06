@@ -19,7 +19,9 @@ class TestRestFrameworkGisFilters(TestCase):
     """
     def setUp(self):
         self.location_contained_in_bbox_list_url = reverse('api_geojson_location_list_contained_in_bbox_filter')
+        self.location_contained_in_bbox_list_url_legacy = reverse('api_geojson_location_list_contained_in_bbox_filter_legacy')
         self.location_overlaps_bbox_list_url = reverse('api_geojson_location_list_overlaps_bbox_filter')
+        self.location_overlaps_bbox_list_url_legacy = reverse('api_geojson_location_list_overlaps_bbox_filter_legacy')
         self.location_contained_in_tile_list_url = reverse('api_geojson_location_list_contained_in_tile_filter')
         self.location_overlaps_tile_list_url = reverse('api_geojson_location_list_overlaps_tile_filter')
         self.location_within_distance_of_point_list_url = reverse('api_geojson_location_list_within_distance_of_point_filter')
@@ -65,16 +67,18 @@ class TestRestFrameworkGisFilters(TestCase):
         nonIntersecting.save()
 
         # Make sure we only get back the ones strictly contained in the bounding box
-        response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
-        self.assertEqual(len(response.data['features']), 2)
-        for result in response.data['features']:
-            self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds'), True)
+        for url in [self.location_contained_in_bbox_list_url, self.location_contained_in_bbox_list_url_legacy]:
+            response = self.client.get(url + url_params)
+            self.assertEqual(len(response.data['features']), 2)
+            for result in response.data['features']:
+                self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds'), True)
 
         # Make sure we get overlapping results for the view which allows bounding box overlaps.
-        response = self.client.get(self.location_overlaps_bbox_list_url + url_params)
-        self.assertEqual(len(response.data['features']), 3)
-        for result in response.data['features']:
-            self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)
+        for url in [self.location_overlaps_bbox_list_url, self.location_overlaps_bbox_list_url_legacy]:
+            response = self.client.get(url + url_params)
+            self.assertEqual(len(response.data['features']), 3)
+            for result in response.data['features']:
+                self.assertEqual(result['properties']['name'] in ('isContained', 'isEqualToBounds', 'overlaps'), True)
 
     @skipIf(has_spatialite, 'Skipped test for spatialite backend: not accurate enough')
     def test_TileFilter_filtering(self):
@@ -399,13 +403,22 @@ class TestRestFrameworkGisFilters(TestCase):
         self.assertEqual(response.data['detail'], 'Invalid bbox string supplied for parameter in_bbox')
 
     def test_inBBOXFilter_filter_field_none(self):
-        from .views import GeojsonLocationContainedInBBoxList as view
+        from .views import GeojsonLocationContainedInBBoxListLegacy as view
         original_value = view.bbox_filter_field
         view.bbox_filter_field = None
         url_params = '?in_bbox=0,0,0,0&format=json'
         response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
         self.assertDictEqual(response.data, {'type':'FeatureCollection','features':[]})
         view.bbox_filter_field = original_value
+
+    def test_inBBOXFilter_filter_fields_empty(self):
+        from .views import GeojsonLocationContainedInBBoxList as view
+        original_value = view.bbox_params
+        view.bbox_params = {}
+        url_params = '?in_bbox=0,0,0,0&format=json'
+        response = self.client.get(self.location_contained_in_bbox_list_url + url_params)
+        self.assertDictEqual(response.data, {'type':'FeatureCollection','features':[]})
+        view.bbox_params = original_value
 
     def test_TileFilter_filtering_none(self):
         url_params = '?tile=&format=json'
