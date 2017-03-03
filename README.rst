@@ -442,10 +442,12 @@ GeometryFilter
 .. code-block:: python
 
     from rest_framework_gis.filterset import GeoFilterSet
+    from rest_framework_gis.filters import GeometryFilter
+    from django_filters import filters
 
     class RegionFilter(GeoFilterSet):
         slug = filters.CharFilter(name='slug', lookup_expr='istartswith')
-        contains_geom = filters.GeometryFilter(name='geom', lookup_expr='contains')
+        contains_geom = GeometryFilter(name='geom', lookup_expr='contains')
 
         class Meta:
             model = Region
