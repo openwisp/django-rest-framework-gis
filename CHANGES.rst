@@ -1,10 +1,11 @@
 Changelog
 =========
 
-Version 0.11.1 [unreleased]
+Version 0.11.1 [2017-05-05]
 ---------------------------
 
-WIP
+- `#119 <https://github.com/djangonauts/django-rest-framework-gis/issues/119>`_: Added support to "__all__" fields in serializer
+- `#130 <https://github.com/djangonauts/django-rest-framework-gis/pull/130>`_: Added compatibility with DRF 3.6
 
 Version 0.11.0 [2016-11-22]
 ---------------------------
