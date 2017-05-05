@@ -20,7 +20,9 @@ def get_install_requires():
 
 
 if sys.argv[-1] == 'publish':
-    os.system("python setup.py sdist bdist_wheel upload -s")
+    os.system("python setup.py sdist bdist_wheel")
+    os.system("twine upload -s dist/*")
+    os.system("rm -rf dist build")
     args = {'version': get_version()}
     print("You probably want to also tag the version now:")
     print("  git tag -a %(version)s -m 'version %(version)s'" % args)
