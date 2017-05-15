@@ -487,7 +487,8 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 200)
         location_reloaded = Location.objects.get(pk=location.id)
         self.assertEquals(location_reloaded.name, 'geojson successful patch test')
-        self.assertEquals(location_reloaded.geometry, Point(10.1, 10.1))
+        self.assertEquals(location_reloaded.geometry,
+                          Point(10.1, 10.1, srid=location.geometry.srid))
 
     def test_patch_geojson_location_wo_changing_geometry(self):
         location = Location.objects.create(name='geojson patch test', geometry='POINT (135.0 45.0)')
@@ -501,13 +502,15 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 200)
         location_reloaded = Location.objects.get(pk=location.id)
         self.assertEquals(location_reloaded.name, 'geojson successful patch test')
-        self.assertEquals(location_reloaded.geometry, Point(135.0, 45.0))
+        self.assertEquals(location_reloaded.geometry,
+                          Point(135.0, 45.0, srid=location.geometry.srid))
 
     def test_geometry_serializer_method_field(self):
         location = Location.objects.create(name='geometry serializer method test', geometry='POINT (135.0 45.0)')
         location_loaded = Location.objects.get(pk=location.id)
         self.assertEqual(location_loaded.name, 'geometry serializer method test')
-        self.assertEqual(location_loaded.geometry, Point(135.0, 45.0))
+        self.assertEqual(location_loaded.geometry,
+                         Point(135.0, 45.0, srid=location.geometry.srid))
         url = reverse('api_geojson_location_details_hidden', args=[location.id])
         data = {
             "properties": {
@@ -523,7 +526,8 @@ class TestRestFrameworkGis(TestCase):
     def test_geometry_serializer_method_field_none(self):
         location = Location.objects.create(name='None value', geometry='POINT (135.0 45.0)')
         location_loaded = Location.objects.get(pk=location.id)
-        self.assertEqual(location_loaded.geometry, Point(135.0, 45.0))
+        self.assertEqual(location_loaded.geometry,
+                         Point(135.0, 45.0, srid=location.geometry.srid))
         url = reverse('api_geojson_location_details_none', args=[location.id])
         response = self.client.generic('GET', url, content_type='application/json')
         self.assertEqual(response.status_code, 200)
