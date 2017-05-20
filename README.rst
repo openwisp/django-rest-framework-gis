@@ -574,25 +574,29 @@ Projects using this package
 Running the tests
 -----------------
 
-Assuming one has the dependencies installed (restframework and
-restframework\_gis), and one of the `Spatial Database server supported
-by
-GeoDjango <https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends>`__
-is up and running:
+Required setup
+==============
+
+You need one of the `Spatial Database servers supported by
+GeoDjango <https://docs.djangoproject.com/en/dev/ref/contrib/gis/db-api/#module-django.contrib.gis.db.backends>`__,
+and create a database for the tests.
+
+The following can be used with PostgreSQL:
 
 .. code-block:: bash
 
-    ./runtests.py
+  createdb django_restframework_gis
+  psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis"
 
 You might need to tweak the DB settings according to your DB
 configuration. You can copy the file ``local_settings.example.py`` to
 ``local_settings.py`` and change the ``DATABASES`` and/or
 ``INSTALLED_APPS`` directives there.
 
-If you want to contribute you need to install the test app in a proper
-development environment.
+This should allow you to run the tests already.
 
-These steps should do the trick:
+For reference, the following steps will setup a development environment for
+contributing to the project:
 
 -  create a spatial database named "django\_restframework\_gis"
 -  create ``local_settings.py``, eg:
@@ -605,6 +609,35 @@ These steps should do the trick:
 -  run ``python manage.py syncdb``
 -  run ``python manage.py collectstatic``
 -  run ``python manage.py runserver``
+
+Using tox
+=========
+
+The recommended way to run the tests is by using
+`tox <https://tox.readthedocs.io/en/latest/>`__, which can be installed using
+`pip install tox`.
+
+You can use ``tox -l`` to list the available environments, and then e.g. use
+the following to run all tests with Python 3.6 and Django 1.11:
+
+.. code-block:: bash
+
+    tox -e py36-django111
+
+By default Django's test runner is used, but there is a variation of tox's
+envlist to use pytest (using the ``-pytest`` suffix).
+
+You can pass optional arguments to the test runner like this:
+
+.. code-block:: bash
+
+    tox -e py36-django111-pytest -- -k test_foo
+
+Running tests manually
+======================
+
+Please refer to the ``tox.ini`` file for reference/help in case you want to run
+tests manually / without tox.
 
 Contributing
 ------------
