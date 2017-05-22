@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.11.2 [2017-05-22]
+---------------------------
+
+- `eb54fc0 <https://github.com/djangonauts/django-rest-framework-gis/commit/eb54fc0>`_: ``GeometryFilter`` now use ``BaseGeometryWidget``
+- `33a6418 <https://github.com/djangonauts/django-rest-framework-gis/commit/33a6418>`_: fixed tests for Django 1.11: ``Point`` comparison uses ``srid``
+
 Version 0.11.1 [2017-05-05]
 ---------------------------
 
