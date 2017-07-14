@@ -34,6 +34,7 @@ if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TES
                 class Meta:
                     model = Location
                     geo_field = 'geometry'
+                    fields = '__all__'
             # create data
             self._create_data()
             # initialize serializer
