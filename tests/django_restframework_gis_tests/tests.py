@@ -521,7 +521,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['properties']['name'], 'hidden geometry')
         self.assertEqual(response.data['geometry']['type'], 'Point')
-        self.assertEqual(response.data['geometry']['coordinates'], (0.0, 0.0))
+        self.assertEqual(response.data['geometry']['coordinates'], [0.0, 0.0])
 
     def test_geometry_serializer_method_field_none(self):
         location = Location.objects.create(name='None value', geometry='POINT (135.0 45.0)')
@@ -584,3 +584,57 @@ class TestRestFrameworkGis(TestCase):
         pickled = pickle.dumps(geojsondict)
         restored = pickle.loads(pickled)
         self.assertEqual(restored, geojsondict)
+
+    def test_geometrycollection_geojson(self):
+        """ test geometry collection geojson behaviour """
+        location = Location.objects.create(name='geometry collection geojson test',
+                                           geometry='GEOMETRYCOLLECTION ('
+                                                    'POINT (135.0 45.0),'
+                                                    'LINESTRING (135.0 45.0,140.0 50.0,145.0 55.0),'
+                                                    'POLYGON ((135.0 45.0,140.0 50.0,145.0 55.0,135.0 45.0)))')
+        url = reverse('api_geojson_location_details', args=[location.id])
+        expected = {
+            'id': location.id,
+            'type': 'Feature',
+            'properties': {
+                'details': "http://testserver/geojson/%s/" % location.id,
+                'name': 'geometry collection geojson test',
+                'fancy_name': 'Kool geometry collection geojson test',
+                'timestamp': None,
+                'slug': 'geometry-collection-geojson-test',
+            },
+            'geometry': {
+                'type': 'GeometryCollection',
+                'geometries': [
+                    {
+                        'type': 'Point',
+                        'coordinates': [135.0, 45.0]
+                    },
+                    {
+                        'type': 'LineString',
+                        'coordinates': [
+                            [135.0, 45.0],
+                            [140.0, 50.0],
+                            [145.0, 55.0]
+                        ]
+                    },
+                    {
+                        'type': 'Polygon',
+                        'coordinates': [
+                            [
+                                [135.0, 45.0],
+                                [140.0, 50.0],
+                                [145.0, 55.0],
+                                [135.0, 45.0],
+                            ]
+                        ]
+                    },
+                ],
+            }
+        }
+        response = self.client.get(url)
+        if sys.version_info > (3, 0, 0):
+            self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
+        else:
+            self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
+        self.assertContains(response, "Kool geometry collection geojson test")

@@ -1,3 +1,4 @@
+six
 psycopg2
 djangorestframework>=3.3
 coverage==3.7.1  # rq.filter: >=3,<4

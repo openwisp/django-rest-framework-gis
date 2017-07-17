@@ -1,3 +1,4 @@
+import six  # TODO Remove this along with GeoJsonDict when support for python 2.6/2.7 is dropped.
 import json
 from collections import OrderedDict
 
@@ -25,10 +26,7 @@ class GeometryField(Field):
         if isinstance(value, dict) or value is None:
             return value
         # we expect value to be a GEOSGeometry instance
-        return GeoJsonDict((
-            ('type', value.geom_type),
-            ('coordinates', value.coords),
-        ))
+        return GeoJsonDict(value.geojson)
 
     def to_internal_value(self, value):
         if value == '' or value is None:
@@ -54,10 +52,7 @@ class GeometrySerializerMethodField(SerializerMethodField):
         value = super(GeometrySerializerMethodField, self).to_representation(value)
         if value is not None:
             # we expect value to be a GEOSGeometry instance
-            return GeoJsonDict((
-                ('type', value.geom_type),
-                ('coordinates', value.coords),
-            ))
+            return GeoJsonDict(value.geojson)
         else:
             return None
 
@@ -67,6 +62,18 @@ class GeoJsonDict(OrderedDict):
     Used for serializing GIS values to GeoJSON values
     TODO: remove this when support for python 2.6/2.7 will be dropped
     """
+    def __init__(self, *args, **kwargs):
+        """
+        If a string is passed attempt to pass it through json.loads,
+        because it should be a geojson formatted string.
+        """
+        if args and isinstance(args[0], six.string_types):
+            try:
+                geojson = json.loads(args[0])
+                args = (geojson,)
+            except ValueError:
+                pass
+        super(GeoJsonDict, self).__init__(*args, **kwargs)
 
     def __str__(self):
         """
