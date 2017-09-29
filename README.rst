@@ -304,7 +304,7 @@ read access for a REST client and can be achieved using ``auto_bbox``. Example:
             auto_bbox = True
 
 
-The second approach uses the ``bbox_geo_field`` to specify an addional
+The second approach uses the ``bbox_geo_field`` to specify an additional
 ``GeometryField`` of the model which will be used to calculate the bounding box. This allows
 boundingboxes differ from the exact extent of a features geometry. Additionally this
 enables read and write access for the REST client. Bounding boxes send from the client will
