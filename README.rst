@@ -485,8 +485,8 @@ a certain bounding box.
         filter_backends = (InBBoxFilter, )
         bbox_filter_include_overlapping = True # Optional
 
-We can then filter in the URL, using Bounding Box format (min Lat, min
-Lon, max Lat, max Lon), and we can search for instances within the
+We can then filter in the URL, using Bounding Box format (min Lon, min
+Lat, max Lon, max Lat), and we can search for instances within the
 bounding box, e.g.:
 ``/location/?in_bbox=-90,29,-89,35``.
 
