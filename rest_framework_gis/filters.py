@@ -18,13 +18,18 @@ except ImportError:  # pragma: no cover
         'restframework-gis filters depend on package "django-filter" '
         'which is missing. Install with "pip install django-filter".'
     )
-
-try:  # pragma: no cover
-    # django >= 1.8
-    from django.contrib.gis.db.models.lookups import gis_lookups
-except ImportError:  # pragma: no cover
-    # django <= 1.7
-    gis_lookups = models.sql.query.ALL_TERMS
+try:
+    # Django >= 2.0
+    from django.contrib.gis.db.models.fields import BaseSpatialField
+except ImportError:
+    try:  # pragma: no cover
+        # django >= 1.8,<2.0
+        from django.contrib.gis.db.models.lookups import gis_lookups
+    except ImportError:  # pragma: no cover
+        # django <= 1.7
+        gis_lookups = models.sql.query.ALL_TERMS
+else:
+    gis_lookups = BaseSpatialField.get_lookups()
 
 
 __all__ = [

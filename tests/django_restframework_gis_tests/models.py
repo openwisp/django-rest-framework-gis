@@ -14,7 +14,6 @@ class BaseModel(models.Model):
     slug = models.SlugField(max_length=128, unique=True, blank=True)
     timestamp = models.DateTimeField(null=True, blank=True)
     geometry = models.GeometryField()
-    objects = models.GeoManager()
 
     class Meta:
         abstract = True

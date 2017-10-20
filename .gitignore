@@ -13,4 +13,4 @@ tests/static/
 /htmlcov
 __pycache__/
 *.pyc
-
+.tox/

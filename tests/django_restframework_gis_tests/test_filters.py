@@ -6,7 +6,10 @@ from unittest import skipIf
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 from .models import Location
 
