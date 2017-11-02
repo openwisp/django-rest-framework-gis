@@ -7,7 +7,10 @@ from django.conf import settings
 # or by setting ``settings.TEST_PERFORMANCE`` to ``True``
 if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TEST_PERFORMANCE:
     from django.test import TestCase
-    from django.core.urlresolvers import reverse
+    try:
+        from django.urls import reverse
+    except ImportError:
+        from django.core.urlresolvers import reverse
     from rest_framework.renderers import JSONRenderer
     from rest_framework_gis import serializers as gis_serializers
     from contexttimer import Timer

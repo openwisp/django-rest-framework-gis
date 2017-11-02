@@ -3,7 +3,7 @@ import json
 from collections import OrderedDict
 
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
-from django.contrib.gis.gdal import OGRException
+from django.contrib.gis.gdal import GDALException
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field, SerializerMethodField
@@ -38,7 +38,7 @@ class GeometryField(Field):
             value = json.dumps(value)
         try:
             return GEOSGeometry(value)
-        except (ValueError, GEOSException, OGRException, TypeError):
+        except (ValueError, GEOSException, GDALException, TypeError):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'))
 
     def validate_empty_values(self, data):

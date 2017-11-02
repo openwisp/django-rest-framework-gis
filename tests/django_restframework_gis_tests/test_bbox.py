@@ -1,7 +1,10 @@
 import json
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 
 from rest_framework_gis import serializers as gis_serializers
