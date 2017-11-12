@@ -1,6 +1,17 @@
 Changelog
 =========
 
+Version 0.12.0 [2017-11-12]
+---------------------------
+
+- `#138 <https://github.com/djangonauts/django-rest-framework-gis/pull/138>`_:
+  added support for ``GeometryCollection`` fields
+- `#146 <https://github.com/djangonauts/django-rest-framework-gis/pull/146>`_:
+  added compatibility with django-rest-framework 3.7
+- `#147 <https://github.com/djangonauts/django-rest-framework-gis/pull/147>`_:
+  added support to django 2.0 beta
+- dropped support for django 1.7, 1.8, 1.9 and 1.10
+
 Version 0.11.2 [2017-05-22]
 ---------------------------
 
