@@ -23,8 +23,6 @@ TEST_PERFORMANCE = True
 #    'django.contrib.gis',
 #
 #    # geodjango widgets
-#    'olwidget',
-#
 #    # admin
 #    #'grappelli',
 #    'django.contrib.admin',

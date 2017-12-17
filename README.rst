@@ -604,9 +604,7 @@ contributing to the project:
    ``cp local_settings.example.py local_settings.py``
 -  tweak the ``DATABASES`` configuration directive according to your DB
    settings
--  optionally install ``olwidget`` with ``pip install olwidget``
--  uncomment ``INSTALLED_APPS`` (remove olwidget if you did not install
-   it)
+-  uncomment ``INSTALLED_APPS``
 -  run ``python manage.py syncdb``
 -  run ``python manage.py collectstatic``
 -  run ``python manage.py runserver``
