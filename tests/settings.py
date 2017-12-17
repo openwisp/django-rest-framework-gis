@@ -34,7 +34,7 @@ INSTALLED_APPS = (
     'django_restframework_gis_tests'
 )
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
