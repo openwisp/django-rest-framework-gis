@@ -38,8 +38,11 @@ class GeometryField(Field):
             value = json.dumps(value)
         try:
             return GEOSGeometry(value)
-        except (ValueError, GEOSException, GDALException, TypeError):
+        except (GEOSException):
             raise ValidationError(_('Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'))
+        except (ValueError, TypeError, GDALException) as e:
+            raise ValidationError(_('Unable to convert to python object: {}'.format(str(e))))
+
 
     def validate_empty_values(self, data):
         if data == '':
