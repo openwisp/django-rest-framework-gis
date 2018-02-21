@@ -12,13 +12,61 @@ from rest_framework.fields import Field, SerializerMethodField
 __all__ = ['GeometryField', 'GeometrySerializerMethodField']
 
 
+def recursive_round(v, precision):
+    """
+    Round all numbers within an array or nested arrays
+      v: number or nested array of numbers
+      precision: integer value of number of decimals to keep
+    """
+    if hasattr(v, '__iter__'):
+        return tuple(recursive_round(x, precision) for x in v)
+    return round(v, precision)
+
+
+def _rm_dupes(coordinates, close=True):
+    """
+    Return array with no repeating coordinates.
+      coordinates: array of coordinates
+      close: whether there should always be at least two sets of coordinates, 
+        in which case the first set will be repeated twice
+    """
+    output = []
+    for coord in coordinates:
+        if not output or coord != output[-1]:
+            output.append(coord)
+    if close and len(output) == 1:
+        output.append(output[0])
+    return output
+
+# assert _rm_dupes([(1,1), (1,1), (1,1), (1,1)], False) == [(1, 1)]
+# assert _rm_dupes([(1,1), (1,1), (1,1), (1,1)], True) == [(1, 1), (1, 1)]
+# assert _rm_dupes([(1,0), (1,1), (1,1), (0,1)], True) == _rm_dupes([(1,0), (1,1), (1,1), (0,1)], False) == [(1, 0), (1, 1), (0, 1)]
+
+
+def rm_redundant_points(coordinates, geotype):
+    if geotype in ('MultiPoint', 'LineString'):
+        return _rm_dupes(coordinates, close=(geotype == 'LineString'))
+    if geotype in ('MultiLineString', 'Polygon'):
+        return _rm_dupes(
+            [rm_redundant_points(c, 'LineString') for c in coordinates],
+            close=False
+        )
+    if geotype == 'MultiPolygon':
+        return _rm_dupes(
+            [rm_redundant_points(c, 'Polygon') for c in coordinates],
+            close=True)
+    return coordinates
+
+
 class GeometryField(Field):
     """
     A field to handle GeoDjango Geometry fields
     """
     type_name = 'GeometryField'
 
-    def __init__(self, **kwargs):
+    def __init__(self, precision=None, remove_duplicates=False, **kwargs):
+        self.precision = precision
+        self.rm_dupes = remove_duplicates
         super(GeometryField, self).__init__(**kwargs)
         self.style = {'base_template': 'textarea.html'}
 
@@ -26,7 +74,14 @@ class GeometryField(Field):
         if isinstance(value, dict) or value is None:
             return value
         # we expect value to be a GEOSGeometry instance
-        return GeoJsonDict(value.geojson)
+        geojson = GeoJsonDict(value.geojson)
+        if self.precision is not None:
+            coords = recursive_round(geojson['coordinates'], self.precision)
+            geojson['coordinates'] = coords
+        if self.rm_dupes:
+            geojson['coordinates'] = rm_redundant_points(
+                geojson['coordinates'], geojson['type'])
+        return geojson
 
     def to_internal_value(self, value):
         if value == '' or value is None:
