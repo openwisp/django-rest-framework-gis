@@ -74,6 +74,24 @@ Provides a ``GeometryField``, which is a subclass of Django Rest Framework
 geometry fields, providing custom ``to_native`` and ``from_native``
 methods for GeoJSON input/output.
 
+This field takes two optional arguments:
+
+``precision``: Passes coordinates through Python's builtin ``round()`` function (`docs
+<https://docs.python.org/3/library/functions.html#round>`_), rounding values to
+the provided level of precision. E.g. A Point with lat/lng of
+``[51.0486, -114.0708]`` passed through a ``GeometryField(precision=2)``
+would return a Point with a lat/lng of ``[51.05, -114.07]``.
+
+``remove_duplicates``: Remove sequential duplicate coordinates from line and
+polygon geometries. This is particularly useful when used with the ``precision``
+argument, as the likelihood of duplicate coordinates increase as precision of
+coordinates are reduced.
+
+**Note:** While both above arguments are designed to reduce the
+byte size of the API response, they will also increase the processing time
+required to render the response. This will likely be negligible for small GeoJSON
+responses but may become an issue for large responses.
+
 **New in 0.9.3:** there is no need to define this field explicitly in your serializer,
 it's mapped automatically during initialization in ``rest_framework_gis.apps.AppConfig.ready()``.
 
@@ -93,7 +111,7 @@ GeoModelSerializer (DEPRECATED)
 **Deprecated, will be removed in 1.0**: Using this serializer is not needed anymore since 0.9.3 if you add
 ``rest_framework_gis`` in ``settings.INSTALLED_APPS``
 
-Provides a ``GeoModelSerializer``, which is a sublass of DRF
+Provides a ``GeoModelSerializer``, which is a subclass of DRF
 ``ModelSerializer``. This serializer updates the field\_mapping
 dictionary to include field mapping of GeoDjango geometry fields to the
 above ``GeometryField``.

@@ -18,7 +18,9 @@ class GeometryField(Field):
     """
     type_name = 'GeometryField'
 
-    def __init__(self, **kwargs):
+    def __init__(self, precision=None, remove_duplicates=False, **kwargs):
+        self.precision = precision
+        self.remove_dupes = remove_duplicates
         super(GeometryField, self).__init__(**kwargs)
         self.style = {'base_template': 'textarea.html'}
 
@@ -26,7 +28,19 @@ class GeometryField(Field):
         if isinstance(value, dict) or value is None:
             return value
         # we expect value to be a GEOSGeometry instance
-        return GeoJsonDict(value.geojson)
+        geojson = GeoJsonDict(value.geojson)
+        if geojson['type'] == 'GeometryCollection':
+            geometries = geojson.get('geometries')
+        else:
+            geometries = [geojson]
+        for geometry in geometries:
+            if self.precision is not None:
+                geometry['coordinates'] = self._recursive_round(
+                    geometry['coordinates'], self.precision)
+            if self.remove_dupes:
+                geometry['coordinates'] = self._rm_redundant_points(
+                    geometry['coordinates'], geometry['type'])
+        return geojson
 
     def to_internal_value(self, value):
         if value == '' or value is None:
@@ -47,6 +61,40 @@ class GeometryField(Field):
         if data == '':
             self.fail('required')
         return super(GeometryField, self).validate_empty_values(data)
+
+    def _recursive_round(self, value, precision):
+        """
+        Round all numbers within an array or nested arrays
+            value: number or nested array of numbers
+            precision: integer valueue of number of decimals to keep
+        """
+        if hasattr(value, '__iter__'):
+            return tuple(self._recursive_round(v, precision) for v in value)
+        return round(value, precision)
+
+    def _rm_redundant_points(self, geometry, geo_type):
+        """
+        Remove redundant coordinate pairs from geometry
+            geometry: array of coordinates or nested-array of coordinates
+            geo_type: GeoJSON type attribute for provided geometry, used to
+                     determine structure of provided `geometry` argument
+        """
+        if geo_type in ('MultiPoint', 'LineString'):
+            close = (geo_type == 'LineString')
+            output = []
+            for coord in geometry:
+                coord = tuple(coord)
+                if not output or coord != output[-1]:
+                    output.append(coord)
+            if close and len(output) == 1:
+                output.append(output[0])
+            return tuple(output)
+        if geo_type in ('MultiLineString', 'Polygon'):
+            return [
+                self._rm_redundant_points(c, 'LineString') for c in geometry]
+        if geo_type == 'MultiPolygon':
+            return [self._rm_redundant_points(c, 'Polygon') for c in geometry]
+        return geometry
 
 
 class GeometrySerializerMethodField(SerializerMethodField):
