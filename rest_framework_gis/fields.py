@@ -43,7 +43,6 @@ class GeometryField(Field):
         except (ValueError, TypeError, GDALException) as e:
             raise ValidationError(_('Unable to convert to python object: {}'.format(str(e))))
 
-
     def validate_empty_values(self, data):
         if data == '':
             self.fail('required')
