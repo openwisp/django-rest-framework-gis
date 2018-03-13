@@ -81,7 +81,7 @@ class GeometryFilter(django_filters.Filter):
     field_class = forms.GeometryField
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', forms.BaseGeometryWidget)
+        kwargs.setdefault('widget', forms.TextInput)
         super(GeometryFilter, self).__init__(*args, **kwargs)
 
 
