@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.13.0 [Unreleased]
+---------------------------
+
+- `#163 <https://github.com/djangonauts/django-rest-framework-gis/issues/163>`_:
+  added compatibility with django-rest-framework 3.8
+
 Version 0.12.0 [2017-11-12]
 ---------------------------
 
