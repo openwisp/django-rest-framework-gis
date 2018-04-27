@@ -1,10 +1,12 @@
 Changelog
 =========
 
-Version 0.13.0 [Unreleased]
+Version 0.13.0 [2018-04-27]
 ---------------------------
 
-- `#163 <https://github.com/djangonauts/django-rest-framework-gis/issues/163>`_:
+- `#161 <https://github.com/djangonauts/django-rest-framework-gis/pull/161>`_:
+  added flag to reduce precision of ``GeometryField``
+- `#164 <https://github.com/djangonauts/django-rest-framework-gis/pull/164>`_:
   added compatibility with django-rest-framework 3.8
 
 Version 0.12.0 [2017-11-12]
