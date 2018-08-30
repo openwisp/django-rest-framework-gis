@@ -188,3 +188,28 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
+
+    def get_schema_fields(self, view):
+        super().get_schema_fields(view)
+        filter_fields = {
+            self.dist_param: django_filter.filters.NumberFilter(help_text='Distance to point, m'),
+            self.point_param: django_filter.filters.CharFilter(help_text='Point, "13.00,42.42"')
+        }
+        fields = []
+        for field_name, field in filter_fields.items():
+            fields.append(django_filters.compat.coreapi.Field(
+                name=field_name,
+                required=False,
+                location='query',
+                schema=self.get_coreschema_field(field)
+            ))
+
+        return fields
+    
+    def get_coreschema_field(self, field):
+        if isinstance(field, django_filter.filters.NumberFilter):
+            field_cls = django_filters.compat.coreschema.Number
+        else:
+            field_cls = django_filters.compat.coreschema.String
+
+        return field_cls(description=field.extra.get('help_text', ''))
