@@ -132,7 +132,7 @@ geojson_location_noid_details = GeojsonLocationNoIdDetails.as_view()
 
 
 class LocationFilter(GeoFilterSet):
-    contains_properly = GeometryFilter(name='geometry',
+    contains_properly = GeometryFilter(field_name='geometry',
                                        lookup_expr='contains_properly')
 
     class Meta:

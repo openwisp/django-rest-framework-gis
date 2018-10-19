@@ -1,0 +1,30 @@
+version: "3.7"
+
+
+services:
+
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        depends_on:
+            - postgres
+        volumes:
+            - root_dir:/root
+            - ./rest_framework_gis:/project/rest_framework_gis
+            - ./tests:/project/tests
+            - ./runtests.py:/project/runtests.py
+        command: ["./runtests.py"]
+
+    postgres:
+        image: mdillon/postgis:10-alpine
+        volumes:
+            - ./docker/postgres/:/docker-entrypoint-initdb.d/
+            - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+    postgres_data:
+    root_dir:

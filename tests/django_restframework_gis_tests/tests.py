@@ -8,6 +8,8 @@ import sys
 import json
 import pickle
 
+from unittest import skipIf
+
 from django.test import TestCase
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 try:
@@ -16,11 +18,15 @@ except ImportError:
     from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 
+import rest_framework
+
 from rest_framework_gis import serializers as gis_serializers
 from rest_framework_gis.fields import GeoJsonDict
 
 from .models import Location, LocatedFile
 from .serializers import LocationGeoSerializer
+
+is_pre_drf_39 = not rest_framework.VERSION.startswith('3.9')
 
 
 class TestRestFrameworkGis(TestCase):
@@ -472,6 +478,15 @@ class TestRestFrameworkGis(TestCase):
         location = Location.objects.all()[0]
         self.assertEqual(location.name, "HTML test WKT")
 
+    @skipIf(is_pre_drf_39, 'Skip this test if DRF < 3.9')
+    def test_geojson_HTML_widget_value(self):
+        self._create_locations()
+        response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')
+        self.assertContains(response, '<textarea name="geometry"')
+        self.assertContains(response, '"type": "Point"')
+        self.assertContains(response, '"coordinates": [')
+
+    @skipIf(not is_pre_drf_39, 'Skip this test if DRF >= 3.9')
     def test_geojson_HTML_widget_value(self):
         self._create_locations()
         response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')

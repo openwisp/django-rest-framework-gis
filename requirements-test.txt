@@ -1,5 +1,5 @@
 psycopg2
 coverage==3.7.1  # rq.filter: >=3,<4
 coveralls
-django-filter>=0.15,<1.2
+django-filter>=2.0
 contexttimer
