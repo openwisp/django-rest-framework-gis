@@ -7,8 +7,6 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        ports:
-            - "8000:8000"
         depends_on:
             - postgres
         volumes:
@@ -21,7 +19,6 @@ services:
     postgres:
         image: mdillon/postgis:10-alpine
         volumes:
-            - ./docker/postgres/:/docker-entrypoint-initdb.d/
             - postgres_data:/var/lib/postgresql/data
 
 
