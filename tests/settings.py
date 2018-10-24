@@ -55,6 +55,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'debug': DEBUG,
         },
     },
 ]
@@ -72,7 +73,6 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = '%s/static/' % SITE_ROOT
 STATIC_URL = '/static/'
 
-TEMPLATE_STRING_IF_INVALID = 'INVALID_TEMPLATE: %s END_INVALID_TEMPLATE'
 
 # local settings must be imported before test runner otherwise they'll be ignored
 try:
