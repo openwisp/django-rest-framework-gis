@@ -3,7 +3,6 @@ import os
 TEST_PERFORMANCE = False
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
     'default': {
