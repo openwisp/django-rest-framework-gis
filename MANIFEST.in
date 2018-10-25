@@ -2,5 +2,4 @@ include AUTHORS
 include LICENSE
 include README.rst
 include CHANGES.rst
-include runtests.py
 recursive-include tests *.py
