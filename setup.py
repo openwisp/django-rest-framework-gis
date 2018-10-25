@@ -29,7 +29,7 @@ setup(
     keywords=['django', 'rest-framework', 'gis', 'geojson'],
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
-        'djangorestframework>=3.3,<3.9',
+        'djangorestframework',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
