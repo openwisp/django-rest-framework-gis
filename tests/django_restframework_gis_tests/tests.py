@@ -487,7 +487,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, '"coordinates": [')
 
     @skipIf(not is_pre_drf_39, 'Skip this test if DRF >= 3.9')
-    def test_geojson_HTML_widget_value(self):
+    def test_geojson_HTML_widget_value_pre_drf_39(self):
         self._create_locations()
         response = self.client.get(self.geojson_location_list_url, HTTP_ACCEPT='text/html')
         self.assertContains(response, '<textarea name="geometry"')
