@@ -1,0 +1,27 @@
+version: "3.7"
+
+
+services:
+
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - postgres
+        volumes:
+            - root_dir:/root
+            - ./rest_framework_gis:/project/rest_framework_gis
+            - ./tests:/project/tests
+            - ./runtests.py:/project/runtests.py
+        command: ["./runtests.py"]
+
+    postgres:
+        image: mdillon/postgis:10-alpine
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+    postgres_data:
+    root_dir:
