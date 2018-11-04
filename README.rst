@@ -2,6 +2,15 @@ django-rest-framework-gis
 =========================
 
 |Build Status| |Coverage Status| |Requirements Status| |PyPI version|
+.. image:: https://opencollective.com/django-rest-framework-gis/backers/badge.svg
+    :alt: Backers on Open Collective
+    :target: #backers
+
+.. image:: https://opencollective.com/django-rest-framework-gis/sponsors/badge.svg
+    :alt: Sponsors on Open Collective
+    :target: #sponsors
+
+
 
 Geographic add-ons for Django Rest Framework - `Mailing
 List <http://bit.ly/1M4sLTp>`__.
@@ -662,6 +671,46 @@ To run tests in docker use
 .. code-block:: bash
     docker-compose build
     docker-compose run --rm test
+
+Credits
+
++++++++
+
+Contributors
+
+------------
+
+This project exists thanks to all the people who contribute! 
+
+.. image:: https://opencollective.com/django-rest-framework-gis/contributors.svg?width=890&button=false
+
+Backers
+
+-------
+
+Thank you to all our backers! `Become a backer`__.
+
+.. image:: https://opencollective.com/django-rest-framework-gis/backers.svg?width=890
+    :target: https://opencollective.com/django-rest-framework-gis#backers
+
+__ Backer_
+
+.. _Backer: https://opencollective.com/django-rest-framework-gis#backer
+
+Sponsors
+
+--------
+
+Support us by becoming a sponsor. Your logo will show up here with a link to your website. `Become a sponsor`__.
+
+.. image:: https://opencollective.com/django-rest-framework-gis/sponsor/0/avatar.svg
+    :target: https://opencollective.com/django-rest-framework-gis/sponsor/0/website
+
+__ Sponsor_
+
+.. _Sponsor: https://opencollective.com/django-rest-framework-gis#sponsor
+
+
 
 
 Contributing
