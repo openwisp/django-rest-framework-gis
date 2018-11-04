@@ -19,8 +19,6 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /project
 
-RUN pip install django
-
 COPY requirements-test.txt /project/
 
 RUN pip install -r requirements-test.txt

@@ -3,18 +3,20 @@ version: "3.7"
 
 services:
 
-    backend:
+    test:
         build:
             context: .
             dockerfile: Dockerfile
         depends_on:
             - postgres
+        environment:
+            - DJANGO_SETTINGS_MODULE=settings
         volumes:
             - root_dir:/root
             - ./rest_framework_gis:/project/rest_framework_gis
             - ./tests:/project/tests
-            - ./runtests.py:/project/runtests.py
-        command: ["./runtests.py"]
+            - ./setup.py:/project/setup.py
+        command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests"
 
     postgres:
         image: mdillon/postgis:10-alpine

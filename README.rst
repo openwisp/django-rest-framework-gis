@@ -657,6 +657,13 @@ Running tests manually
 Please refer to the ``tox.ini`` file for reference/help in case you want to run
 tests manually / without tox.
 
+To run tests in docker use
+
+.. code-block:: bash
+    docker-compose build
+    docker-compose run --rm test
+
+
 Contributing
 ------------
 
