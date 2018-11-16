@@ -16,6 +16,11 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 
+# Get the long description from the README file
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
+
+
 setup(
     name='djangorestframework-gis',
     version=get_version(),
@@ -23,6 +28,7 @@ setup(
     author='Douglas Meehan',
     author_email='django-rest-framework-gis@googlegroups.com',
     description='Geographic add-ons for Django Rest Framework',
+    long_description=long_description,
     url='https://github.com/djangonauts/django-rest-framework-gis',
     download_url='https://github.com/djangonauts/django-rest-framework-gis/releases',
     platforms=['Platform Indipendent'],
@@ -46,5 +52,12 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
-    ]
+    ],
+    project_urls={
+        'Bug Reports': 'https://github.com/djangonauts/django-rest-framework-gis/issues',
+        'Continuous Integration': 'https://travis-ci.org/djangonauts/django-rest-framework-gis',
+        'Mailing List': 'https://groups.google.com/forum/#!forum/django-rest-framework-gis',
+        'Code Coverage': 'https://coveralls.io/github/djangonauts/django-rest-framework-gis'
+        'Source Code': 'https://github.com/pypa/sampleproject/',
+    },
 )
