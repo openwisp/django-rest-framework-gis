@@ -60,6 +60,6 @@ setup(
         'Continuous Integration': 'https://travis-ci.org/djangonauts/django-rest-framework-gis',
         'Mailing List': 'https://groups.google.com/forum/#!forum/django-rest-framework-gis',
         'Code Coverage': 'https://coveralls.io/github/djangonauts/django-rest-framework-gis',
-        'Source Code': 'https://github.com/pypa/sampleproject/',
+        'Source Code': 'https://github.com/djangonauts/django-rest-framework-gis',
     },
 )
