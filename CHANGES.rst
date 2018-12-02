@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 0.14.0 [2018-12-02]
+---------------------------
+
+- `#173 <https://github.com/djangonauts/django-rest-framework-gis/pull/173>`_:
+  added support for django 2.1, DRF 3.9 and switched to django-filters >= 2.0
+  (**which requires python >= 3.4**)
+- `#178 <https://github.com/djangonauts/django-rest-framework-gis/pull/178>`_:
+  simplified ``setup.py`` and tox build
+
 Version 0.13.0 [2018-04-27]
 ---------------------------
 
