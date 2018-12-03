@@ -661,6 +661,7 @@ tests manually / without tox.
 To run tests in docker use
 
 .. code-block:: bash
+
     docker-compose build
     docker-compose run --rm test
 
