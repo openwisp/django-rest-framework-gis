@@ -53,6 +53,7 @@ branches:
 
 install:
   - pip install coverage tox
+  - pip install docutils pygments  # for setup.py check -r -s
 
 before_script:
   - createdb django_restframework_gis
@@ -60,6 +61,7 @@ before_script:
 
 script:
   - coverage run --source=rest_framework_gis $(command -v tox)
+  - python setup.py check -r -s
 
 after_success:
   coveralls
