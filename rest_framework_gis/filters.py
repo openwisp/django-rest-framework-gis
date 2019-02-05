@@ -9,6 +9,10 @@ from django.contrib.gis import forms
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.exceptions import ParseError
 
+from rest_framework.compat import (
+    coreapi, coreschema, distinct,
+)
+
 from .tilenames import tile_edges
 
 try:
@@ -44,6 +48,9 @@ __all__ = [
 
 class InBBoxFilter(BaseFilterBackend):
     bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
+    search_param = 'in_bbox'
+    search_title = 'In Boundary box filter'
+    search_description = 'Specifify a bounding box as filter: in_bbox=min lon,min lat,max lon,max lat'
 
     def get_filter_bbox(self, request):
         bbox_string = request.query_params.get(self.bbox_param, None)
@@ -73,6 +80,21 @@ class InBBoxFilter(BaseFilterBackend):
         if not bbox:
             return queryset
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+
+    def get_schema_fields(self, view):
+        assert coreapi is not None, 'coreapi must be installed to use `get_schema_fields()`'
+        assert coreschema is not None, 'coreschema must be installed to use `get_schema_fields()`'
+        return [
+            coreapi.Field(
+                name=self.search_param,
+                required=False,
+                location='query',
+                schema=coreschema.String(
+                    title=self.search_title,
+                    description=self.search_description
+                )
+            )
+        ]
 # backward compatibility
 InBBOXFilter = InBBoxFilter
 
@@ -104,6 +126,9 @@ class GeoFilterSet(django_filters.FilterSet):
 
 class TMSTileFilter(InBBoxFilter):
     tile_param = 'tile'  # The URL query paramater which contains the tile address
+    search_param = 'tile'
+    search_title = 'TMS tile filter'
+    search_description = 'Specifify a bounding box filter defined by a TMS tile address: tile=Z/X/Y'
 
     def get_filter_bbox(self, request):
         tile_string = request.query_params.get(self.tile_param, None)
@@ -122,6 +147,9 @@ class TMSTileFilter(InBBoxFilter):
 class DistanceToPointFilter(BaseFilterBackend):
     dist_param = 'dist'
     point_param = 'point'  # The URL query parameter which contains the
+    search_param = 'dist point'
+    search_title = 'Distance to point filter'
+    search_description = 'Specifify a distance from point filter: dist=0000&point=lon,lat'
 
     def get_filter_point(self, request):
         point_string = request.query_params.get(self.point_param, None)
@@ -188,3 +216,18 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
+
+    def get_schema_fields(self, view):
+        assert coreapi is not None, 'coreapi must be installed to use `get_schema_fields()`'
+        assert coreschema is not None, 'coreschema must be installed to use `get_schema_fields()`'
+        return [
+            coreapi.Field(
+                name=self.search_param,
+                required=False,
+                location='query',
+                schema=coreschema.String(
+                    title=self.search_title,
+                    description=self.search_description
+                )
+            )
+        ]
