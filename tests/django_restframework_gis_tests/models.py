@@ -18,13 +18,13 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def _generate_slug(self):
         if self.slug == '' or self.slug is None:
             try:
-                name = unicode(self.name)
+                name = str(self.name)
             except NameError:
                 name = self.name
             self.slug = slugify(name)
