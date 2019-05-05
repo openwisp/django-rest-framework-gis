@@ -1,12 +1,12 @@
-dist: trusty
-sudo: false
+dist: xenial
+sudo: True
 language: python
 cache: pip
 addons:
-  postgresql: "9.3"
+  postgresql: "9.4"
   apt:
     packages:
-      - postgresql-9.3-postgis-2.3
+      - postgresql-9.4-postgis-2.4
 services:
   - postgresql
 
