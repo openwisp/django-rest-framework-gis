@@ -16,7 +16,7 @@ RUN apk update && apk upgrade \
     && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
         gdal-dev \
         geos-dev \
-        proj4-dev
+        proj-dev
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=UTF-8
