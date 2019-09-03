@@ -109,8 +109,9 @@ Serializers
 GeoModelSerializer (DEPRECATED)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Deprecated, will be removed in 1.0**: Using this serializer is not needed anymore since 0.9.3 if you add
-``rest_framework_gis`` in ``settings.INSTALLED_APPS``
+**Deprecated, will be removed in 1.0**: Using this serializer is not needed anymore since 0.9.3, if you add
+``rest_framework_gis`` in ``settings.INSTALLED_APPS`` the serialization will work out of the box with DRF.
+Refer `Issue #156 <https://github.com/djangonauts/django-rest-framework-gis#using-geometryserializermethodfield-as-geo_field>`__.
 
 Provides a ``GeoModelSerializer``, which is a subclass of DRF
 ``ModelSerializer``. This serializer updates the field\_mapping
@@ -130,7 +131,7 @@ For example, the following model:
         state = models.CharField(max_length=100)
         point = models.PointField()
 
-By default, the DRF ModelSerializer will output:
+By default, the DRF ModelSerializer **ver < 0.9.3** will output:
 
 .. code-block:: javascript
 
@@ -156,6 +157,10 @@ In contrast, the ``GeoModelSerializer`` will output:
             "coordinates": [-123.0208, 44.0464],
         }
     }
+
+**Note:** The DRF model serializer will also give the same output as above, provided
+that you are using ``ver>=0.9.3``, and you have included ``rest_framework_gis`` in 
+``settings.INSTALLED_APPS``.
 
 GeoFeatureModelSerializer
 ~~~~~~~~~~~~~~~~~~~~~~~~~
