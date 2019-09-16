@@ -4,7 +4,6 @@ from collections import OrderedDict
 from django.contrib.gis.geos import GEOSGeometry, GEOSException
 from django.contrib.gis.gdal import GDALException
 from django.core.exceptions import ValidationError
-from django.utils import six  # TODO Remove this along with GeoJsonDict when support for python 2.6/2.7 is dropped.
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.fields import Field, SerializerMethodField
 
@@ -117,7 +116,7 @@ class GeoJsonDict(OrderedDict):
         If a string is passed attempt to pass it through json.loads,
         because it should be a geojson formatted string.
         """
-        if args and isinstance(args[0], six.string_types):
+        if args and isinstance(args[0], str):
             try:
                 geojson = json.loads(args[0])
                 args = (geojson,)
