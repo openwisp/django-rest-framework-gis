@@ -1,12 +1,11 @@
-dist: trusty
-sudo: false
+dist: xenial
 language: python
 cache: pip
 addons:
-  postgresql: "9.3"
+  postgresql: "9.4"
   apt:
     packages:
-      - postgresql-9.3-postgis-2.3
+      - postgresql-9.4-postgis-2.4
 services:
   - postgresql
 
@@ -16,34 +15,10 @@ matrix:
     - { python: "3.6", env: TOXENV=py36-django111 }
     - { python: "3.5", env: TOXENV=py35-django20 }
     - { python: "3.6", env: TOXENV=py36-django20 }
+    - { python: "3.7", env: TOXENV=py37-django20 }
     - { python: "3.5", env: TOXENV=py35-django21 }
     - { python: "3.6", env: TOXENV=py36-django21 }
-
-    # https://github.com/travis-ci/travis-ci/issues/9815
-    - env: TOXENV=py37-django20
-      python: "3.7"
-      dist: xenial
-      sudo: true
-      addons:
-        postgresql: "9.4"
-        apt:
-            packages:
-            - postgresql-9.4-postgis-2.4
-      services:
-        - postgresql
-
-    # https://github.com/travis-ci/travis-ci/issues/9815
-    - env: TOXENV=py37-django21
-      python: "3.7"
-      dist: xenial
-      sudo: true
-      addons:
-        postgresql: "9.4"
-        apt:
-            packages:
-            - postgresql-9.4-postgis-2.4
-      services:
-        - postgresql
+    - { python: "3.7", env: TOXENV=py37-django21 }
 
 branches:
   only:
