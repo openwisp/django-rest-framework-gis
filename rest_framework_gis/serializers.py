@@ -94,17 +94,16 @@ class GeoFeatureModelSerializer(ModelSerializer):
         """
         # prepare OrderedDict geojson structure
         feature = OrderedDict()
-        # the list of fields that will be processed by get_properties
-        # we will remove fields that have been already processed
-        # to increase performance on large numbers
-        fields = list(self.fields.values())
+
+        # keep track of the fields being processed
+        processed_fields = set()
 
         # optional id attribute
         if self.Meta.id_field:
             field = self.fields[self.Meta.id_field]
             value = field.get_attribute(instance)
             feature["id"] = field.to_representation(value)
-            fields.remove(field)
+            processed_fields.add(self.Meta.id_field)
 
         # required type attribute
         # must be "Feature" according to GeoJSON spec
@@ -115,7 +114,8 @@ class GeoFeatureModelSerializer(ModelSerializer):
         field = self.fields[self.Meta.geo_field]
         geo_value = field.get_attribute(instance)
         feature["geometry"] = field.to_representation(geo_value)
-        fields.remove(field)
+        processed_fields.add(self.Meta.geo_field)
+
         # Bounding Box
         # if auto_bbox feature is enabled
         # bbox will be determined automatically automatically
@@ -126,7 +126,15 @@ class GeoFeatureModelSerializer(ModelSerializer):
             field = self.fields[self.Meta.bbox_geo_field]
             value = field.get_attribute(instance)
             feature["bbox"] = value.extent if hasattr(value, 'extent') else None
-            fields.remove(field)
+            processed_fields.add(self.Meta.bbox_geo_field)
+
+        # the list of fields that will be processed by get_properties
+        # we will remove fields that have been already processed
+        # to increase performance on large numbers
+        fields = [
+            field_value for field_key, field_value in self.fields.items()
+            if field_key not in processed_fields
+        ]
 
         # GeoJSON properties
         feature["properties"] = self.get_properties(instance, fields)
