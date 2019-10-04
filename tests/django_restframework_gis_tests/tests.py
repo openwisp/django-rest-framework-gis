@@ -35,7 +35,7 @@ class TestRestFrameworkGis(TestCase):
         self.geojson_location_list_url = reverse('api_geojson_location_list')
         self.geos_error_message = 'Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'
         self.gdal_error_message = 'Unable to convert to python object: Invalid geometry pointer returned from "OGR_G_CreateGeometryFromJson".'
-        if django.VERSION[0] == 2:
+        if django.VERSION >= (2, 0, 0):
             self.value_error_message = "Unable to convert to python object: String input unrecognized as WKT EWKT, and HEXEWKB."
         else:
             self.value_error_message = "Unable to convert to python object: String or unicode input unrecognized as WKT EWKT, and HEXEWKB."
