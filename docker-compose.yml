@@ -15,6 +15,7 @@ services:
             - root_dir:/root
             - ./rest_framework_gis:/project/rest_framework_gis
             - ./tests:/project/tests
+            - ./README.rst:/project/README.rst
             - ./setup.py:/project/setup.py
         command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests"
 
