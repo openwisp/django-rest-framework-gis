@@ -1,0 +1,24 @@
+name: PyPi Release
+
+on: [release]
+
+jobs:
+  PyPi release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+    - name: Install Python dependencies
+      run: python -m pip install --upgrade pip setuptools wheel twine
+    - uses: actions/setup-node@v1
+    - name: Install Node dependencies
+      run: npm install --only=dev
+    - name: Minify JavaScript files
+      run: npm run-script minify
+    - name: Build dist packages
+      run: python setup.py sdist bdist_wheel
+    - name: Upload packages
+      run: python -m twine upload dist/*
+      env:
+        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
