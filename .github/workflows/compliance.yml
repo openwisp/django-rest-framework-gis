@@ -1,0 +1,12 @@
+name: Compliance
+
+on: [pull_request]
+
+jobs:
+ Changelog:
+   runs-on: ubuntu-latest
+   steps:
+   - uses: actions/checkout@v1
+   - name: Check that CHANGELOG is touched
+     run: |
+       cat $GITHUB_EVENT_PATH | jq .pull_request.title |  grep -i '\[\(\(changelog skip\)\|\(ci skip\)\)\]' ||  git diff remotes/origin/${{ github.base_ref }} --name-only | grep CHANGELOG.rst
