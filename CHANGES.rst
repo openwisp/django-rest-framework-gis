@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Version 0.15.0 [2019-12-09]
+---------------------------
+
+- Dropped Python 3.4 support
+- `#190 <https://github.com/djangonauts/django-rest-framework-gis/pull/190>`_:
+  Added django 2.2 on test matrix
+- `#199 <https://github.com/djangonauts/django-rest-framework-gis/pull/199>`_:
+  Dropped Django 2.0 support
+- `#195 <https://github.com/djangonauts/django-rest-framework-gis/pull/195>`_:
+  Updated the way that ``to_representation`` removes already processed
+- `#197 <https://github.com/djangonauts/django-rest-framework-gis/pull/197>`_:
+  Removed six dependency
+- `#202 <https://github.com/djangonauts/django-rest-framework-gis/pull/202>`_:
+  Updated DRF to 3.10, removed support for previous DRF versions
+- `#200 <https://github.com/djangonauts/django-rest-framework-gis/pull/200>`_:
+  Added Django 3.0 and Python 3.8 support
+
 Version 0.14.0 [2018-12-02]
 ---------------------------
 
