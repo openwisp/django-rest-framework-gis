@@ -593,11 +593,6 @@ which is indexed in degrees, the 'distance' will be interpreted as degrees. Set 
 to 'True' in order to convert an input distance in meters to degrees. This conversion is approximate, and the errors
 at latitudes > 60 degrees are > 25%.
 
-Projects using this package
----------------------------
-
-- `Nodeshot <https://github.com/ninuxorg/nodeshot>`__: Extensible Django web application for management of community-led georeferenced data
-
 Running the tests
 -----------------
 
