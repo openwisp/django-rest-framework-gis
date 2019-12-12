@@ -129,6 +129,6 @@ class GeoJsonDict(OrderedDict):
         Avoid displaying strings like
         ``{ 'type': u'Point', 'coordinates': [12, 32] }``
         in DRF browsable UI inputs (python 2.6/2.7)
-        see: https://github.com/djangonauts/django-rest-framework-gis/pull/60
+        see: https://github.com/openwisp/django-rest-framework-gis/pull/60
         """
         return json.dumps(self)

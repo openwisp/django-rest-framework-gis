@@ -18,7 +18,7 @@ Install development version
 
 .. code-block:: bash
 
-    pip install https://github.com/djangonauts/django-rest-framework-gis/tarball/master
+    pip install https://github.com/openwisp/django-rest-framework-gis/tarball/master
 
 Setup
 -----
@@ -102,7 +102,7 @@ GeometrySerializerMethodField
 
 Provides a ``GeometrySerializerMethodField``, which is a subclass of DRF
 ``SerializerMethodField`` and handles values which are computed with a serializer
-method and are used as a ``geo_field``. `See example below <https://github.com/djangonauts/django-rest-framework-gis#using-geometryserializermethodfield-as-geo_field>`__.
+method and are used as a ``geo_field``. `See example below <https://github.com/openwisp/django-rest-framework-gis#using-geometryserializermethodfield-as-geo_field>`__.
 
 Serializers
 -----------
@@ -112,7 +112,7 @@ GeoModelSerializer (DEPRECATED)
 
 **Deprecated, will be removed in 1.0**: Using this serializer is not needed anymore since 0.9.3, if you add
 ``rest_framework_gis`` in ``settings.INSTALLED_APPS`` the serialization will work out of the box with DRF.
-Refer `Issue #156 <https://github.com/djangonauts/django-rest-framework-gis#using-geometryserializermethodfield-as-geo_field>`__.
+Refer `Issue #156 <https://github.com/openwisp/django-rest-framework-gis#using-geometryserializermethodfield-as-geo_field>`__.
 
 Provides a ``GeoModelSerializer``, which is a subclass of DRF
 ``ModelSerializer``. This serializer updates the field\_mapping
@@ -683,11 +683,11 @@ Contributing
 8. Document your changes
 9. Send pull request
 
-.. |Build Status| image:: https://travis-ci.org/djangonauts/django-rest-framework-gis.svg?branch=master
-   :target: https://travis-ci.org/djangonauts/django-rest-framework-gis
-.. |Coverage Status| image:: https://coveralls.io/repos/djangonauts/django-rest-framework-gis/badge.svg
-   :target: https://coveralls.io/r/djangonauts/django-rest-framework-gis
-.. |Requirements Status| image:: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements.svg?branch=master
-   :target: https://requires.io/github/djangonauts/django-rest-framework-gis/requirements/?branch=master
+.. |Build Status| image:: https://travis-ci.org/openwisp/django-rest-framework-gis.svg?branch=master
+   :target: https://travis-ci.org/openwisp/django-rest-framework-gis
+.. |Coverage Status| image:: https://coveralls.io/repos/openwisp/django-rest-framework-gis/badge.svg
+   :target: https://coveralls.io/r/openwisp/django-rest-framework-gis
+.. |Requirements Status| image:: https://requires.io/github/openwisp/django-rest-framework-gis/requirements.svg?branch=master
+   :target: https://requires.io/github/openwisp/django-rest-framework-gis/requirements/?branch=master
 .. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.svg
    :target: http://badge.fury.io/py/djangorestframework-gis

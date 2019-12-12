@@ -6,7 +6,7 @@ Launch the performance test with::
     django test --keepdb django_restframework_gis_tests.test_performance
 
 For more information regarding how the measurement is performed read the code in
-`test_performance.py <https://github.com/djangonauts/django-rest-framework-gis/blob/master/tests/django_restframework_gis_tests/test_performance.py>`__.
+`test_performance.py <https://github.com/openwisp/django-rest-framework-gis/blob/master/tests/django_restframework_gis_tests/test_performance.py>`__.
 
 0.9.2
 =====

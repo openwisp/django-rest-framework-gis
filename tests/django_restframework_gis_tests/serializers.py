@@ -71,7 +71,7 @@ class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
 class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
     """
     id attribute left out, issue #82
-    see: https://github.com/djangonauts/django-rest-framework-gis/issues/82
+    see: https://github.com/openwisp/django-rest-framework-gis/issues/82
     """
     class Meta:
         model = Location
