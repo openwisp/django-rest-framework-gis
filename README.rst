@@ -159,9 +159,10 @@ In contrast, the ``GeoModelSerializer`` will output:
         }
     }
 
-**Note:** The DRF model serializer will also give the same output as above, provided
-that you are using ``ver>=0.9.3``, and you have included ``rest_framework_gis`` in
-``settings.INSTALLED_APPS``.
+**Note:** For ``ver>=0.9.3``: The DRF model serializer will give the same output as above, if;
+
+-  ``rest_framework_gis`` is set in ``settings.INSTALLED_APPS`` or
+-  the field in the serializer is set explicitly as ``GeometryField``.
 
 GeoFeatureModelSerializer
 ~~~~~~~~~~~~~~~~~~~~~~~~~
