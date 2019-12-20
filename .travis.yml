@@ -32,7 +32,7 @@ before_install:
   - sudo apt-get update -q
   - sudo apt-get install binutils libproj-dev gdal-bin -y
 install:
-  - pip install coverage tox
+  - pip install tox
   - pip install docutils pygments  # for setup.py check -r -s
 
 before_script:
@@ -40,8 +40,5 @@ before_script:
   - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis;"
 
 script:
-  - coverage run --source=rest_framework_gis $(command -v tox)
+  - tox -e travis
   - python setup.py check -r -s
-
-after_success:
-  coveralls
