@@ -562,6 +562,12 @@ class TestRestFrameworkGis(TestCase):
     def test_filterset(self):
         from rest_framework_gis.filterset import GeoFilterSet
 
+    def test_geometry_field_to_representation_empty_point(self):
+        self._create_locations()
+        f = LocationGeoSerializer(instance=self.l1).fields['geometry']
+        represented_point = f.to_representation(Point())
+        self.assertEqual(str(represented_point), '{"coordinates": []}')
+
     def test_geometry_field_to_representation_none(self):
         self._create_locations()
         f = LocationGeoSerializer(instance=self.l1).fields['geometry']
