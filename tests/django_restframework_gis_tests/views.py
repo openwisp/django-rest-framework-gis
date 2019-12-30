@@ -179,3 +179,11 @@ class GeojsonLocationBboxList(generics.ListCreateAPIView):
     queryset = Location.objects.all()
 
 geojson_location_bbox_list = GeojsonLocationBboxList.as_view()
+
+
+class GeojsonNullableDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureSerializer
+    queryset = Nullable.objects.all()
+
+geojson_nullable_details = GeojsonNullableDetails.as_view()
