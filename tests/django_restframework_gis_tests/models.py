@@ -5,7 +5,8 @@ from django.utils.text import slugify
 __all__ = [
     'Location',
     'LocatedFile',
-    'BoxedLocation'
+    'BoxedLocation',
+    'Nullable'
 ]
 
 
@@ -47,3 +48,7 @@ class LocatedFile(BaseModel):
 
 class BoxedLocation(BaseModel):
     bbox_geometry = models.PolygonField()
+
+
+class Nullable(BaseModel):
+    geometry = models.GeometryField(blank=True, null=True)

@@ -18,6 +18,10 @@ urlpatterns = [
         views.geojson_location_details,
         name='api_geojson_location_details'),
     url(
+        r'^geojson-nullable/(?P<pk>[0-9]+)/$',
+        views.geojson_nullable_details,
+        name='api_geojson_nullable_details'),
+    url(
         r'^geojson_hidden/(?P<pk>[0-9]+)/$',
         views.geojson_location_details_hidden,
         name='api_geojson_location_details_hidden'),

@@ -23,7 +23,7 @@ import rest_framework
 from rest_framework_gis import serializers as gis_serializers
 from rest_framework_gis.fields import GeoJsonDict
 
-from .models import Location, LocatedFile
+from .models import Location, LocatedFile, Nullable
 from .serializers import LocationGeoSerializer
 
 is_pre_drf_39 = not rest_framework.VERSION.startswith('3.9')
@@ -562,21 +562,48 @@ class TestRestFrameworkGis(TestCase):
     def test_filterset(self):
         from rest_framework_gis.filterset import GeoFilterSet
 
-    def test_geometry_field_to_representation_empty_point(self):
-        self._create_locations()
-        f = LocationGeoSerializer(instance=self.l1).fields['geometry']
-        represented_point = f.to_representation(Point())
-        self.assertEqual(str(represented_point), '{"coordinates": []}')
+    def test_nullable_empty_geometry(self):
+        empty = Nullable(name='empty',
+                         geometry='POINT EMPTY')
+        empty.full_clean()
+        empty.save()
+        url = reverse('api_geojson_nullable_details', args=[empty.id])
+        response = self.client.generic('GET', url, content_type='application/json')
+        self.assertIsNotNone(response.data['geometry'])
+        self.assertEqual(response.data['geometry']['coordinates'], [])
+
+    def test_nullable_null_geometry(self):
+        empty = Nullable(name='empty',
+                         geometry=None)
+        empty.full_clean()
+        empty.save()
+        url = reverse('api_geojson_nullable_details', args=[empty.id])
+        response = self.client.generic('GET', url, content_type='application/json')
+        self.assertIsNone(response.data['geometry'])
 
     def test_geometry_field_to_representation_none(self):
         self._create_locations()
         f = LocationGeoSerializer(instance=self.l1).fields['geometry']
         self.assertIsNone(f.to_representation(None))
 
-    def test_geometry_field_to_internal_value_none(self):
+    def test_geometry_empty_representation(self):
         self._create_locations()
         f = LocationGeoSerializer(instance=self.l1).fields['geometry']
-        self.assertIsNone(f.to_internal_value(None))
+        geom_types = ('POINT', 'LINESTRING', 'LINEARRING', 'POLYGON',
+                      'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON')
+        for geom_type in geom_types:
+            with self.subTest(geom_type=geom_type):
+                value = f.to_representation(GEOSGeometry('{} EMPTY'.format(geom_type)))
+                self.assertIsNotNone(value)
+                if geom_type == 'LINEARRING':
+                    geom_type = 'LINESTRING'
+                self.assertEqual(value['type'].upper(), geom_type)
+                self.assertEqual(value['coordinates'], [])
+        # GEOMETRYCOLLECTION needs different handling
+        value = f.to_representation(GEOSGeometry('GEOMETRYCOLLECTION EMPTY'))
+        self.assertIsNotNone(value)
+        self.assertEqual(value['type'].upper(), 'GEOMETRYCOLLECTION')
+        self.assertEqual(value['geometries'], [])
 
     def test_no_geo_field_improperly_configured(self):
         class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):

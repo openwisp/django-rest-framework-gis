@@ -27,11 +27,15 @@ class GeometryField(Field):
         if isinstance(value, dict) or value is None:
             return value
         # we expect value to be a GEOSGeometry instance
-        if value.geojson is None:
-            geojson = GeoJsonDict('{"coordinates": []}')
-        else:
+        if value.geojson:
             geojson = GeoJsonDict(value.geojson)
-        if 'type' in geojson and geojson['type'] == 'GeometryCollection':
+        # in this case we're dealing with an empty point
+        else:
+            geojson = GeoJsonDict({
+                'type': value.geom_type,
+                'coordinates': []
+            })
+        if geojson['type'] == 'GeometryCollection':
             geometries = geojson.get('geometries')
         else:
             geometries = [geojson]
