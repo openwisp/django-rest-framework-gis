@@ -284,7 +284,7 @@ automatically used as the ``id`` field of each
 `GeoJSON Feature Object <https://tools.ietf.org/html/draft-butler-geojson#section-2.2>`_.
 
 The default behaviour follows the `GeoJSON RFC <https://tools.ietf.org/html/draft-butler-geojson>`_,
-but it can be disbaled by setting ``id_field`` to ``False``:
+but it can be disabled by setting ``id_field`` to ``False``:
 
 .. code-block:: python
 
