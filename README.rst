@@ -127,7 +127,7 @@ For example, the following model:
         """
         A model which holds information about a particular location
         """
-        address = models.Charfield(max_length=255)
+        address = models.CharField(max_length=255)
         city = models.CharField(max_length=100)
         state = models.CharField(max_length=100)
         point = models.PointField()
