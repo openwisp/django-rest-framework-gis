@@ -177,10 +177,8 @@ the above example, the ``GeoFeatureModelSerializer`` will output:
         "id": 1,
         "type": "Feature",
         "geometry": {
-            "point": {
-                "type": "Point",
-                "coordinates": [-123.0208, 44.0464],
-            },
+            "type": "Point",
+            "coordinates": [-123.0208, 44.0464],
         },
         "properties": {
             "address": "742 Evergreen Terrace",
@@ -201,10 +199,8 @@ will create a ``FeatureCollection``:
             "id": 1
             "type": "Feature",
             "geometry": {
-                "point": {
-                    "type": "Point",
-                    "coordinates": [-123.0208, 44.0464],
-                }
+                "type": "Point",
+                "coordinates": [-123.0208, 44.0464],
             },
             "properties": {
                 "address": "742 Evergreen Terrace",
@@ -216,10 +212,8 @@ will create a ``FeatureCollection``:
             "id": 2,
             "type": "Feature",
             "geometry": {
-                "point": {
-                    "type": "Point",
-                    "coordinates": [-123.0208, 44.0489],
-                },
+                "type": "Point",
+                "coordinates": [-123.0208, 44.0489],
             },
             "properties": {
                 "address": "744 Evergreen Terrace",
