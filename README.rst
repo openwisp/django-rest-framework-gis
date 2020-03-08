@@ -546,7 +546,7 @@ by a `TMS tile <http://wiki.openstreetmap.org/wiki/TMS>`__ address.
 We can then filter in the URL, using TMS tile addresses in the zoom/x/y format,
 eg:.
 ``/location/?tile=8/100/200``
-which is equivalant to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261).
+which is equivalent to filtering on the bbox  (-39.37500,-71.07406,-37.96875,-70.61261).
 
 For more information on configuration options see InBBoxFilter.
 
@@ -579,7 +579,7 @@ distance can be given in meters or in degrees.
 
 eg:.
 ``/location/?dist=4000&point=-122.4862,37.7694&format=json``
-which is equivalant to filtering within 4000 meters of the point  (-122.4862, 37.7694).
+which is equivalent to filtering within 4000 meters of the point  (-122.4862, 37.7694).
 
 By default, DistanceToPointFilter will pass the 'distance' in the URL directly to the database for the search.
 The effect depends on the srid of the database in use. If geo data is indexed in meters (srid 3875, aka 900913), a
