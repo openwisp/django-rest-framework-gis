@@ -1,13 +1,12 @@
 from math import cos, pi
 
-from django.db.models import Q
-from django.core.exceptions import ImproperlyConfigured
+from django.contrib.gis import forms
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Polygon, Point
-from django.contrib.gis import forms
-
-from rest_framework.filters import BaseFilterBackend
+from django.core.exceptions import ImproperlyConfigured
+from django.db.models import Q
 from rest_framework.exceptions import ParseError
+from rest_framework.filters import BaseFilterBackend
 
 from .tilenames import tile_edges
 
@@ -31,7 +30,6 @@ except ImportError:
 else:
     gis_lookups = BaseSpatialField.get_lookups()
 
-
 __all__ = [
     'InBBoxFilter',
     'InBBOXFilter',
@@ -44,6 +42,8 @@ __all__ = [
 
 class InBBoxFilter(BaseFilterBackend):
     bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
+    search_param = bbox_param
+    search_description = 'Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat'
 
     def get_filter_bbox(self, request):
         bbox_string = request.query_params.get(self.bbox_param, None)
@@ -73,6 +73,21 @@ class InBBoxFilter(BaseFilterBackend):
         if not bbox:
             return queryset
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+
+    def get_schema_operation_parameters(self, view):
+        return [
+            {
+                'name': self.search_param,
+                'required': False,
+                'in': 'query',
+                'description': self.search_description,
+                'schema': {
+                    'type': 'string',
+                },
+            },
+        ]
+
+
 # backward compatibility
 InBBOXFilter = InBBoxFilter
 
@@ -103,7 +118,9 @@ class GeoFilterSet(django_filters.FilterSet):
 
 
 class TMSTileFilter(InBBoxFilter):
-    tile_param = 'tile'  # The URL query paramater which contains the tile address
+    tile_param = 'tile'  # The URL query parameter which contains the tile address
+    search_param = tile_param
+    search_description = 'Specify a bounding box filter defined by a TMS tile address: tile=Z/X/Y'
 
     def get_filter_bbox(self, request):
         tile_string = request.query_params.get(self.tile_param, None)
@@ -188,3 +205,28 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
+
+    def get_schema_operation_parameters(self, view):
+        return [
+            {
+                'name': self.dist_param,
+                'required': False,
+                'in': 'query',
+                'schema': {
+                    'type': 'number',
+                    'format': 'float',
+                    'default': 1000,
+                },
+                'description': 'Distance value in *Distance to point* filter. Default value is used only if '
+                               '{point_param} is passed.'.format(point_param=self.point_param)
+            },
+            {
+                'name': self.point_param,
+                'required': False,
+                'in': 'query',
+                'description': 'Point represented in *x,y* format. Represents point in *Distance to point filter*',
+                'schema': {
+                    'type': 'string',
+                },
+            }
+        ]
