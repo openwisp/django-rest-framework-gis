@@ -42,8 +42,6 @@ __all__ = [
 
 class InBBoxFilter(BaseFilterBackend):
     bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
-    search_param = bbox_param
-    search_description = 'Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat'
 
     def get_filter_bbox(self, request):
         bbox_string = request.query_params.get(self.bbox_param, None)
@@ -77,13 +75,21 @@ class InBBoxFilter(BaseFilterBackend):
     def get_schema_operation_parameters(self, view):
         return [
             {
-                'name': self.search_param,
+                'name': self.bbox_param,
                 'required': False,
                 'in': 'query',
-                'description': self.search_description,
+                'description': 'Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat',
                 'schema': {
-                    'type': 'string',
+                    'type': 'array',
+                    'items': {
+                        'type': 'float',
+                    },
+                    'minItems': 4,
+                    'maxItems': 4,
+                    'example': [0, 0, 10, 10]
                 },
+                'style': 'form',
+                'explode': False,
             },
         ]
 
@@ -119,8 +125,6 @@ class GeoFilterSet(django_filters.FilterSet):
 
 class TMSTileFilter(InBBoxFilter):
     tile_param = 'tile'  # The URL query parameter which contains the tile address
-    search_param = tile_param
-    search_description = 'Specify a bounding box filter defined by a TMS tile address: tile=Z/X/Y'
 
     def get_filter_bbox(self, request):
         tile_string = request.query_params.get(self.tile_param, None)
@@ -134,6 +138,20 @@ class TMSTileFilter(InBBoxFilter):
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
         return bbox
+
+    def get_schema_operation_parameters(self, view):
+        return [
+            {
+                'name': self.tile_param,
+                'required': False,
+                'in': 'query',
+                'description': 'Specify a bounding box filter defined by a TMS tile address: tile=Z/X/Y',
+                'schema': {
+                    'type': 'string',
+                    'example': '12/56/34'
+                },
+            },
+        ]
 
 
 class DistanceToPointFilter(BaseFilterBackend):
@@ -217,16 +235,25 @@ class DistanceToPointFilter(BaseFilterBackend):
                     'format': 'float',
                     'default': 1000,
                 },
-                'description': 'Distance value in *Distance to point* filter. Default value is used only if '
-                               '{point_param} is passed.'.format(point_param=self.point_param)
+                'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
+                               '***{point_param}*** is passed.'.format(point_param=self.point_param)
             },
             {
                 'name': self.point_param,
                 'required': False,
                 'in': 'query',
-                'description': 'Point represented in *x,y* format. Represents point in *Distance to point filter*',
+                'description': 'Point represented in **x,y** format. '
+                               'Represents **point** in **Distance to point filter**',
                 'schema': {
-                    'type': 'string',
+                    'type': 'array',
+                    'items': {
+                        'type': 'float',
+                    },
+                    'minItems': 2,
+                    'maxItems': 2,
+                    'example': [0, 10]
                 },
+                'style': 'form',
+                'explode': False,
             }
         ]
