@@ -8,7 +8,7 @@ from rest_framework_gis.serializers import GeoFeatureModelListSerializer, GeoFea
 
 
 class GeoFeatureAutoSchema(AutoSchema):
-    POINT_SCHEMA = {
+    COORDINATES_SCHEMA_FOR_POINT = {
         'type': 'array',
         'items': {
             'type': 'number',
@@ -19,9 +19,9 @@ class GeoFeatureAutoSchema(AutoSchema):
         'maxItems': 3,
     }
 
-    LINE_STRING_SCHEMA = {
+    COORDINATES_SCHEMA_FOR_LINE_STRING = {
         'type': 'array',
-        'items': POINT_SCHEMA,
+        'items': COORDINATES_SCHEMA_FOR_POINT,
         'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
         'minItems': 2,
     }
@@ -32,14 +32,14 @@ class GeoFeatureAutoSchema(AutoSchema):
                 'type': 'string',
                 'enum': ['Point'],
             },
-            'coordinates': POINT_SCHEMA,
+            'coordinates': COORDINATES_SCHEMA_FOR_POINT,
         },
         models.LineStringField: {
             'type': {
                 'type': 'string',
                 'enum': ['LineString'],
             },
-            'coordinates': LINE_STRING_SCHEMA,
+            'coordinates': COORDINATES_SCHEMA_FOR_LINE_STRING,
         },
         models.PolygonField: {
             'type': {
@@ -49,7 +49,7 @@ class GeoFeatureAutoSchema(AutoSchema):
             'coordinates': {
                 'type': 'array',
                 'items': {
-                    **LINE_STRING_SCHEMA,
+                    **COORDINATES_SCHEMA_FOR_LINE_STRING,
                     'minItems': 4,
                 },
                 'minItems': 1,
