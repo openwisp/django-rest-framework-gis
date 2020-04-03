@@ -18,6 +18,9 @@ __all__ = [
     'LocationGeoFeatureBboxSerializer',
     'LocationGeoFeatureMethodSerializer',
     'NoneGeoFeatureMethodSerializer',
+    'PointSerializer',
+    'ChildPointSerializer',
+    'ListChildPointSerializer',
 ]
 
 
@@ -138,3 +141,18 @@ class NoneGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
         model = Location
         geo_field = 'new_geometry'
         fields = ['name', 'slug', 'id']
+
+
+class PointSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = PointModel
+        geo_field = 'location'
+        fields = '__all__'
+
+
+class ChildPointSerializer(serializers.Serializer):
+    point = PointSerializer()
+
+
+class ListChildPointSerializer(serializers.Serializer):
+    points = PointSerializer(many=True)
