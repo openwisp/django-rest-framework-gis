@@ -136,7 +136,7 @@ class GeoFeatureAutoSchema(AutoSchema):
         }
 
         if serializer.Meta.id_field:
-            geo_json_schema['id'] = schema['properties'].pop(serializer.Meta.id_field)
+            geo_json_schema['properties']['id'] = schema['properties'].pop(serializer.Meta.id_field)
 
         geo_field = serializer.Meta.geo_field
         geo_json_schema['properties']['geometry'] = {
