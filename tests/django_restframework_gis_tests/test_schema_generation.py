@@ -3,8 +3,7 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.schemas.openapi import SchemaGenerator
 
-from rest_framework_gis.schema import GeoFeatureAutoSchema
-from .serializers import *
+from .views import *
 
 
 def create_request(path):
@@ -420,3 +419,88 @@ class TestPaginationSchemaGeneration(TestCase):
                 },
             },
         })
+
+
+class TestRestFrameworkGisFiltersSchema(TestCase):
+
+    def test_in_BBox_filter_schema(self):
+        path = '/'
+        method = 'GET'
+        view = create_view(GeojsonLocationContainedInBBoxList, 'GET', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        generated_schema = inspector._get_filter_parameters(path, method)
+        self.assertDictEqual(generated_schema[0], {
+            'name': 'in_bbox',
+            'required': False,
+            'in': 'query',
+            'description': 'Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat',
+            'schema': {
+                'type': 'array',
+                'items': {
+                    'type': 'float'
+                },
+                'minItems': 4,
+                'maxItems': 4,
+                'example': [0, 0, 10, 10]},
+            'style': 'form',
+            'explode': False
+        })
+
+    def test_in_TMS_filter_schema(self):
+        path = '/'
+        method = 'GET'
+        view = create_view(GeojsonLocationContainedInTileList, 'GET', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        generated_schema = inspector._get_filter_parameters(path, method)
+        self.assertDictEqual(generated_schema[0], {
+            'name': 'tile',
+            'required': False,
+            'in': 'query',
+            'description': 'Specify a bounding box filter defined by a TMS tile address: tile=Z/X/Y',
+            'schema': {
+                'type': 'string',
+                'example': '12/56/34'
+            },
+        })
+
+    def test_distance_to_point_filter(self):
+        path = '/'
+        method = 'GET'
+        view = create_view(GeojsonLocationWithinDistanceOfPointList, 'GET', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        generated_schema = inspector._get_filter_parameters(path, method)
+        self.assertListEqual(generated_schema, [
+            {
+                'name': 'dist',
+                'required': False,
+                'in': 'query',
+                'schema': {
+                    'type': 'number',
+                    'format': 'float',
+                    'default': 1000,
+                },
+                'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
+                               '***point*** is passed.'
+            },
+            {
+                'name': 'point',
+                'required': False,
+                'in': 'query',
+                'description': 'Point represented in **x,y** format. '
+                               'Represents **point** in **Distance to point filter**',
+                'schema': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'float',
+                    },
+                    'minItems': 2,
+                    'maxItems': 2,
+                    'example': [0, 10]
+                },
+                'style': 'form',
+                'explode': False,
+            }
+        ])
