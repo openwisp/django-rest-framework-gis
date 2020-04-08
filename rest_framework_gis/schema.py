@@ -73,9 +73,7 @@ class GeoFeatureAutoSchema(AutoSchema):
             'coordinates': {
                 'type': 'array',
                 'items': GEO_FIELD_TO_SCHEMA[singular_field]['coordinates'],
-                'minItems': 1,
                 'example': [
-                    GEO_FIELD_TO_SCHEMA[singular_field]['coordinates']['example'],
                     GEO_FIELD_TO_SCHEMA[singular_field]['coordinates']['example']
                 ]
             }
