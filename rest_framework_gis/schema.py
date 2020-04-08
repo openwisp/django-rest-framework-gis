@@ -85,10 +85,7 @@ class GeoFeatureAutoSchema(AutoSchema):
             warnings.warn('Geometry generation for GeometrySerializerMethodField is not supported.'.format(field=field))
             return {}
 
-        if field.source:
-            model_field_name = field.source
-        else:
-            model_field_name = geo_field_name
+        model_field_name = geo_field_name
 
         geo_field = model_meta.get_field_info(serializer.Meta.model).fields[model_field_name]
         try:
