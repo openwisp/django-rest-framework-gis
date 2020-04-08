@@ -3,6 +3,7 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.schemas.openapi import SchemaGenerator
 
+from rest_framework_gis.schema import GeoFeatureAutoSchema
 from .views import *
 
 
