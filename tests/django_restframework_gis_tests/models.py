@@ -12,6 +12,7 @@ __all__ = [
     'PolygonModel',
     'MultiPolygonModel',
     'MultiLineStringModel',
+    'MultiPointModel',
 ]
 
 
