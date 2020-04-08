@@ -19,7 +19,7 @@ def create_view(view_cls, method, request):
     return view
 
 
-class TestRestFrameworkGisBBox(TestCase):
+class TestSchemaGeneration(TestCase):
 
     def test_point_field_outer_most_gis_serializer(self):
         class TestPointFieldView(RetrieveAPIView):
@@ -33,8 +33,9 @@ class TestRestFrameworkGisBBox(TestCase):
         inspector.view = view
         serializer = inspector._get_serializer(path, method)
         content = inspector._map_serializer(serializer)
+        content.pop('type', None)
+        content['properties']['properties'].pop('type', None)
         self.assertEqual(content, {
-            'type': 'object',
             'properties': {
                 'type': {
                     'type': 'string',
@@ -92,10 +93,12 @@ class TestRestFrameworkGisBBox(TestCase):
         inspector.view = view
         serializer = inspector._get_serializer(path, method)
         content = inspector._map_serializer(serializer)
+        content.pop('type', None)
+        content['properties']['point'].pop('type', None)
+        content['properties']['point']['properties']['properties'].pop('type', None)
         self.assertEqual(content, {
             'properties': {
                 'point': {
-                    'type': 'object',
                     'properties': {
                         'type': {
                             'type': 'string',
@@ -158,10 +161,12 @@ class TestRestFrameworkGisBBox(TestCase):
         inspector.view = view
         serializer = inspector._get_serializer(path, method)
         content = inspector._map_serializer(serializer)
+        content.pop('type', None)
+        content['properties']['points'].pop('type', None)
+        content['properties']['points']['properties']['features']['items']['properties']['properties'].pop('type', None)
         self.assertEqual(content, {
             'properties': {
                 'points': {
-                    'type': 'object',
                     'properties': {
                         'type': {
                             'type': 'string',

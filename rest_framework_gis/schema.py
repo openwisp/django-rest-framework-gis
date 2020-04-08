@@ -159,7 +159,7 @@ class GeoFeatureAutoSchema(AutoSchema):
 
         return geo_json_schema
 
-    def _map_serializer(self, serializer):
+    def map_serializer(self, serializer):
         if isinstance(serializer, GeoFeatureModelListSerializer):
             return self._map_geo_feature_model_list_serializer(serializer)
 
@@ -167,3 +167,6 @@ class GeoFeatureAutoSchema(AutoSchema):
             return self._map_geo_feature_model_serializer(serializer)
 
         return super()._map_serializer(serializer)
+
+    def _map_serializer(self, serializer):
+        self.map_serializer(serializer)
