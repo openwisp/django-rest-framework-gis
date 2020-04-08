@@ -45,7 +45,7 @@ class GeoFeatureAutoSchema(AutoSchema):
         models.PolygonField: {
             'type': {
                 'type': 'string',
-                'enum': ['LineString'],
+                'enum': ['Polygon'],
             },
             'coordinates': {
                 'type': 'array',
