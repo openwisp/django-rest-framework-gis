@@ -53,9 +53,7 @@ class GeoFeatureAutoSchema(AutoSchema):
                     **COORDINATES_SCHEMA_FOR_LINE_STRING,
                     'minItems': 4,
                 },
-                'minItems': 1,
-                'example': [[[0.0, 0.0], [0.0, 1.0], [1.0, 1.0], [1.0, 0.0], [0.0, 0.0]],
-                            [[0.4, 0.4], [0.4, 0.6], [0.6, 0.6], [0.6, 0.4], [0.4, 0.4]]]
+                'example': [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
             }
         }
     }
