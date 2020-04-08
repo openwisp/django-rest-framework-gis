@@ -5,7 +5,6 @@ from rest_framework_gis import serializers as gis_serializers
 
 from .models import *
 
-
 __all__ = [
     'LocationGeoSerializer',
     'PaginatedLocationGeoSerializer',
@@ -21,6 +20,8 @@ __all__ = [
     'PointSerializer',
     'ChildPointSerializer',
     'ListChildPointSerializer',
+    'LineStringSerializer',
+    'PolygonSerializer',
 ]
 
 
@@ -55,6 +56,7 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
 
 class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
     """ use slug as id attribute  """
+
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -64,6 +66,7 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
 
 class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
     """ id attribute set as False """
+
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -76,6 +79,7 @@ class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
     id attribute left out, issue #82
     see: https://github.com/openwisp/django-rest-framework-gis/issues/82
     """
+
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -156,3 +160,17 @@ class ChildPointSerializer(serializers.Serializer):
 
 class ListChildPointSerializer(serializers.Serializer):
     points = PointSerializer(many=True)
+
+
+class LineStringSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = LineStringModel
+        geo_field = 'points'
+        fields = '__all__'
+
+
+class PolygonSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = PolygonModel
+        geo_field = 'polygon'
+        fields = '__all__'

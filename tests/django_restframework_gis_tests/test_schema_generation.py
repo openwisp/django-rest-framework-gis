@@ -226,3 +226,83 @@ class TestSchemaGeneration(TestCase):
             },
             'required': ['points']
         })
+
+    def test_line_string_field(self):
+        class TestLineStringFieldView(RetrieveAPIView):
+            serializer_class = LineStringSerializer
+
+        path = '/'
+        method = 'GET'
+
+        view = create_view(TestLineStringFieldView, 'POST', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        content = inspector._map_serializer(serializer)
+        geometry_schema = content['properties']['geometry']
+        geometry_schema.pop('type', None)
+        self.assertEqual(geometry_schema, {
+            'properties': {
+                'type': {
+                    'type': 'string',
+                    'enum': ['LineString']
+                },
+                'coordinates': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'number',
+                            'format': 'float'
+                        },
+                        'example': [12.9721, 77.5933],
+                        'minItems': 2,
+                        'maxItems': 3
+                    },
+                    'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
+                    'minItems': 2
+                }
+            }
+        })
+
+    def test_polygon(self):
+        class TestPolygonFieldView(RetrieveAPIView):
+            serializer_class = PolygonSerializer
+
+        path = '/'
+        method = 'GET'
+
+        view = create_view(TestPolygonFieldView, 'POST', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        content = inspector._map_serializer(serializer)
+        geometry_schema = content['properties']['geometry']
+        geometry_schema.pop('type', None)
+        self.assertEqual(geometry_schema, {
+            'properties': {
+                'type': {
+                    'type': 'string',
+                    'enum': ['Polygon']
+                },
+                'coordinates': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'array',
+                            'items': {
+                                'type': 'number',
+                                'format': 'float'
+                            },
+                            'example': [12.9721, 77.5933],
+                            'minItems': 2,
+                            'maxItems': 3
+                        },
+                        'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
+                        'minItems': 4
+                    },
+                    'example': [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
+                }
+            }
+        })

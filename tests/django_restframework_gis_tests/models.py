@@ -7,7 +7,9 @@ __all__ = [
     'LocatedFile',
     'BoxedLocation',
     'Nullable',
-    'PointModel'
+    'PointModel',
+    'LineStringModel',
+    'PolygonModel',
 ]
 
 
