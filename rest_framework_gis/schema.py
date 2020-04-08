@@ -141,6 +141,9 @@ class GeoFeatureAutoSchema(AutoSchema):
         if serializer.Meta.auto_bbox or serializer.Meta.bbox_geo_field:
             geo_json_schema['properties']['bbox'] = {
                 'type': 'array',
+                'items': {
+                    'type': 'number'
+                },
                 'minItems': 4,
                 'maxItems': 4,
                 'example': [12.9721, 77.5933, 12.9721, 77.5933],
