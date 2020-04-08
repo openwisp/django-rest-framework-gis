@@ -148,8 +148,8 @@ class GeoFeatureAutoSchema(AutoSchema):
                 'maxItems': 4,
                 'example': [12.9721, 77.5933, 12.9721, 77.5933],
             }
-            if serializer.Meta.bbox_geo_field in schema:
-                schema.pop(serializer.Meta.bbox_geo_field)
+            if serializer.Meta.bbox_geo_field in schema['properties']:
+                schema['properties'].pop(serializer.Meta.bbox_geo_field)
 
         geo_json_schema['properties']['properties'] = schema
 
