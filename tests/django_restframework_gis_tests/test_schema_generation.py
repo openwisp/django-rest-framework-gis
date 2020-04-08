@@ -391,3 +391,32 @@ class TestSchemaGeneration(TestCase):
                 }
             }
         })
+
+
+class TestPaginationSchemaGeneration(TestCase):
+
+    def test_geo_json_pagination_schema(self):
+        generated_schema = GeoJsonPagination().get_paginated_response_schema(geojson_location_list)
+        self.assertIn('features', generated_schema['properties'])
+        generated_schema['properties'].pop('features')
+        self.assertDictEqual(generated_schema, {
+            'type': 'object',
+            'properties': {
+                'type': {
+                    'type': 'string',
+                    'enum': ['FeatureCollection']
+                },
+                'count': {
+                    'type': 'integer',
+                    'example': 123,
+                },
+                'next': {
+                    'type': 'string',
+                    'nullable': True,
+                },
+                'previous': {
+                    'type': 'string',
+                    'nullable': True,
+                },
+            },
+        })
