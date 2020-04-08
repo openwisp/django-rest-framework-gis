@@ -392,6 +392,33 @@ class TestSchemaGeneration(TestCase):
             }
         })
 
+    def check_bbox_schema(self):
+        class TestMultiLineStringFieldView(RetrieveAPIView):
+            serializer_class = MultiPointSerializer
+
+        path = '/'
+        method = 'GET'
+
+        view = create_view(TestMultiLineStringFieldView, 'POST', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        content = inspector._map_serializer(serializer)
+        bbox_schema = content['properties']['bbox']
+        self.assertEqual(bbox_schema, {
+            'type': 'array',
+            'items': {
+                'type': 'number'
+            },
+            'minItems': 4,
+            'maxItems': 4,
+            'example': [
+                12.9721,
+                77.5933,
+                12.9721,
+                77.5933
+            ]
+        })
 
 class TestPaginationSchemaGeneration(TestCase):
 

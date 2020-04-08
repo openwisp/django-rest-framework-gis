@@ -198,3 +198,4 @@ class MultiPointSerializer(gis_serializers.GeoFeatureModelSerializer):
         model = MultiPointModel
         geo_field = 'points'
         fields = '__all__'
+        auto_bbox = True
