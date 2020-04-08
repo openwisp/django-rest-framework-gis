@@ -312,3 +312,45 @@ class TestSchemaGeneration(TestCase):
                 }
             }
         })
+
+    def test_multi_line_string_field(self):
+        class TestMultiLineStringFieldView(RetrieveAPIView):
+            serializer_class = MultiLineStringSerializer
+
+        path = '/'
+        method = 'GET'
+
+        view = create_view(TestMultiLineStringFieldView, 'POST', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        content = inspector._map_serializer(serializer)
+        geometry_schema = content['properties']['geometry']
+        geometry_schema.pop('type', None)
+        self.assertEqual(geometry_schema, {
+            'properties': {
+                'type': {
+                    'type': 'string',
+                    'enum': ['MultiLineString']
+                },
+                'coordinates': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'array',
+                            'items': {
+                                'type': 'number',
+                                'format': 'float'
+                            },
+                            'example': [12.9721, 77.5933],
+                            'minItems': 2,
+                            'maxItems': 3
+                        },
+                        'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
+                        'minItems': 2
+                    },
+                    'example': [[[22.4707, 70.0577], [12.9721, 77.5933]]]
+                }
+            }
+        })

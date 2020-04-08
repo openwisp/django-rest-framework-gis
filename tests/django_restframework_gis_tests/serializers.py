@@ -22,7 +22,8 @@ __all__ = [
     'ListChildPointSerializer',
     'LineStringSerializer',
     'PolygonSerializer',
-    'MultiPolygonSerializer'
+    'MultiPolygonSerializer',
+    'MultiLineStringSerializer',
 ]
 
 
@@ -181,4 +182,11 @@ class MultiPolygonSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = MultiPolygonModel
         geo_field = 'polygon'
+        fields = '__all__'
+
+
+class MultiLineStringSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = MultiLineStringModel
+        geo_field = 'points'
         fields = '__all__'
