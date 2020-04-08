@@ -265,14 +265,14 @@ class TestSchemaGeneration(TestCase):
             }
         })
 
-    def test_polygon(self):
-        class TestPolygonFieldView(RetrieveAPIView):
-            serializer_class = PolygonSerializer
+    def test_multi_polygon(self):
+        class TestMultiPolygonFieldView(RetrieveAPIView):
+            serializer_class = MultiPolygonSerializer
 
         path = '/'
         method = 'GET'
 
-        view = create_view(TestPolygonFieldView, 'POST', create_request('/'))
+        view = create_view(TestMultiPolygonFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
         serializer = inspector._get_serializer(path, method)
@@ -283,7 +283,7 @@ class TestSchemaGeneration(TestCase):
             'properties': {
                 'type': {
                     'type': 'string',
-                    'enum': ['Polygon']
+                    'enum': ['MultiPolygon']
                 },
                 'coordinates': {
                     'type': 'array',
@@ -292,17 +292,23 @@ class TestSchemaGeneration(TestCase):
                         'items': {
                             'type': 'array',
                             'items': {
-                                'type': 'number',
-                                'format': 'float'
+                                'type': 'array',
+                                'items': {
+                                    'type': 'number',
+                                    'format': 'float'
+                                },
+                                'example': [12.9721, 77.5933],
+                                'minItems': 2,
+                                'maxItems': 3
                             },
-                            'example': [12.9721, 77.5933],
-                            'minItems': 2,
-                            'maxItems': 3
+                            'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
+                            'minItems': 4
                         },
-                        'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
-                        'minItems': 4
+                        'example': [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
                     },
-                    'example': [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
+                    'example': [
+                        [[0.0, 0.0], [0.0, 50.0], [50.0, 50.0], [50.0, 0.0], [0.0, 0.0]]
+                    ]
                 }
             }
         })

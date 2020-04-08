@@ -10,6 +10,7 @@ __all__ = [
     'PointModel',
     'LineStringModel',
     'PolygonModel',
+    'MultiPolygonModel',
 ]
 
 
