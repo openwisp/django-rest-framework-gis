@@ -169,4 +169,4 @@ class GeoFeatureAutoSchema(AutoSchema):
         return super()._map_serializer(serializer)
 
     def _map_serializer(self, serializer):
-        self.map_serializer(serializer)
+        return self.map_serializer(serializer)
