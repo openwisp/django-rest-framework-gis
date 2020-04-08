@@ -1,8 +1,8 @@
 from django.contrib.gis.geos import Point
-
 from rest_framework import pagination, serializers
-from rest_framework_gis import serializers as gis_serializers
 
+from rest_framework_gis import serializers as gis_serializers
+from rest_framework_gis.fields import GeometrySerializerMethodField
 from .models import *
 
 __all__ = [
@@ -25,6 +25,9 @@ __all__ = [
     'MultiPolygonSerializer',
     'MultiLineStringSerializer',
     'MultiPointSerializer',
+    'GeometrySerializerMethodFieldSerializer',
+    'GeometrySerializer',
+    'BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer',
 ]
 
 
@@ -199,3 +202,28 @@ class MultiPointSerializer(gis_serializers.GeoFeatureModelSerializer):
         geo_field = 'points'
         fields = '__all__'
         auto_bbox = True
+
+
+class GeometrySerializerMethodFieldSerializer(PointSerializer):
+    other_point = GeometrySerializerMethodField()
+
+    @staticmethod
+    def get_other_point(obj):
+        return Point(obj.location.lat / 2, obj.location.lon / 2)
+
+    class Meta:
+        model = Location
+        geo_field = 'other_point'
+        fields = '__all__'
+
+
+class GeometrySerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = Nullable
+        geo_field = 'geometry'
+        fields = '__all__'
+
+
+class BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer(BoxedLocationGeoFeatureSerializer):
+    class Meta(BoxedLocationGeoFeatureSerializer.Meta):
+        fields = BoxedLocationGeoFeatureSerializer.Meta.fields + [BoxedLocationGeoFeatureSerializer.Meta.bbox_geo_field]

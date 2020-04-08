@@ -420,6 +420,64 @@ class TestSchemaGeneration(TestCase):
             ]
         })
 
+    def test_warning_for_geometry_serializer_method_field(self):
+        class TestGeometrySerializerMethodField(RetrieveAPIView):
+            serializer_class = GeometrySerializerMethodFieldSerializer
+
+        path = '/'
+        method = 'GET'
+
+        view = create_view(TestGeometrySerializerMethodField, 'POST', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        with self.assertWarns(Warning):
+            inspector._map_serializer(serializer)
+
+    def test_warning_for_geometry_field(self):
+        class TestGeometryView(RetrieveAPIView):
+            serializer_class = GeometrySerializer
+
+        path = '/'
+        method = 'GET'
+
+        view = create_view(TestGeometryView, 'POST', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        with self.assertWarns(Warning):
+            inspector._map_serializer(serializer)
+
+    def test_schema_for_bbox_geo_field(self):
+        path = '/'
+        method = 'GET'
+
+        class GeojsonBoxedLocationDetailsWithBBoxGeoFieldView(GeojsonBoxedLocationDetails):
+            serializer_class = BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer
+
+        view = create_view(GeojsonBoxedLocationDetailsWithBBoxGeoFieldView, 'GET', create_request('/'))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector._get_serializer(path, method)
+        content = inspector._map_serializer(serializer)
+        bbox_schema = content['properties']['bbox']
+        self.assertNotIn('bbox_geometry', content['properties']['properties']['properties'])
+        self.assertEqual(bbox_schema, {
+            'type': 'array',
+            'items': {
+                'type': 'number'
+            },
+            'minItems': 4,
+            'maxItems': 4,
+            'example': [
+                12.9721,
+                77.5933,
+                12.9721,
+                77.5933
+            ]
+        })
+
+
 class TestPaginationSchemaGeneration(TestCase):
 
     def test_geo_json_pagination_schema(self):
