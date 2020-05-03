@@ -94,6 +94,12 @@ class GeoFeatureAutoSchema(AutoSchema):
             warnings.warn('Geometry generation for {field} is not supported.'.format(field=field))
             return {}
 
+    def map_field(self, field):
+        if isinstance(field, GeoFeatureModelListSerializer):
+            return self._map_geo_feature_model_list_serializer(field)
+
+        return super().map_field(field)
+
     def _map_field(self, field):
         if isinstance(field, GeoFeatureModelListSerializer):
             return self._map_geo_feature_model_list_serializer(field)
