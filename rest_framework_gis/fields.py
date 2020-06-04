@@ -21,7 +21,7 @@ class GeometryField(Field):
         self.precision = precision
         self.remove_dupes = remove_duplicates
         super(GeometryField, self).__init__(**kwargs)
-        self.style = {'base_template': 'textarea.html'}
+        self.style.setdefault('base_template', 'textarea.html')
 
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
