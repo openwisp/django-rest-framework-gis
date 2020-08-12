@@ -82,6 +82,16 @@ class GeojsonLocationWithinDegreesOfPointList(GeojsonLocationWithinDistanceOfPoi
 geojson_location_within_degrees_of_point_list = GeojsonLocationWithinDegreesOfPointList.as_view()
 
 
+class GeojsonLocationOrderDistanceToPointList(generics.ListAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureSerializer
+    queryset = Location.objects.all()
+    distance_ordering_filter_field = 'geometry'
+    filter_backends = (DistanceToPointOrderingFilter,)
+
+geojson_location_order_distance_to_point_list = GeojsonLocationOrderDistanceToPointList.as_view()
+
+
 class GeojsonLocationDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer

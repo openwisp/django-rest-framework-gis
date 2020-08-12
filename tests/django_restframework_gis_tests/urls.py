@@ -93,4 +93,8 @@ urlpatterns = [
         r'^filters/within_degrees_of_point$',
         views.geojson_location_within_degrees_of_point_list,
         name='api_geojson_location_list_within_degrees_of_point_filter'),
+    url(
+        r'^filters/order_distance_to_point$',
+        views.geojson_location_order_distance_to_point_list,
+        name='api_geojson_location_order_distance_to_point_list_filter'),
 ]
