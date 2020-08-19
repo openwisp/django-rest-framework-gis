@@ -613,7 +613,7 @@ eg:.
 ``/location/?point=-122.4862,37.7694&format=json``
 will order the results by the distance to the point (-122.4862, 37.7694).
 
-We can also reverse the order of the results by passing `order=desc`:
+We can also reverse the order of the results by passing ``order=desc``:
 ``/location/?point=-122.4862,37.7694&order=desc&format=json``
 
 Running the tests
