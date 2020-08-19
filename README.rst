@@ -572,7 +572,6 @@ a certain distance of a given point.
         serializer_class = serializers.LocationSerializer
         distance_filter_field = 'geometry'
         filter_backends = (DistanceToPointFilter, )
-        bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using a distance and a point in (lon, lat) format. The
 distance can be given in meters or in degrees.
