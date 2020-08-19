@@ -164,16 +164,16 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 1)
 
     def test_post_location_list_empty_geometry(self):
-        data = { 'name': 'empty input test' }
+        data = {'name': 'empty input test'}
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-        data = { 'name': 'empty input test', 'geometry': '' }
+        data = {'name': 'empty input test', 'geometry': ''}
         response = self.client.post(self.location_list_url, data)
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-        data = { 'name': 'empty input test' }
+        data = {'name': 'empty input test'}
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
-        data = { 'name': 'empty input test', 'geometry': '' }
+        data = {'name': 'empty input test', 'geometry': ''}
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], 'This field is required.')
 
@@ -207,7 +207,7 @@ class TestRestFrameworkGis(TestCase):
                 "dasdas": [
                     {
                         "STtype": "PTUAMAoint",
-                        "NNAare":"rgon"
+                        "NNAare": "rgon"
                     }
                 ]
             }
@@ -228,7 +228,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['geometry'][0][0:65], self.type_error_message)
         data = {
             "name": "very wrong",
-            "geometry": { "value": { "nested": ["yo"] } }
+            "geometry": {"value": {"nested": ["yo"]}}
         }
         response = self.client.post(self.location_list_url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.data['geometry'][0], self.gdal_error_message)
@@ -256,7 +256,7 @@ class TestRestFrameworkGis(TestCase):
             }
         }
         response = self.client.get(url)
-        if sys.version_info>(3,0,0):
+        if sys.version_info > (3, 0, 0):
             self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
         else:
             self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
@@ -501,7 +501,7 @@ class TestRestFrameworkGis(TestCase):
         url = reverse('api_geojson_location_details', args=[location.id])
         data = {
             "properties": {
-                "name":"geojson successful patch test"
+                "name": "geojson successful patch test"
             },
             "geometry": {
                 "type": "Point",
@@ -520,7 +520,7 @@ class TestRestFrameworkGis(TestCase):
         url = reverse('api_geojson_location_details', args=[location.id])
         data = {
             "properties": {
-                "name":"geojson successful patch test"
+                "name": "geojson successful patch test"
             }
         }
         response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
@@ -539,7 +539,7 @@ class TestRestFrameworkGis(TestCase):
         url = reverse('api_geojson_location_details_hidden', args=[location.id])
         data = {
             "properties": {
-                "name":"hidden geometry"
+                "name": "hidden geometry"
             }
         }
         response = self.client.generic('PATCH', url, json.dumps(data), content_type='application/json')
@@ -614,11 +614,13 @@ class TestRestFrameworkGis(TestCase):
 
     def test_exclude_geo_field_improperly_configured(self):
         self._create_locations()
+
         class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
             class Meta:
                 model = Location
                 geo_field = 'geometry'
-                exclude = ('geometry', )
+                exclude = ('geometry',)
+
         with self.assertRaises(ImproperlyConfigured):
             LocationGeoFeatureSerializer(instance=self.l1)
 
