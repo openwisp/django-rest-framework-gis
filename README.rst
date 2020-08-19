@@ -588,6 +588,34 @@ which is indexed in degrees, the 'distance' will be interpreted as degrees. Set 
 to 'True' in order to convert an input distance in meters to degrees. This conversion is approximate, and the errors
 at latitudes > 60 degrees are > 25%.
 
+DistanceToPointOrderingFilter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Provides a ``DistanceToPointOrderingFilter``, **available on Django >= 3.0**, which is a subclass of ``DistanceToPointFilter``.
+Orders a queryset by distance to a given point, from the nearest to the most distant point.
+
+``views.py:``
+
+.. code-block:: python
+
+    from rest_framework_gis.filters import DistanceToPointOrderingFilter
+
+    class LocationList(ListAPIView):
+
+        queryset = models.Location.objects.all()
+        serializer_class = serializers.LocationSerializer
+        distance_ordering_filter_field = 'geometry'
+        filter_backends = (DistanceToPointOrderingFilter, )
+
+We can then order the results by passing a point in (lon, lat) format in the URL.
+
+eg:.
+``/location/?point=-122.4862,37.7694&format=json``
+will order the results by the distance to the point (-122.4862, 37.7694).
+
+We can also reverse the order of the results by passing `order=desc`:
+``/location/?point=-122.4862,37.7694&order=desc&format=json``
+
 Running the tests
 -----------------
 

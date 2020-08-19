@@ -12,9 +12,15 @@ except ImportError:
     from django.core.urlresolvers import reverse
 
 from .models import Location
+from .views import GeojsonLocationOrderDistanceToPointList
 
 has_spatialite = settings.DATABASES['default']['ENGINE'] == 'django.contrib.gis.db.backends.spatialite'
 
+try:
+    from django.contrib.gis.db.models.functions import GeometryDistance
+    has_geometry_distance = True
+except ImportError:
+    has_geometry_distance = False
 
 class TestRestFrameworkGisFilters(TestCase):
     """
@@ -28,6 +34,7 @@ class TestRestFrameworkGisFilters(TestCase):
         self.location_within_distance_of_point_list_url = reverse('api_geojson_location_list_within_distance_of_point_filter')
         self.location_within_degrees_of_point_list_url = reverse('api_geojson_location_list_within_degrees_of_point_filter')
         self.geojson_contained_in_geometry = reverse('api_geojson_contained_in_geometry')
+        self.location_order_distance_to_point = reverse('api_geojson_location_order_distance_to_point_list_filter')
 
     def test_inBBOXFilter_filtering(self):
         """
@@ -269,6 +276,46 @@ class TestRestFrameworkGisFilters(TestCase):
         for result in response.data['features']:
             self.assertEqual(result['properties']['name'] in (treasure_island.name), True)
 
+    @skipIf(has_spatialite, 'Skipped test for spatialite backend: missing feature "GeometryDistance"')
+    @skipIf(not has_geometry_distance, 'Skipped test for Django < 3.0: missing feature "GeometryDistance"')
+    def test_DistanceToPointOrderingFilter_filtering(self):
+        """
+        Checks that the DistanceOrderingFilter returns the objects in the correct order
+        given the geometry defined by the URL parameters
+        """
+        self.assertEqual(Location.objects.count(), 0)
+
+        url_params = '?point=hello&format=json'
+        response = self.client.get('%s%s' % (self.location_order_distance_to_point, url_params))
+        self.assertEqual(response.status_code, 400)
+
+        Location.objects.create(name='Houston', geometry='SRID=4326;POINT (-95.363151 29.763374)')
+        Location.objects.create(name='Dallas', geometry='SRID=4326;POINT (-96.801611 32.782057)')
+        Location.objects.create(name='Oklahoma City', geometry='SRID=4326;POINT (-97.521157 34.464642)')
+        Location.objects.create(name='Wellington', geometry='SRID=4326;POINT (174.783117 -41.315268)')
+        Location.objects.create(name='Pueblo', geometry='SRID=4326;POINT (-104.609252 38.255001)')
+        Location.objects.create(name='Lawrence', geometry='SRID=4326;POINT (-95.235060 38.971823)')
+        Location.objects.create(name='Chicago', geometry='SRID=4326;POINT (-87.650175 41.850385)')
+        Location.objects.create(name='Victoria', geometry='SRID=4326;POINT (-123.305196 48.462611)')
+
+        point = [-90, 40]
+
+        url_params = '?point=%i,%i&format=json' % (point[0], point[1])
+        response = self.client.get('%s%s' % (self.location_order_distance_to_point, url_params))
+        self.assertEqual(len(response.data['features']), 8)
+        self.assertEqual(
+            [city['properties']['name'] for city in response.data['features']],
+            ['Chicago', 'Lawrence', 'Oklahoma City', 'Dallas', 'Houston', 'Pueblo', 'Victoria', 'Wellington']
+        )
+
+        url_params = '?point=%i,%i&order=desc&format=json' % (point[0], point[1])
+        response = self.client.get('%s%s' % (self.location_order_distance_to_point, url_params))
+        self.assertEqual(len(response.data['features']), 8)
+        self.assertEqual(
+            [city['properties']['name'] for city in response.data['features']],
+            ['Wellington', 'Victoria', 'Pueblo', 'Houston', 'Dallas', 'Oklahoma City', 'Lawrence', 'Chicago']
+        )
+
     @skipIf(has_spatialite, 'Skipped test for spatialite backend: missing feature "contains_properly"')
     def test_GeometryField_filtering(self):
         """ Checks that the GeometryField allows sane filtering. """
@@ -443,3 +490,24 @@ class TestRestFrameworkGisFilters(TestCase):
         url_params = '?dist=wrong&point=12.0,42.0&format=json'
         response = self.client.get('%s%s' % (self.location_within_distance_of_point_list_url, url_params))
         self.assertEqual(response.data['detail'], 'Invalid distance string supplied for parameter dist')
+
+    @skipIf(not has_geometry_distance, 'Skipped test for Django < 3.0: missing feature "GeometryDistance"')
+    def test_DistanceToPointOrderingFilter_filtering_none(self):
+        url_params = '?point=&format=json'
+        response = self.client.get('%s%s' % (self.location_order_distance_to_point, url_params))
+        self.assertDictEqual(response.data, {'type': 'FeatureCollection', 'features': []})
+
+    @skipIf(not has_geometry_distance, 'Skipped test for Django < 3.0: missing feature "GeometryDistance"')
+    def test_DistanceToPointOrderingFilter_ordering_filter_field_none(self):
+        original_value = GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field
+        GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field = None
+        url_params = '?point=&format=json'
+        response = self.client.get('%s%s' % (self.location_order_distance_to_point, url_params))
+        self.assertDictEqual(response.data, {'type': 'FeatureCollection', 'features': []})
+        GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field = original_value
+
+    @skipIf(has_geometry_distance, 'Skipped test for Django >= 3.0')
+    def test_DistanceToPointOrderingFilter_not_available(self):
+        url_params = '?point=12,42&format=json'
+        with self.assertRaises(ValueError):
+            self.client.get('%s%s' % (self.location_order_distance_to_point, url_params))

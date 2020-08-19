@@ -31,6 +31,12 @@ except ImportError:
 else:
     gis_lookups = BaseSpatialField.get_lookups()
 
+try:
+    # Django >= 3.0
+    from django.contrib.gis.db.models.functions import GeometryDistance
+except ImportError:
+    GeometryDistance = None
+
 
 __all__ = [
     'InBBoxFilter',
@@ -38,7 +44,8 @@ __all__ = [
     'GeometryFilter',
     'GeoFilterSet',
     'TMSTileFilter',
-    'DistanceToPointFilter'
+    'DistanceToPointFilter',
+    'DistanceToPointOrderingFilter'
 ]
 
 
@@ -123,7 +130,7 @@ class DistanceToPointFilter(BaseFilterBackend):
     dist_param = 'dist'
     point_param = 'point'  # The URL query parameter which contains the
 
-    def get_filter_point(self, request):
+    def get_filter_point(self, request, **kwargs):
         point_string = request.query_params.get(self.point_param, None)
         if not point_string:
             return None
@@ -133,7 +140,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         except ValueError:
             raise ParseError('Invalid geometry string supplied for parameter {0}'.format(self.point_param))
 
-        p = Point(x, y)
+        p = Point(x, y, **kwargs)
         return p
 
     def dist_to_deg(self, distance, latitude):
@@ -188,3 +195,27 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
+
+
+class DistanceToPointOrderingFilter(DistanceToPointFilter):
+    srid = 4326
+    order_param = 'order'
+
+    def filter_queryset(self, request, queryset, view):
+        if not GeometryDistance:
+            raise ValueError('GeometryDistance not available on this version of django')
+
+        filter_field = getattr(view, 'distance_ordering_filter_field', None)
+
+        if not filter_field:
+            return queryset
+
+        point = self.get_filter_point(request, srid=self.srid)
+        if not point:
+            return queryset
+
+        order = request.query_params.get(self.order_param)
+        if order == 'desc':
+            return queryset.order_by(-GeometryDistance(filter_field, point))
+        else:
+            return queryset.order_by(GeometryDistance(filter_field, point))
