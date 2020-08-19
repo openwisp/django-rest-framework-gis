@@ -16,7 +16,6 @@ if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TES
     from contexttimer import Timer
     from .models import Location
 
-
     class TestRestFrameworkGisPerformance(TestCase):
         NUMBER_OF_LOCATIONS = 10000
 

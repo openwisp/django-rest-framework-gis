@@ -504,7 +504,7 @@ a certain bounding box.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (InBBoxFilter, )
+        filter_backends = (InBBoxFilter,)
         bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using Bounding Box format (min Lon, min
@@ -540,7 +540,7 @@ by a `TMS tile <http://wiki.openstreetmap.org/wiki/TMS>`__ address.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (TMSTileFilter, )
+        filter_backends = (TMSTileFilter,)
         bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using TMS tile addresses in the zoom/x/y format,
@@ -571,8 +571,7 @@ a certain distance of a given point.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         distance_filter_field = 'geometry'
-        filter_backends = (DistanceToPointFilter, )
-        bbox_filter_include_overlapping = True # Optional
+        filter_backends = (DistanceToPointFilter,)
 
 We can then filter in the URL, using a distance and a point in (lon, lat) format. The
 distance can be given in meters or in degrees.
@@ -605,7 +604,7 @@ Orders a queryset by distance to a given point, from the nearest to the most dis
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         distance_ordering_filter_field = 'geometry'
-        filter_backends = (DistanceToPointOrderingFilter, )
+        filter_backends = (DistanceToPointOrderingFilter,)
 
 We can then order the results by passing a point in (lon, lat) format in the URL.
 

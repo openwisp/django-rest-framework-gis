@@ -77,7 +77,7 @@ geojson_location_within_distance_of_point_list = GeojsonLocationWithinDistanceOf
 
 
 class GeojsonLocationWithinDegreesOfPointList(GeojsonLocationWithinDistanceOfPointList):
-    distance_filter_convert_meters = False #Default setting
+    distance_filter_convert_meters = False  # Default setting
 
 geojson_location_within_degrees_of_point_list = GeojsonLocationWithinDegreesOfPointList.as_view()
 
@@ -148,6 +148,7 @@ class LocationFilter(GeoFilterSet):
     class Meta:
         model = Location
         fields = ['contains_properly']
+
 
 class GeojsonLocationContainedInGeometry(generics.ListAPIView):
     queryset = Location.objects.all()
