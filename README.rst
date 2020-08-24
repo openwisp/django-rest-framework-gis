@@ -689,6 +689,14 @@ To run tests in docker use
     docker-compose build
     docker-compose run --rm test
 
+Running QA-checks
+=================
+
+You can run qa-checks by using
+
+```./run-qa-checks```
+
+In docker testing, QA checks are runned automatically.
 
 Contributing
 ------------

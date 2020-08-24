@@ -1,13 +1,7 @@
 from django.contrib.gis.db import models
 from django.utils.text import slugify
 
-
-__all__ = [
-    'Location',
-    'LocatedFile',
-    'BoxedLocation',
-    'Nullable'
-]
+__all__ = ['Location', 'LocatedFile', 'BoxedLocation', 'Nullable']
 
 
 class BaseModel(models.Model):
