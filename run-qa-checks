@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-openwisp-qa-check --migration-path "./tests/django_restframework_gis_tests/migrations/"
+openwisp-qa-check --skip-checkmigrations --skip-checkmakemigrations

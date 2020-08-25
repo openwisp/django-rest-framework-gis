@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.PolygonField(srid=4326),
                 ),
             ],
-            options={'abstract': False,},
+            options={'abstract': False},
         ),
         migrations.CreateModel(
             name='LocatedFile',
@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                     models.FileField(blank=True, null=True, upload_to='located_files'),
                 ),
             ],
-            options={'abstract': False,},
+            options={'abstract': False},
         ),
         migrations.CreateModel(
             name='Location',
@@ -85,6 +85,6 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.GeometryField(srid=4326),
                 ),
             ],
-            options={'abstract': False,},
+            options={'abstract': False},
         ),
     ]

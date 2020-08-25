@@ -694,9 +694,12 @@ Running QA-checks
 
 You can run qa-checks by using
 
-```./run-qa-checks```
+.. code-block:: shell
 
-In docker testing, QA checks are runned automatically.
+    ./run-qa-checks
+
+
+In docker testing, QA checks are executed automatically.
 
 Contributing
 ------------
