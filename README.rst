@@ -1,7 +1,7 @@
 django-rest-framework-gis
 =========================
 
-|Build Status| |Coverage Status| |Requirements Status| |PyPI version|
+|Build Status| |Coverage Status| |Requirements Status| |PyPI version| |PyPI downloads| |Black|
 
 Geographic add-ons for Django Rest Framework - `Mailing
 List <http://bit.ly/1M4sLTp>`__.
@@ -698,7 +698,6 @@ You can run qa-checks by using
 
     ./run-qa-checks
 
-
 In docker testing, QA checks are executed automatically.
 
 Contributing
@@ -725,3 +724,7 @@ Contributing
    :target: https://requires.io/github/openwisp/django-rest-framework-gis/requirements/?branch=master
 .. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.svg
    :target: http://badge.fury.io/py/djangorestframework-gis
+.. |PyPI downloads| image:: https://pepy.tech/badge/djangorestframework-gis/month
+   :target: https://pepy.tech/project/djangorestframework-gis
+.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://pypi.org/project/black/
