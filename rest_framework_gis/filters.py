@@ -1,13 +1,12 @@
 from math import cos, pi
 
-from django.db.models import Q
-from django.core.exceptions import ImproperlyConfigured
-from django.contrib.gis.db import models
-from django.contrib.gis.geos import Polygon, Point
 from django.contrib.gis import forms
-
-from rest_framework.filters import BaseFilterBackend
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point, Polygon
+from django.core.exceptions import ImproperlyConfigured
+from django.db.models import Q
 from rest_framework.exceptions import ParseError
+from rest_framework.filters import BaseFilterBackend
 
 from .tilenames import tile_edges
 
@@ -45,7 +44,7 @@ __all__ = [
     'GeoFilterSet',
     'TMSTileFilter',
     'DistanceToPointFilter',
-    'DistanceToPointOrderingFilter'
+    'DistanceToPointOrderingFilter',
 ]
 
 
@@ -60,7 +59,9 @@ class InBBoxFilter(BaseFilterBackend):
         try:
             p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
         except ValueError:
-            raise ParseError('Invalid bbox string supplied for parameter {0}'.format(self.bbox_param))
+            raise ParseError(
+                'Invalid bbox string supplied for parameter {0}'.format(self.bbox_param)
+            )
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
         return x
@@ -80,6 +81,8 @@ class InBBoxFilter(BaseFilterBackend):
         if not bbox:
             return queryset
         return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+
+
 # backward compatibility
 InBBOXFilter = InBBoxFilter
 
@@ -94,9 +97,7 @@ class GeometryFilter(django_filters.Filter):
 
 class GeoFilterSet(django_filters.FilterSet):
     GEOFILTER_FOR_DBFIELD_DEFAULTS = {
-        models.GeometryField: {
-            'filter_class': GeometryFilter
-        },
+        models.GeometryField: {'filter_class': GeometryFilter},
     }
 
     def __new__(cls, *args, **kwargs):
@@ -120,7 +121,9 @@ class TMSTileFilter(InBBoxFilter):
         try:
             z, x, y = (int(n) for n in tile_string.split('/'))
         except ValueError:
-            raise ParseError('Invalid tile string supplied for parameter {0}'.format(self.tile_param))
+            raise ParseError(
+                'Invalid tile string supplied for parameter {0}'.format(self.tile_param)
+            )
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
         return bbox
@@ -138,7 +141,11 @@ class DistanceToPointFilter(BaseFilterBackend):
         try:
             (x, y) = (float(n) for n in point_string.split(','))
         except ValueError:
-            raise ParseError('Invalid geometry string supplied for parameter {0}'.format(self.point_param))
+            raise ParseError(
+                'Invalid geometry string supplied for parameter {0}'.format(
+                    self.point_param
+                )
+            )
 
         p = Point(x, y, **kwargs)
         return p
@@ -169,7 +176,7 @@ class DistanceToPointFilter(BaseFilterBackend):
         rad2deg = 180 / pi
         earthRadius = 6378160.0
         latitudeCorrection = 0.5 * (1 + cos(lat * pi / 180))
-        return (distance / (earthRadius * latitudeCorrection) * rad2deg)
+        return distance / (earthRadius * latitudeCorrection) * rad2deg
 
     def filter_queryset(self, request, queryset, view):
         filter_field = getattr(view, 'distance_filter_field', None)
@@ -188,13 +195,19 @@ class DistanceToPointFilter(BaseFilterBackend):
         try:
             dist = float(dist_string)
         except ValueError:
-            raise ParseError('Invalid distance string supplied for parameter {0}'.format(self.dist_param))
+            raise ParseError(
+                'Invalid distance string supplied for parameter {0}'.format(
+                    self.dist_param
+                )
+            )
 
-        if (convert_distance_input):
+        if convert_distance_input:
             # Warning:  assumes that the point is (lon,lat)
             dist = self.dist_to_deg(dist, point[1])
 
-        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)}))
+        return queryset.filter(
+            Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)})
+        )
 
 
 class DistanceToPointOrderingFilter(DistanceToPointFilter):

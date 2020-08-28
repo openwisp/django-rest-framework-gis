@@ -12,7 +12,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': '',  # Change to 'postgres' for docker-compose.yml testing to work
-        'PORT': ''
+        'PORT': '',
     },
 }
 
@@ -25,13 +25,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-
     # rest framework
     'rest_framework',
     'rest_framework_gis',
-
     # test app
-    'django_restframework_gis_tests'
+    'django_restframework_gis_tests',
 )
 
 MIDDLEWARE = [

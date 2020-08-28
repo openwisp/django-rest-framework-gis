@@ -1,10 +1,9 @@
 from django.contrib.gis.geos import Point
-
 from rest_framework import pagination, serializers
+
 from rest_framework_gis import serializers as gis_serializers
 
-from .models import *
-
+from .models import BoxedLocation, Location
 
 __all__ = [
     'LocationGeoSerializer',
@@ -23,6 +22,7 @@ __all__ = [
 
 class LocationGeoSerializer(serializers.ModelSerializer):
     """ location geo serializer  """
+
     details = serializers.HyperlinkedIdentityField(view_name='api_location_details')
 
     class Meta:
@@ -38,7 +38,10 @@ class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
 
 class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     """ location geo serializer  """
-    details = serializers.HyperlinkedIdentityField(view_name='api_geojson_location_details')
+
+    details = serializers.HyperlinkedIdentityField(
+        view_name='api_geojson_location_details'
+    )
     fancy_name = serializers.SerializerMethodField()
 
     def get_fancy_name(self, obj):
@@ -52,6 +55,7 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
 
 class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
     """ use slug as id attribute  """
+
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -61,6 +65,7 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
 
 class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
     """ id attribute set as False """
+
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -73,6 +78,7 @@ class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
     id attribute left out, issue #82
     see: https://github.com/openwisp/django-rest-framework-gis/issues/82
     """
+
     class Meta:
         model = Location
         geo_field = 'geometry'
@@ -81,7 +87,10 @@ class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
 
 class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     """ located file geo serializer  """
-    details = serializers.HyperlinkedIdentityField(view_name='api_geojson_located_file_details')
+
+    details = serializers.HyperlinkedIdentityField(
+        view_name='api_geojson_located_file_details'
+    )
     fancy_name = serializers.SerializerMethodField()
     file = serializers.FileField(allow_empty_file=True)
 
@@ -96,7 +105,10 @@ class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer)
 
 class BoxedLocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     """ location geo serializer  """
-    details = serializers.HyperlinkedIdentityField(view_name='api_geojson_boxedlocation_details')
+
+    details = serializers.HyperlinkedIdentityField(
+        view_name='api_geojson_boxedlocation_details'
+    )
 
     class Meta:
         model = BoxedLocation
@@ -118,7 +130,7 @@ class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializ
 
     def get_new_geometry(self, obj):
         if obj.name.startswith('hidden'):
-            return Point(0., 0.)
+            return Point(0.0, 0.0)
         else:
             return obj.geometry
 
