@@ -2,11 +2,17 @@ dist: focal
 language: python
 cache: pip
 
+notifications:
+  # will post a summary as comment on github in case of failure
+  webhooks: https://www.travisbuddy.com/
+  on_success: never
+
 addons:
   postgresql: "12"
   apt:
     packages:
       - postgresql-12-postgis-3
+
 services:
   - postgresql
 
@@ -40,8 +46,9 @@ install:
 before_script:
   - createdb django_restframework_gis
   - psql -U postgres -d django_restframework_gis -c "CREATE EXTENSION postgis;"
-  - ./run-qa-checks
 
 script:
+  # check is done here to allow travisbuddy to include summary in case of failure
+  - ./run-qa-checks
   - tox -e travis
   - python setup.py check -r -s
