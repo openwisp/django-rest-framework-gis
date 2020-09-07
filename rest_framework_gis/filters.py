@@ -92,7 +92,7 @@ class GeometryFilter(django_filters.Filter):
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('widget', forms.TextInput)
-        super(GeometryFilter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class GeoFilterSet(django_filters.FilterSet):
@@ -107,7 +107,7 @@ class GeoFilterSet(django_filters.FilterSet):
         except AttributeError:  # pragma: nocover
             cls.filter_overrides.update(cls.GEOFILTER_FOR_DBFIELD_DEFAULTS)
         cls.LOOKUP_TYPES = sorted(gis_lookups)
-        return super(GeoFilterSet, cls).__new__(cls)
+        return super().__new__(cls)
 
 
 class TMSTileFilter(InBBoxFilter):

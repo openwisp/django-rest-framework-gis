@@ -20,7 +20,7 @@ class GeometryField(Field):
     def __init__(self, precision=None, remove_duplicates=False, **kwargs):
         self.precision = precision
         self.remove_dupes = remove_duplicates
-        super(GeometryField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.style.setdefault('base_template', 'textarea.html')
 
     def to_representation(self, value):
@@ -71,7 +71,7 @@ class GeometryField(Field):
     def validate_empty_values(self, data):
         if data == '':
             self.fail('required')
-        return super(GeometryField, self).validate_empty_values(data)
+        return super().validate_empty_values(data)
 
     def _recursive_round(self, value, precision):
         """
@@ -109,7 +109,7 @@ class GeometryField(Field):
 
 class GeometrySerializerMethodField(SerializerMethodField):
     def to_representation(self, value):
-        value = super(GeometrySerializerMethodField, self).to_representation(value)
+        value = super().to_representation(value)
         if value is not None:
             # we expect value to be a GEOSGeometry instance
             return GeoJsonDict(value.geojson)
@@ -134,7 +134,7 @@ class GeoJsonDict(OrderedDict):
                 args = (geojson,)
             except ValueError:
                 pass
-        super(GeoJsonDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __str__(self):
         """
