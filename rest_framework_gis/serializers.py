@@ -29,10 +29,7 @@ class GeoFeatureModelListSerializer(ListSerializer):
         return OrderedDict(
             (
                 ("type", "FeatureCollection"),
-                (
-                    "features",
-                    super(GeoFeatureModelListSerializer, self).to_representation(data),
-                ),
+                ("features", super().to_representation(data)),
             )
         )
 
@@ -49,13 +46,11 @@ class GeoFeatureModelSerializer(ModelSerializer):
         child_serializer = cls(*args, **kwargs)
         list_kwargs = {'child': child_serializer}
         list_kwargs.update(
-            dict(
-                [
-                    (key, value)
-                    for key, value in kwargs.items()
-                    if key in LIST_SERIALIZER_KWARGS
-                ]
-            )
+            {
+                key: value
+                for key, value in kwargs.items()
+                if key in LIST_SERIALIZER_KWARGS
+            }
         )
         meta = getattr(cls, 'Meta', None)
         list_serializer_class = getattr(
@@ -64,7 +59,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         return list_serializer_class(*args, **list_kwargs)
 
     def __init__(self, *args, **kwargs):
-        super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         meta = getattr(self, 'Meta')
         default_id_field = None
         primary_key = self.Meta.model._meta.pk.name
@@ -198,7 +193,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         """
         if 'properties' in data:
             data = self.unformat_geojson(data)
-        return super(GeoFeatureModelSerializer, self).to_internal_value(data)
+        return super().to_internal_value(data)
 
     def unformat_geojson(self, feature):
         """
