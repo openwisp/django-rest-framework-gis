@@ -1,6 +1,20 @@
 Changelog
 =========
 
+Version 0.16.0 [2020-09-07]
+---------------------------
+
+- [fix] Added support for representation of empty geometries
+  (`#168 <https://github.com/openwisp/django-rest-framework-gis/issues/168>`_)
+- [fix] Don't override the additional arguments passed as ``style`` to ``GeometryField``
+- [feature] Added `DistanceToPointOrderingFilter <https://github.com/openwisp/django-rest-framework-gis#distancetopointorderingfilter>`_
+  (`#210 <https://github.com/openwisp/django-rest-framework-gis/issues/210>`_)
+- [deps] Added support for django 3.1 in the CI build
+- [deps] Dropped django 1.11 and Python 3.5 from the CI build,
+  compatibility may still work but it's not guaranteed anymore, please upgrade!
+- [qa] Added QA checks to CI build
+  (`#230 <https://github.com/openwisp/django-rest-framework-gis/issues/230>`_)
+
 Version 0.15.0 [2019-12-09]
 ---------------------------
 
