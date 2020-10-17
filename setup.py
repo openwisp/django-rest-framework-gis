@@ -11,11 +11,11 @@ if sys.argv[-1] == 'publish':
     os.system("twine upload -s dist/*")
     os.system("rm -rf dist build")
     args = {'version': get_version()}
-    print("You probably want to also tag the version now:")
+    print("You probably want to also tag the version now(Please tag the version here):")
     print("  git tag -a %(version)s -m 'version %(version)s'" % args)
     print("  git push --tags")
     sys.exit()
-
+#the path to the abs is directional
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
@@ -34,7 +34,7 @@ setup(
     url='https://github.com/openwisp/django-rest-framework-gis',
     download_url='https://github.com/openwisp/django-rest-framework-gis/releases',
     platforms=['Platform Indipendent'],
-    keywords=['django', 'rest-framework', 'gis', 'geojson'],
+    keywords=['django', 'rest-framework', 'gis', 'geojson', 'python'],
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=['djangorestframework'],
     classifiers=[
