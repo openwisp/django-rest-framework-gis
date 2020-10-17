@@ -12,7 +12,7 @@ __all__ = ['GeometryField', 'GeometrySerializerMethodField']
 
 class GeometryField(Field):
     """
-    A field to handle GeoDjango Geometry fields
+    A field to handle GeoDjango Geometry fields. ALl the Geometry related geographic fields are observed
     """
 
     type_name = 'GeometryField'
@@ -85,7 +85,7 @@ class GeometryField(Field):
 
     def _rm_redundant_points(self, geometry, geo_type):
         """
-        Remove redundant coordinate pairs from geometry
+        Remove redundant coordinate pairs from geometry to increase efficiency
             geometry: array of coordinates or nested-array of coordinates
             geo_type: GeoJSON type attribute for provided geometry, used to
                      determine structure of provided `geometry` argument
