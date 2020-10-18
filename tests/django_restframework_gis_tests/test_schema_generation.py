@@ -593,8 +593,8 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                     'format': 'float',
                     'default': 1000,
                 },
-                'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
-                               '***point*** is passed.'
+                'description': 'Represents **Distance** in **Distance to point** filter. '
+                'Default value is used only if ***point*** is passed.'
             },
             {
                 'name': 'point',

@@ -252,8 +252,8 @@ class DistanceToPointFilter(BaseFilterBackend):
                             'format': 'float',
                             'default': 1000,
                             },
-                 'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
-                 '***{point_param}*** is passed.'.format(point_param=self.point_param)},
+                 'description': f'Represents **Distance** in **Distance to point** filter. '
+                                f'Default value is used only if ***{self.point_param}*** is passed.'},
                 {'name': self.point_param,
                  'required': False,
                  'in': 'query',

@@ -4,8 +4,17 @@ from rest_framework import pagination, serializers
 from rest_framework_gis import serializers as gis_serializers
 from rest_framework_gis.fields import GeometrySerializerMethodField
 
-from .models import *
-from .models import BoxedLocation, Location
+from .models import (
+    BoxedLocation,
+    LineStringModel,
+    Location,
+    MultiLineStringModel,
+    MultiPointModel,
+    MultiPolygonModel,
+    Nullable,
+    PointModel,
+    PolygonModel,
+)
 
 __all__ = [
     'LocationGeoSerializer',

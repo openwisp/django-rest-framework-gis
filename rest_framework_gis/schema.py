@@ -85,9 +85,7 @@ class GeoFeatureAutoSchema(AutoSchema):
     def _map_geo_field(self, serializer, geo_field_name):
         field = serializer.fields[geo_field_name]
         if isinstance(field, GeometrySerializerMethodField):
-            warnings.warn(
-                'Geometry generation for GeometrySerializerMethodField is not supported.'.format(
-                    field=field))
+            warnings.warn('Geometry generation for GeometrySerializerMethodField is not supported.')
             return {}
 
         model_field_name = geo_field_name
