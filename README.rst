@@ -709,7 +709,6 @@ Run the QA checks by using
 
 .. code-block:: shell
 
-    pip install -r requirements-test.txt
     ./run-qa-checks
 
 In docker testing, QA checks are executed automatically.
