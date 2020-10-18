@@ -25,7 +25,7 @@ from rest_framework_gis.fields import GeoJsonDict
 from .models import LocatedFile, Location, Nullable
 from .serializers import LocationGeoSerializer
 
-is_pre_drf_39 = not rest_framework.VERSION.startswith('3.9')
+is_pre_drf_312 = not rest_framework.VERSION.startswith('3.12')
 
 
 class TestRestFrameworkGis(TestCase):
@@ -524,7 +524,7 @@ class TestRestFrameworkGis(TestCase):
         location = Location.objects.all()[0]
         self.assertEqual(location.name, "HTML test WKT")
 
-    @skipIf(is_pre_drf_39, 'Skip this test if DRF < 3.9')
+    @skipIf(is_pre_drf_312, 'Skip this test if DRF < 3.12')
     def test_geojson_HTML_widget_value(self):
         self._create_locations()
         response = self.client.get(
@@ -534,8 +534,8 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, '"type": "Point"')
         self.assertContains(response, '"coordinates": [')
 
-    @skipIf(not is_pre_drf_39, 'Skip this test if DRF >= 3.9')
-    def test_geojson_HTML_widget_value_pre_drf_39(self):
+    @skipIf(not is_pre_drf_312, 'Skip this test if DRF >= 3.12')
+    def test_geojson_HTML_widget_value_pre_drf_312(self):
         self._create_locations()
         response = self.client.get(
             self.geojson_location_list_url, HTTP_ACCEPT='text/html'
