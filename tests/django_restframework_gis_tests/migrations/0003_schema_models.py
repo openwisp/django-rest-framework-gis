@@ -5,82 +5,132 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('django_restframework_gis_tests', '0002_nullable'),
+        ("django_restframework_gis_tests", "0002_nullable"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LineStringModel',
+            name="LineStringModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('random_field1', models.CharField(max_length=32)),
-                ('random_field2', models.IntegerField()),
-                ('points', django.contrib.gis.db.models.fields.LineStringField(srid=4326)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                (
+                    "points",
+                    django.contrib.gis.db.models.fields.LineStringField(srid=4326),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False, },
         ),
         migrations.CreateModel(
-            name='MultiLineStringModel',
+            name="MultiLineStringModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('random_field1', models.CharField(max_length=32)),
-                ('random_field2', models.IntegerField()),
-                ('points', django.contrib.gis.db.models.fields.MultiLineStringField(srid=4326)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                (
+                    "points",
+                    django.contrib.gis.db.models.fields.MultiLineStringField(srid=4326),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False, },
         ),
         migrations.CreateModel(
-            name='MultiPointModel',
+            name="MultiPointModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('random_field1', models.CharField(max_length=32)),
-                ('random_field2', models.IntegerField()),
-                ('points', django.contrib.gis.db.models.fields.MultiPointField(srid=4326)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                (
+                    "points",
+                    django.contrib.gis.db.models.fields.MultiPointField(srid=4326),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False, },
         ),
         migrations.CreateModel(
-            name='MultiPolygonModel',
+            name="MultiPolygonModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('random_field1', models.CharField(max_length=32)),
-                ('random_field2', models.IntegerField()),
-                ('polygon', django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                (
+                    "polygon",
+                    django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False, },
         ),
         migrations.CreateModel(
-            name='PointModel',
+            name="PointModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('random_field1', models.CharField(max_length=32)),
-                ('random_field2', models.IntegerField()),
-                ('location', django.contrib.gis.db.models.fields.PointField(srid=4326)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                ("location", django.contrib.gis.db.models.fields.PointField(srid=4326)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False, },
         ),
         migrations.CreateModel(
-            name='PolygonModel',
+            name="PolygonModel",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('random_field1', models.CharField(max_length=32)),
-                ('random_field2', models.IntegerField()),
-                ('polygon', django.contrib.gis.db.models.fields.PolygonField(srid=4326)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                (
+                    "polygon",
+                    django.contrib.gis.db.models.fields.PolygonField(srid=4326),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False, },
         ),
     ]

@@ -38,18 +38,18 @@ except ImportError:
 
 
 __all__ = [
-    'InBBoxFilter',
-    'InBBOXFilter',
-    'GeometryFilter',
-    'GeoFilterSet',
-    'TMSTileFilter',
-    'DistanceToPointFilter',
-    'DistanceToPointOrderingFilter',
+    "InBBoxFilter",
+    "InBBOXFilter",
+    "GeometryFilter",
+    "GeoFilterSet",
+    "TMSTileFilter",
+    "DistanceToPointFilter",
+    "DistanceToPointOrderingFilter",
 ]
 
 
 class InBBoxFilter(BaseFilterBackend):
-    bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
+    bbox_param = "in_bbox"  # The URL query parameter which contains the bbox.
 
     def get_filter_bbox(self, request):
         bbox_string = request.query_params.get(self.bbox_param, None)
@@ -57,22 +57,22 @@ class InBBoxFilter(BaseFilterBackend):
             return None
 
         try:
-            p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
+            p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(","))
         except ValueError:
             raise ParseError(
-                'Invalid bbox string supplied for parameter {0}'.format(self.bbox_param)
+                "Invalid bbox string supplied for parameter {0}".format(self.bbox_param)
             )
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
         return x
 
     def filter_queryset(self, request, queryset, view):
-        filter_field = getattr(view, 'bbox_filter_field', None)
-        include_overlapping = getattr(view, 'bbox_filter_include_overlapping', False)
+        filter_field = getattr(view, "bbox_filter_field", None)
+        include_overlapping = getattr(view, "bbox_filter_include_overlapping", False)
         if include_overlapping:
-            geoDjango_filter = 'bboverlaps'
+            geoDjango_filter = "bboverlaps"
         else:
-            geoDjango_filter = 'contained'
+            geoDjango_filter = "contained"
 
         if not filter_field:
             return queryset
@@ -80,26 +80,24 @@ class InBBoxFilter(BaseFilterBackend):
         bbox = self.get_filter_bbox(request)
         if not bbox:
             return queryset
-        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+        return queryset.filter(Q(**{"%s__%s" % (filter_field, geoDjango_filter): bbox}))
 
     def get_schema_operation_parameters(self, view):
         return [
             {
-                'name': self.bbox_param,
-                'required': False,
-                'in': 'query',
-                'description': 'Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat',
-                'schema': {
-                    'type': 'array',
-                    'items': {
-                        'type': 'float',
-                    },
-                    'minItems': 4,
-                    'maxItems': 4,
-                    'example': [0, 0, 10, 10]
+                "name": self.bbox_param,
+                "required": False,
+                "in": "query",
+                "description": "Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat",
+                "schema": {
+                    "type": "array",
+                    "items": {"type": "float", },
+                    "minItems": 4,
+                    "maxItems": 4,
+                    "example": [0, 0, 10, 10],
                 },
-                'style': 'form',
-                'explode': False,
+                "style": "form",
+                "explode": False,
             },
         ]
 
@@ -112,13 +110,13 @@ class GeometryFilter(django_filters.Filter):
     field_class = forms.GeometryField
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', forms.TextInput)
+        kwargs.setdefault("widget", forms.TextInput)
         super().__init__(*args, **kwargs)
 
 
 class GeoFilterSet(django_filters.FilterSet):
     GEOFILTER_FOR_DBFIELD_DEFAULTS = {
-        models.GeometryField: {'filter_class': GeometryFilter},
+        models.GeometryField: {"filter_class": GeometryFilter},
     }
 
     def __new__(cls, *args, **kwargs):
@@ -132,7 +130,7 @@ class GeoFilterSet(django_filters.FilterSet):
 
 
 class TMSTileFilter(InBBoxFilter):
-    tile_param = 'tile'  # The URL query parameter which contains the tile address
+    tile_param = "tile"  # The URL query parameter which contains the tile address
 
     def get_filter_bbox(self, request):
         tile_string = request.query_params.get(self.tile_param, None)
@@ -140,10 +138,10 @@ class TMSTileFilter(InBBoxFilter):
             return None
 
         try:
-            z, x, y = (int(n) for n in tile_string.split('/'))
+            z, x, y = (int(n) for n in tile_string.split("/"))
         except ValueError:
             raise ParseError(
-                'Invalid tile string supplied for parameter {0}'.format(self.tile_param)
+                "Invalid tile string supplied for parameter {0}".format(self.tile_param)
             )
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
@@ -152,21 +150,18 @@ class TMSTileFilter(InBBoxFilter):
     def get_schema_operation_parameters(self, view):
         return [
             {
-                'name': self.tile_param,
-                'required': False,
-                'in': 'query',
-                'description': 'Specify a bounding box filter defined by a TMS tile address: tile=Z/X/Y',
-                'schema': {
-                    'type': 'string',
-                    'example': '12/56/34'
-                },
+                "name": self.tile_param,
+                "required": False,
+                "in": "query",
+                "description": "Specify a bounding box filter defined by a TMS tile address: tile=Z/X/Y",
+                "schema": {"type": "string", "example": "12/56/34"},
             },
         ]
 
 
 class DistanceToPointFilter(BaseFilterBackend):
-    dist_param = 'dist'
-    point_param = 'point'  # The URL query parameter which contains the
+    dist_param = "dist"
+    point_param = "point"  # The URL query parameter which contains the
 
     def get_filter_point(self, request, **kwargs):
         point_string = request.query_params.get(self.point_param, None)
@@ -174,10 +169,10 @@ class DistanceToPointFilter(BaseFilterBackend):
             return None
 
         try:
-            (x, y) = (float(n) for n in point_string.split(','))
+            (x, y) = (float(n) for n in point_string.split(","))
         except ValueError:
             raise ParseError(
-                'Invalid geometry string supplied for parameter {0}'.format(
+                "Invalid geometry string supplied for parameter {0}".format(
                     self.point_param
                 )
             )
@@ -214,9 +209,9 @@ class DistanceToPointFilter(BaseFilterBackend):
         return distance / (earthRadius * latitudeCorrection) * rad2deg
 
     def filter_queryset(self, request, queryset, view):
-        filter_field = getattr(view, 'distance_filter_field', None)
-        convert_distance_input = getattr(view, 'distance_filter_convert_meters', False)
-        geoDjango_filter = 'dwithin'  # use dwithin for points
+        filter_field = getattr(view, "distance_filter_field", None)
+        convert_distance_input = getattr(view, "distance_filter_convert_meters", False)
+        geoDjango_filter = "dwithin"  # use dwithin for points
 
         if not filter_field:
             return queryset
@@ -231,7 +226,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = float(dist_string)
         except ValueError:
             raise ParseError(
-                'Invalid distance string supplied for parameter {0}'.format(
+                "Invalid distance string supplied for parameter {0}".format(
                     self.dist_param
                 )
             )
@@ -241,45 +236,47 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(
-            Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)})
+            Q(**{"%s__%s" % (filter_field, geoDjango_filter): (point, dist)})
         )
 
     def get_schema_operation_parameters(self, view):
-        return [{'name': self.dist_param,
-                 'required': False,
-                 'in': 'query',
-                 'schema': {'type': 'number',
-                            'format': 'float',
-                            'default': 1000,
-                            },
-                 'description': f'Represents **Distance** in **Distance to point** filter. '
-                                f'Default value is used only if ***{self.point_param}*** is passed.'},
-                {'name': self.point_param,
-                 'required': False,
-                 'in': 'query',
-                 'description': 'Point represented in **x,y** format. '
-                 'Represents **point** in **Distance to point filter**',
-                 'schema': {'type': 'array',
-                            'items': {'type': 'float',
-                                      },
-                            'minItems': 2,
-                            'maxItems': 2,
-                            'example': [0,
-                                        10]},
-                 'style': 'form',
-                 'explode': False,
-                 }]
+        return [
+            {
+                "name": self.dist_param,
+                "required": False,
+                "in": "query",
+                "schema": {"type": "number", "format": "float", "default": 1000, },
+                "description": f"Represents **Distance** in **Distance to point** filter. "
+                f"Default value is used only if ***{self.point_param}*** is passed.",
+            },
+            {
+                "name": self.point_param,
+                "required": False,
+                "in": "query",
+                "description": "Point represented in **x,y** format. "
+                "Represents **point** in **Distance to point filter**",
+                "schema": {
+                    "type": "array",
+                    "items": {"type": "float", },
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "example": [0, 10],
+                },
+                "style": "form",
+                "explode": False,
+            },
+        ]
 
 
 class DistanceToPointOrderingFilter(DistanceToPointFilter):
     srid = 4326
-    order_param = 'order'
+    order_param = "order"
 
     def filter_queryset(self, request, queryset, view):
         if not GeometryDistance:
-            raise ValueError('GeometryDistance not available on this version of django')
+            raise ValueError("GeometryDistance not available on this version of django")
 
-        filter_field = getattr(view, 'distance_ordering_filter_field', None)
+        filter_field = getattr(view, "distance_ordering_filter_field", None)
 
         if not filter_field:
             return queryset
@@ -289,29 +286,25 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
             return queryset
 
         order = request.query_params.get(self.order_param)
-        if order == 'desc':
+        if order == "desc":
             return queryset.order_by(-GeometryDistance(filter_field, point))
         else:
             return queryset.order_by(GeometryDistance(filter_field, point))
 
     def get_schema_operation_parameters(self, view):
         params = super().get_schema_operation_parameters(view)
-        params.append({
-            'name': self.order_param,
-            'required': False,
-            'in': 'query',
-            'description': '',
-            'schema': {
-                'type': 'enum',
-                'items': {
-                    'type': 'string',
-                    'enum': [
-                        'asc',
-                        'desc'
-                    ]
+        params.append(
+            {
+                "name": self.order_param,
+                "required": False,
+                "in": "query",
+                "description": "",
+                "schema": {
+                    "type": "enum",
+                    "items": {"type": "string", "enum": ["asc", "desc"]},
+                    "example": "desc",
                 },
-                'example': 'desc'
-            },
-            'style': 'form',
-            'explode': False,
-        })
+                "style": "form",
+                "explode": False,
+            }
+        )
