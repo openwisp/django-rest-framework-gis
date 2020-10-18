@@ -3,9 +3,8 @@ from rest_framework import pagination, serializers
 
 from rest_framework_gis import serializers as gis_serializers
 from rest_framework_gis.fields import GeometrySerializerMethodField
+
 from .models import *
-
-
 from .models import BoxedLocation, Location
 
 __all__ = [
@@ -239,4 +238,5 @@ class GeometrySerializer(gis_serializers.GeoFeatureModelSerializer):
 
 class BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer(BoxedLocationGeoFeatureSerializer):
     class Meta(BoxedLocationGeoFeatureSerializer.Meta):
-        fields = BoxedLocationGeoFeatureSerializer.Meta.fields + [BoxedLocationGeoFeatureSerializer.Meta.bbox_geo_field]
+        fields = BoxedLocationGeoFeatureSerializer.Meta.fields + \
+            [BoxedLocationGeoFeatureSerializer.Meta.bbox_geo_field]

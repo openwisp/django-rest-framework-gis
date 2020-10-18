@@ -3,9 +3,28 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.schemas.openapi import SchemaGenerator
 
+from rest_framework_gis.pagination import GeoJsonPagination
 from rest_framework_gis.schema import GeoFeatureAutoSchema
-from .serializers import *
-from .views import *
+
+from .serializers import (
+    BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer,
+    ChildPointSerializer,
+    GeometrySerializer,
+    GeometrySerializerMethodFieldSerializer,
+    LineStringSerializer,
+    ListChildPointSerializer,
+    MultiLineStringSerializer,
+    MultiPointSerializer,
+    MultiPolygonSerializer,
+    PointSerializer,
+)
+from .views import (
+    GeojsonBoxedLocationDetails,
+    GeojsonLocationContainedInBBoxList,
+    GeojsonLocationContainedInTileList,
+    GeojsonLocationWithinDistanceOfPointList,
+    geojson_location_list,
+)
 
 
 def create_request(path):
@@ -164,7 +183,8 @@ class TestSchemaGeneration(TestCase):
         content = inspector.map_serializer(serializer)
         content.pop('type', None)
         content['properties']['points'].pop('type', None)
-        content['properties']['points']['properties']['features']['items']['properties']['properties'].pop('type', None)
+        content['properties']['points']['properties']['features']['items']['properties']['properties'].pop(
+            'type', None)
         self.assertEqual(content, {
             'properties': {
                 'points': {

@@ -245,38 +245,30 @@ class DistanceToPointFilter(BaseFilterBackend):
         )
 
     def get_schema_operation_parameters(self, view):
-        return [
-            {
-                'name': self.dist_param,
-                'required': False,
-                'in': 'query',
-                'schema': {
-                    'type': 'number',
-                    'format': 'float',
-                    'default': 1000,
-                },
-                'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
-                               '***{point_param}*** is passed.'.format(point_param=self.point_param)
-            },
-            {
-                'name': self.point_param,
-                'required': False,
-                'in': 'query',
-                'description': 'Point represented in **x,y** format. '
-                               'Represents **point** in **Distance to point filter**',
-                'schema': {
-                    'type': 'array',
-                    'items': {
-                        'type': 'float',
-                    },
-                    'minItems': 2,
-                    'maxItems': 2,
-                    'example': [0, 10]
-                },
-                'style': 'form',
-                'explode': False,
-            }
-        ]
+        return [{'name': self.dist_param,
+                 'required': False,
+                 'in': 'query',
+                 'schema': {'type': 'number',
+                            'format': 'float',
+                            'default': 1000,
+                            },
+                 'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
+                 '***{point_param}*** is passed.'.format(point_param=self.point_param)},
+                {'name': self.point_param,
+                 'required': False,
+                 'in': 'query',
+                 'description': 'Point represented in **x,y** format. '
+                 'Represents **point** in **Distance to point filter**',
+                 'schema': {'type': 'array',
+                            'items': {'type': 'float',
+                                      },
+                            'minItems': 2,
+                            'maxItems': 2,
+                            'example': [0,
+                                        10]},
+                 'style': 'form',
+                 'explode': False,
+                 }]
 
 
 class DistanceToPointOrderingFilter(DistanceToPointFilter):
@@ -303,35 +295,23 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
             return queryset.order_by(GeometryDistance(filter_field, point))
 
     def get_schema_operation_parameters(self, view):
-        return [
-            {
-                'name': self.dist_param,
-                'required': False,
-                'in': 'query',
-                'schema': {
-                    'type': 'number',
-                    'format': 'float',
-                    'default': 1000,
+        params = super().get_schema_operation_parameters(view)
+        params.append({
+            'name': self.order_param,
+            'required': False,
+            'in': 'query',
+            'description': '',
+            'schema': {
+                'type': 'enum',
+                'items': {
+                    'type': 'string',
+                    'enum': [
+                        'asc',
+                        'desc'
+                    ]
                 },
-                'description': 'Represents **Distance** in **Distance to point** filter. Default value is used only if '
-                               '***{point_param}*** is passed.'.format(point_param=self.point_param)
+                'example': 'desc'
             },
-            {
-                'name': self.point_param,
-                'required': False,
-                'in': 'query',
-                'description': 'Point represented in **x,y** format. '
-                               'Represents **point** in **Distance to point filter**',
-                'schema': {
-                    'type': 'array',
-                    'items': {
-                        'type': 'float',
-                    },
-                    'minItems': 2,
-                    'maxItems': 2,
-                    'example': [0, 10]
-                },
-                'style': 'form',
-                'explode': False,
-            }
-        ]
+            'style': 'form',
+            'explode': False,
+        })

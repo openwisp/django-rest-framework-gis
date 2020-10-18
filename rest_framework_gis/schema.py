@@ -5,7 +5,10 @@ from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.utils import model_meta
 
 from rest_framework_gis.fields import GeometrySerializerMethodField
-from rest_framework_gis.serializers import GeoFeatureModelListSerializer, GeoFeatureModelSerializer
+from rest_framework_gis.serializers import (
+    GeoFeatureModelListSerializer,
+    GeoFeatureModelSerializer,
+)
 
 
 class GeoFeatureAutoSchema(AutoSchema):
@@ -82,7 +85,9 @@ class GeoFeatureAutoSchema(AutoSchema):
     def _map_geo_field(self, serializer, geo_field_name):
         field = serializer.fields[geo_field_name]
         if isinstance(field, GeometrySerializerMethodField):
-            warnings.warn('Geometry generation for GeometrySerializerMethodField is not supported.'.format(field=field))
+            warnings.warn(
+                'Geometry generation for GeometrySerializerMethodField is not supported.'.format(
+                    field=field))
             return {}
 
         model_field_name = geo_field_name
