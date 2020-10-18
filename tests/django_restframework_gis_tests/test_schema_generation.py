@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from rest_framework.schemas.openapi import SchemaGenerator
 
 from rest_framework_gis.schema import GeoFeatureAutoSchema
+from .serializers import *
 from .views import *
 
 
@@ -31,8 +32,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestPointFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         content.pop('type', None)
         content['properties']['properties'].pop('type', None)
         self.assertEqual(content, {
@@ -91,8 +92,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestPointFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         content.pop('type', None)
         content['properties']['point'].pop('type', None)
         content['properties']['point']['properties']['properties'].pop('type', None)
@@ -159,8 +160,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestPointFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         content.pop('type', None)
         content['properties']['points'].pop('type', None)
         content['properties']['points']['properties']['features']['items']['properties']['properties'].pop('type', None)
@@ -237,8 +238,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestLineStringFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         geometry_schema = content['properties']['geometry']
         geometry_schema.pop('type', None)
         self.assertEqual(geometry_schema, {
@@ -275,8 +276,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestMultiPolygonFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         geometry_schema = content['properties']['geometry']
         geometry_schema.pop('type', None)
         self.assertEqual(geometry_schema, {
@@ -323,8 +324,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestMultiLineStringFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         geometry_schema = content['properties']['geometry']
         geometry_schema.pop('type', None)
         self.assertEqual(geometry_schema, {
@@ -365,8 +366,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestMultiLineStringFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         geometry_schema = content['properties']['geometry']
         geometry_schema.pop('type', None)
         self.assertEqual(geometry_schema, {
@@ -402,8 +403,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestMultiLineStringFieldView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         bbox_schema = content['properties']['bbox']
         self.assertEqual(bbox_schema, {
             'type': 'array',
@@ -430,9 +431,9 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestGeometrySerializerMethodField, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
+        serializer = inspector.get_serializer(path, method)
         with self.assertWarns(Warning):
-            inspector._map_serializer(serializer)
+            inspector.map_serializer(serializer)
 
     def test_warning_for_geometry_field(self):
         class TestGeometryView(RetrieveAPIView):
@@ -444,9 +445,9 @@ class TestSchemaGeneration(TestCase):
         view = create_view(TestGeometryView, 'POST', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
+        serializer = inspector.get_serializer(path, method)
         with self.assertWarns(Warning):
-            inspector._map_serializer(serializer)
+            inspector.map_serializer(serializer)
 
     def test_schema_for_bbox_geo_field(self):
         path = '/'
@@ -458,8 +459,8 @@ class TestSchemaGeneration(TestCase):
         view = create_view(GeojsonBoxedLocationDetailsWithBBoxGeoFieldView, 'GET', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        serializer = inspector._get_serializer(path, method)
-        content = inspector._map_serializer(serializer)
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
         bbox_schema = content['properties']['bbox']
         self.assertNotIn('bbox_geometry', content['properties']['properties']['properties'])
         self.assertEqual(bbox_schema, {
@@ -498,10 +499,14 @@ class TestPaginationSchemaGeneration(TestCase):
                 'next': {
                     'type': 'string',
                     'nullable': True,
+                    'format': 'uri',
+                    'example': 'http://api.example.org/accounts/?page=4',
                 },
                 'previous': {
                     'type': 'string',
                     'nullable': True,
+                    'format': 'uri',
+                    'example': 'http://api.example.org/accounts/?page=2',
                 },
             },
         })
@@ -515,7 +520,7 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
         view = create_view(GeojsonLocationContainedInBBoxList, 'GET', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        generated_schema = inspector._get_filter_parameters(path, method)
+        generated_schema = inspector.get_filter_parameters(path, method)
         self.assertDictEqual(generated_schema[0], {
             'name': 'in_bbox',
             'required': False,
@@ -539,7 +544,7 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
         view = create_view(GeojsonLocationContainedInTileList, 'GET', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        generated_schema = inspector._get_filter_parameters(path, method)
+        generated_schema = inspector.get_filter_parameters(path, method)
         self.assertDictEqual(generated_schema[0], {
             'name': 'tile',
             'required': False,
@@ -557,7 +562,7 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
         view = create_view(GeojsonLocationWithinDistanceOfPointList, 'GET', create_request('/'))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
-        generated_schema = inspector._get_filter_parameters(path, method)
+        generated_schema = inspector.get_filter_parameters(path, method)
         self.assertListEqual(generated_schema, [
             {
                 'name': 'dist',
