@@ -11,7 +11,7 @@ DATABASES = {
         'NAME': 'django_restframework_gis',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': '',  # Change to 'postgres' for docker-compose.yml testing to work
+        'HOST': 'postgres',  # Change to 'postgres' for docker-compose.yml testing to work
         'PORT': '',
     },
 }
