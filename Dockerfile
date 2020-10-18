@@ -9,6 +9,7 @@ FROM python:3.7-alpine3.8
 # TODO: optimize installation by using --virtual
 RUN apk update && apk upgrade \
     && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+        bash \
         postgresql-client \
         postgresql-dev \
         musl-dev \
@@ -23,6 +24,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /project
 
+COPY run-qa-checks /project/
 COPY requirements-test.txt /project/
 
 RUN pip install --no-cache-dir -r requirements-test.txt
