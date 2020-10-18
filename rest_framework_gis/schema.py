@@ -100,12 +100,6 @@ class GeoFeatureAutoSchema(AutoSchema):
 
         return super().map_field(field)
 
-    def _map_field(self, field):
-        if isinstance(field, GeoFeatureModelListSerializer):
-            return self._map_geo_feature_model_list_serializer(field)
-
-        return super()._map_field(field)
-
     def _map_geo_feature_model_list_serializer(self, serializer):
         return {
             'type': 'object',
@@ -122,7 +116,7 @@ class GeoFeatureAutoSchema(AutoSchema):
         }
 
     def _map_geo_feature_model_serializer(self, serializer):
-        schema = super()._map_serializer(serializer)
+        schema = super().map_serializer(serializer)
 
         geo_json_schema = {
             'type': 'object',
@@ -168,7 +162,4 @@ class GeoFeatureAutoSchema(AutoSchema):
         if isinstance(serializer, GeoFeatureModelSerializer):
             return self._map_geo_feature_model_serializer(serializer)
 
-        return super()._map_serializer(serializer)
-
-    def _map_serializer(self, serializer):
-        return self.map_serializer(serializer)
+        return super().map_serializer(serializer)
