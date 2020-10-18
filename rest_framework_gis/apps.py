@@ -10,6 +10,7 @@ class AppConfig(BaseConfig):
         """
         from django.contrib.gis.db import models
         from rest_framework.serializers import ModelSerializer
+
         from .fields import GeometryField
 
         try:
@@ -20,13 +21,15 @@ class AppConfig(BaseConfig):
             field_mapping = ModelSerializer.serializer_field_mapping
 
         # map GeoDjango fields to drf-gis GeometryField
-        field_mapping.update({
-            models.GeometryField: GeometryField,
-            models.PointField: GeometryField,
-            models.LineStringField: GeometryField,
-            models.PolygonField: GeometryField,
-            models.MultiPointField: GeometryField,
-            models.MultiLineStringField: GeometryField,
-            models.MultiPolygonField: GeometryField,
-            models.GeometryCollectionField: GeometryField
-        })
+        field_mapping.update(
+            {
+                models.GeometryField: GeometryField,
+                models.PointField: GeometryField,
+                models.LineStringField: GeometryField,
+                models.PolygonField: GeometryField,
+                models.MultiPointField: GeometryField,
+                models.MultiLineStringField: GeometryField,
+                models.MultiPolygonField: GeometryField,
+                models.GeometryCollectionField: GeometryField,
+            }
+        )

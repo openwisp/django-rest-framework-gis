@@ -41,7 +41,7 @@ class BaseModel(models.Model):
 
     def save(self, *args, **kwargs):
         self._generate_slug()
-        super(BaseModel, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class Location(BaseModel):

@@ -1,9 +1,12 @@
 from collections import OrderedDict
 
-from django.core.exceptions import ImproperlyConfigured
 from django.contrib.gis.geos import Polygon
-
-from rest_framework.serializers import ModelSerializer, ListSerializer, LIST_SERIALIZER_KWARGS
+from django.core.exceptions import ImproperlyConfigured
+from rest_framework.serializers import (
+    LIST_SERIALIZER_KWARGS,
+    ListSerializer,
+    ModelSerializer,
+)
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
 
@@ -23,10 +26,12 @@ class GeoFeatureModelListSerializer(ListSerializer):
         """
         Add GeoJSON compatible formatting to a serialized queryset list
         """
-        return OrderedDict((
-            ("type", "FeatureCollection"),
-            ("features", super(GeoFeatureModelListSerializer, self).to_representation(data))
-        ))
+        return OrderedDict(
+            (
+                ("type", "FeatureCollection"),
+                ("features", super().to_representation(data)),
+            )
+        )
 
 
 class GeoFeatureModelSerializer(ModelSerializer):
@@ -35,25 +40,35 @@ class GeoFeatureModelSerializer(ModelSerializer):
     that outputs geojson-ready data as
     features and feature collections
     """
+
     @classmethod
     def many_init(cls, *args, **kwargs):
         child_serializer = cls(*args, **kwargs)
         list_kwargs = {'child': child_serializer}
-        list_kwargs.update(dict([
-            (key, value) for key, value in kwargs.items()
-            if key in LIST_SERIALIZER_KWARGS
-        ]))
+        list_kwargs.update(
+            {
+                key: value
+                for key, value in kwargs.items()
+                if key in LIST_SERIALIZER_KWARGS
+            }
+        )
         meta = getattr(cls, 'Meta', None)
-        list_serializer_class = getattr(meta, 'list_serializer_class', GeoFeatureModelListSerializer)
+        list_serializer_class = getattr(
+            meta, 'list_serializer_class', GeoFeatureModelListSerializer
+        )
         return list_serializer_class(*args, **list_kwargs)
 
     def __init__(self, *args, **kwargs):
-        super(GeoFeatureModelSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         meta = getattr(self, 'Meta')
         default_id_field = None
         primary_key = self.Meta.model._meta.pk.name
         # use primary key as id_field when possible
-        if not hasattr(meta, 'fields') or meta.fields == '__all__' or primary_key in meta.fields:
+        if (
+            not hasattr(meta, 'fields')
+            or meta.fields == '__all__'
+            or primary_key in meta.fields
+        ):
             default_id_field = primary_key
         meta.id_field = getattr(meta, 'id_field', default_id_field)
 
@@ -63,7 +78,9 @@ class GeoFeatureModelSerializer(ModelSerializer):
         def check_excludes(field_name, field_role):
             """make sure the field is not excluded"""
             if hasattr(meta, 'exclude') and field_name in meta.exclude:
-                raise ImproperlyConfigured("You cannot exclude your '{0}'.".format(field_role))
+                raise ImproperlyConfigured(
+                    "You cannot exclude your '{0}'.".format(field_role)
+                )
 
         def add_to_fields(field_name):
             """Make sure the field is included in the fields"""
@@ -85,8 +102,10 @@ class GeoFeatureModelSerializer(ModelSerializer):
 
         meta.auto_bbox = getattr(meta, 'auto_bbox', False)
         if meta.bbox_geo_field and meta.auto_bbox:
-            raise ImproperlyConfigured("You must eiher define a 'bbox_geo_field' or "
-                                       "'auto_bbox', but you can not set both")
+            raise ImproperlyConfigured(
+                "You must eiher define a 'bbox_geo_field' or "
+                "'auto_bbox', but you can not set both"
+            )
 
     def to_representation(self, instance):
         """
@@ -132,7 +151,8 @@ class GeoFeatureModelSerializer(ModelSerializer):
         # we will remove fields that have been already processed
         # to increase performance on large numbers
         fields = [
-            field_value for field_key, field_value in self.fields.items()
+            field_value
+            for field_key, field_value in self.fields.items()
             if field_key not in processed_fields
         ]
 
@@ -173,7 +193,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         """
         if 'properties' in data:
             data = self.unformat_geojson(data)
-        return super(GeoFeatureModelSerializer, self).to_internal_value(data)
+        return super().to_internal_value(data)
 
     def unformat_geojson(self, feature):
         """

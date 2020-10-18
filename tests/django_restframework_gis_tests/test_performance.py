@@ -1,21 +1,22 @@
 import sys
+
 from django.conf import settings
 
 # this test must be run explicitly
 # either by calling:
 # django test --keepdb django_restframework_gis_tests.test_performance
 # or by setting ``settings.TEST_PERFORMANCE`` to ``True``
-if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TEST_PERFORMANCE:
-    from django.test import TestCase
-    try:
-        from django.urls import reverse
-    except ImportError:
-        from django.core.urlresolvers import reverse
-    from rest_framework.renderers import JSONRenderer
-    from rest_framework_gis import serializers as gis_serializers
+if (
+    'django_restframework_gis_tests.test_performance' in sys.argv
+    or settings.TEST_PERFORMANCE
+):
     from contexttimer import Timer
-    from .models import Location
+    from django.test import TestCase
+    from rest_framework.renderers import JSONRenderer
 
+    from rest_framework_gis import serializers as gis_serializers
+
+    from .models import Location
 
     class TestRestFrameworkGisPerformance(TestCase):
         NUMBER_OF_LOCATIONS = 10000
@@ -27,9 +28,11 @@ if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TES
             slug = 'l{0}'
             wkt = 'POINT (13.{0}125000020002 42.{0}565179379999)'
             for n in range(1, self.NUMBER_OF_LOCATIONS):
-                locations.append(Location(name=name.format(n),
-                                          slug=slug.format(n),
-                                          geometry=wkt.format(n)))
+                locations.append(
+                    Location(
+                        name=name.format(n), slug=slug.format(n), geometry=wkt.format(n)
+                    )
+                )
             Location.objects.bulk_create(locations)
 
         def test_geojson_performance(self):
@@ -38,6 +41,7 @@ if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TES
                     model = Location
                     geo_field = 'geometry'
                     fields = '__all__'
+
             # create data
             self._create_data()
             # initialize serializer
@@ -45,6 +49,7 @@ if 'django_restframework_gis_tests.test_performance' in sys.argv or settings.TES
             with Timer() as t:
                 JSONRenderer().render(serializer.data)
             # print results
-            msg = 'GeoJSON rendering of {0} objects '\
-                  'completed in {1}'.format(self.NUMBER_OF_LOCATIONS, t.elapsed)
+            msg = 'GeoJSON rendering of {0} objects ' 'completed in {1}'.format(
+                self.NUMBER_OF_LOCATIONS, t.elapsed
+            )
             print('\n\033[95m{0}\033[0m'.format(msg))

@@ -17,7 +17,7 @@ services:
             - ./tests:/project/tests
             - ./README.rst:/project/README.rst
             - ./setup.py:/project/setup.py
-        command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests"
+        command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests && ./run-qa-checks"
 
     postgres:
         image: mdillon/postgis:10-alpine

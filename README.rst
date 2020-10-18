@@ -1,7 +1,7 @@
 django-rest-framework-gis
 =========================
 
-|Build Status| |Coverage Status| |Requirements Status| |PyPI version|
+|Build Status| |Coverage Status| |Requirements Status| |PyPI version| |PyPI downloads| |Black|
 
 Geographic add-ons for Django Rest Framework - `Mailing
 List <http://bit.ly/1M4sLTp>`__.
@@ -39,6 +39,7 @@ Compatibility with DRF, Django and Python
 
 ===============  ============================ ==================== ==================================
 DRF-gis version  DRF version                  Django version       Python version
+**0.16.x**       **3.10**                     **2.2 to 3.1**       **3.6** to **3.8**
 **0.15.x**       **3.10**                     **1.11, 2.2 to 3.0** **3.5** to **3.8**
 **0.14.x**       **3.3** to **3.9**           **1.11** to **2.1**   **3.4** to **3.7**
 **0.13.x**       **3.3** to **3.8**           **1.11** to **2.0**   **2.7** to **3.6**
@@ -504,7 +505,7 @@ a certain bounding box.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (InBBoxFilter, )
+        filter_backends = (InBBoxFilter,)
         bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using Bounding Box format (min Lon, min
@@ -540,7 +541,7 @@ by a `TMS tile <http://wiki.openstreetmap.org/wiki/TMS>`__ address.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         bbox_filter_field = 'point'
-        filter_backends = (TMSTileFilter, )
+        filter_backends = (TMSTileFilter,)
         bbox_filter_include_overlapping = True # Optional
 
 We can then filter in the URL, using TMS tile addresses in the zoom/x/y format,
@@ -571,8 +572,7 @@ a certain distance of a given point.
         queryset = models.Location.objects.all()
         serializer_class = serializers.LocationSerializer
         distance_filter_field = 'geometry'
-        filter_backends = (DistanceToPointFilter, )
-        bbox_filter_include_overlapping = True # Optional
+        filter_backends = (DistanceToPointFilter,)
 
 We can then filter in the URL, using a distance and a point in (lon, lat) format. The
 distance can be given in meters or in degrees.
@@ -587,6 +587,34 @@ distance in meters can be passed in directly without conversion. For lat-lon dat
 which is indexed in degrees, the 'distance' will be interpreted as degrees. Set the flag, 'distance_filter_convert_meters'
 to 'True' in order to convert an input distance in meters to degrees. This conversion is approximate, and the errors
 at latitudes > 60 degrees are > 25%.
+
+DistanceToPointOrderingFilter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Provides a ``DistanceToPointOrderingFilter``, **available on Django >= 3.0**, which is a subclass of ``DistanceToPointFilter``.
+Orders a queryset by distance to a given point, from the nearest to the most distant point.
+
+``views.py:``
+
+.. code-block:: python
+
+    from rest_framework_gis.filters import DistanceToPointOrderingFilter
+
+    class LocationList(ListAPIView):
+
+        queryset = models.Location.objects.all()
+        serializer_class = serializers.LocationSerializer
+        distance_ordering_filter_field = 'geometry'
+        filter_backends = (DistanceToPointOrderingFilter,)
+
+We can then order the results by passing a point in (lon, lat) format in the URL.
+
+eg:.
+``/location/?point=-122.4862,37.7694&format=json``
+will order the results by the distance to the point (-122.4862, 37.7694).
+
+We can also reverse the order of the results by passing ``order=desc``:
+``/location/?point=-122.4862,37.7694&order=desc&format=json``
 
 Running the tests
 -----------------
@@ -661,6 +689,16 @@ To run tests in docker use
     docker-compose build
     docker-compose run --rm test
 
+Running QA-checks
+=================
+
+You can run qa-checks by using
+
+.. code-block:: shell
+
+    ./run-qa-checks
+
+In docker testing, QA checks are executed automatically.
 
 Contributing
 ------------
@@ -686,3 +724,7 @@ Contributing
    :target: https://requires.io/github/openwisp/django-rest-framework-gis/requirements/?branch=master
 .. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.svg
    :target: http://badge.fury.io/py/djangorestframework-gis
+.. |PyPI downloads| image:: https://pepy.tech/badge/djangorestframework-gis/month
+   :target: https://pepy.tech/project/djangorestframework-gis
+.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://pypi.org/project/black/

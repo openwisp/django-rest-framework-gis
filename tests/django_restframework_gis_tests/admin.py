@@ -1,6 +1,4 @@
 from django.contrib import admin
-from django.conf import settings
-
 from django.contrib.gis.admin import ModelAdmin as GeoModelAdmin
 
 from .models import Location
