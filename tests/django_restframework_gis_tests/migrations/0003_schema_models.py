@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.LineStringField(srid=4326),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
             name="MultiLineStringModel",
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.MultiLineStringField(srid=4326),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
             name="MultiPointModel",
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.MultiPointField(srid=4326),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
             name="MultiPolygonModel",
@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
             name="PointModel",
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
                 ("random_field2", models.IntegerField()),
                 ("location", django.contrib.gis.db.models.fields.PointField(srid=4326)),
             ],
-            options={"abstract": False, },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
             name="PolygonModel",
@@ -131,6 +131,6 @@ class Migration(migrations.Migration):
                     django.contrib.gis.db.models.fields.PolygonField(srid=4326),
                 ),
             ],
-            options={"abstract": False, },
+            options={"abstract": False},
         ),
     ]

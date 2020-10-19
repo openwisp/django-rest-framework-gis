@@ -14,7 +14,7 @@ from rest_framework_gis.serializers import (
 class GeoFeatureAutoSchema(AutoSchema):
     COORDINATES_SCHEMA_FOR_POINT = {
         "type": "array",
-        "items": {"type": "number", "format": "float", },
+        "items": {"type": "number", "format": "float"},
         "example": [12.9721, 77.5933],
         "minItems": 2,
         "maxItems": 3,
@@ -29,18 +29,18 @@ class GeoFeatureAutoSchema(AutoSchema):
 
     GEO_FIELD_TO_SCHEMA = {
         models.PointField: {
-            "type": {"type": "string", "enum": ["Point"], },
+            "type": {"type": "string", "enum": ["Point"]},
             "coordinates": COORDINATES_SCHEMA_FOR_POINT,
         },
         models.LineStringField: {
-            "type": {"type": "string", "enum": ["LineString"], },
+            "type": {"type": "string", "enum": ["LineString"]},
             "coordinates": COORDINATES_SCHEMA_FOR_LINE_STRING,
         },
         models.PolygonField: {
-            "type": {"type": "string", "enum": ["Polygon"], },
+            "type": {"type": "string", "enum": ["Polygon"]},
             "coordinates": {
                 "type": "array",
-                "items": {**COORDINATES_SCHEMA_FOR_LINE_STRING, "minItems": 4, },
+                "items": {**COORDINATES_SCHEMA_FOR_LINE_STRING, "minItems": 4},
                 "example": [
                     [0.0, 0.0],
                     [0.0, 50.0],
@@ -60,7 +60,7 @@ class GeoFeatureAutoSchema(AutoSchema):
 
     for singular_field, multi_field in MULTI_FIELD_MAPPING.items():
         GEO_FIELD_TO_SCHEMA[multi_field] = {
-            "type": {"type": "string", "enum": [multi_field.geom_class.__name__], },
+            "type": {"type": "string", "enum": [multi_field.geom_class.__name__]},
             "coordinates": {
                 "type": "array",
                 "items": GEO_FIELD_TO_SCHEMA[singular_field]["coordinates"],
@@ -114,7 +114,7 @@ class GeoFeatureAutoSchema(AutoSchema):
 
         geo_json_schema = {
             "type": "object",
-            "properties": {"type": {"type": "string", "enum": ["Feature"]}, },
+            "properties": {"type": {"type": "string", "enum": ["Feature"]}},
         }
 
         if serializer.Meta.id_field:

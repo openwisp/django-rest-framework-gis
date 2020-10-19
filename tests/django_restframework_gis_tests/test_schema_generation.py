@@ -491,7 +491,7 @@ class TestPaginationSchemaGeneration(TestCase):
                 "type": "object",
                 "properties": {
                     "type": {"type": "string", "enum": ["FeatureCollection"]},
-                    "count": {"type": "integer", "example": 123, },
+                    "count": {"type": "integer", "example": 123},
                     "next": {
                         "type": "string",
                         "nullable": True,
@@ -574,19 +574,19 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                     "name": "dist",
                     "required": False,
                     "in": "query",
-                    "schema": {"type": "number", "format": "float", "default": 1000, },
+                    "schema": {"type": "number", "format": "float", "default": 1000},
                     "description": "Represents **Distance** in **Distance to point** filter. "
-                                   "Default value is used only if ***point*** is passed.",
+                    "Default value is used only if ***point*** is passed.",
                 },
                 {
                     "name": "point",
                     "required": False,
                     "in": "query",
                     "description": "Point represented in **x,y** format. "
-                                   "Represents **point** in **Distance to point filter**",
+                    "Represents **point** in **Distance to point filter**",
                     "schema": {
                         "type": "array",
-                        "items": {"type": "float", },
+                        "items": {"type": "float"},
                         "minItems": 2,
                         "maxItems": 2,
                         "example": [0, 10],
