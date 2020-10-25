@@ -15,7 +15,6 @@ try:
 except ImportError:
     from django.core.urlresolvers import reverse
 
-import rest_framework
 from django.core.exceptions import ImproperlyConfigured
 
 from rest_framework_gis import serializers as gis_serializers
