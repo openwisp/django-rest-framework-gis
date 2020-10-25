@@ -22,7 +22,6 @@ from .serializers import (
     MultiPolygonSerializer,
     PointSerializer,
 )
-
 from .views import (
     GeojsonBoxedLocationDetails,
     GeojsonLocationContainedInBBoxList,
