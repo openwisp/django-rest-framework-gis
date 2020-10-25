@@ -104,7 +104,7 @@ class GeoFeatureAutoSchema(AutoSchema):
                 "type": {"type": "string", "enum": ["FeatureCollection"]},
                 "features": {
                     "type": "array",
-                    "items": self._map_serializer(serializer.child),
+                    "items": self.map_serializer(serializer.child),
                 },
             },
         }
