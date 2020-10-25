@@ -53,5 +53,5 @@ before_script:
 script:
   # check is done here to allow travisbuddy to include summary in case of failure
   - ./run-qa-checks
-  - tox -e travis
+  - tox
   - python setup.py check -r -s
