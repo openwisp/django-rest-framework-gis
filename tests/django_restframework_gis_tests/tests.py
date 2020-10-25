@@ -5,7 +5,6 @@ unit tests for restframework_gis
 import json
 import pickle
 import sys
-from unittest import skipIf
 
 import django
 from django.contrib.gis.geos import GEOSGeometry, Point
@@ -24,8 +23,6 @@ from rest_framework_gis.fields import GeoJsonDict
 
 from .models import LocatedFile, Location, Nullable
 from .serializers import LocationGeoSerializer
-
-is_pre_drf_39 = not rest_framework.VERSION.startswith('3.9')
 
 
 class TestRestFrameworkGis(TestCase):
@@ -524,7 +521,6 @@ class TestRestFrameworkGis(TestCase):
         location = Location.objects.all()[0]
         self.assertEqual(location.name, "HTML test WKT")
 
-    @skipIf(is_pre_drf_39, 'Skip this test if DRF < 3.9')
     def test_geojson_HTML_widget_value(self):
         self._create_locations()
         response = self.client.get(
@@ -534,7 +530,6 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, '"type": "Point"')
         self.assertContains(response, '"coordinates": [')
 
-    @skipIf(not is_pre_drf_39, 'Skip this test if DRF >= 3.9')
     def test_geojson_HTML_widget_value_pre_drf_39(self):
         self._create_locations()
         response = self.client.get(
