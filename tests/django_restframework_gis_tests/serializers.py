@@ -140,7 +140,9 @@ class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializ
         exclude = []
 
 
-class LocationGeoFeatureMethodAutoBboxSerializer(gis_serializers.GeoFeatureModelSerializer):
+class LocationGeoFeatureMethodAutoBboxSerializer(
+    gis_serializers.GeoFeatureModelSerializer
+):
     new_geometry = gis_serializers.GeometrySerializerMethodField()
 
     class Meta:
@@ -153,7 +155,9 @@ class LocationGeoFeatureMethodAutoBboxSerializer(gis_serializers.GeoFeatureModel
         return obj.geometry
 
 
-class LocationGeoFeatureMethodManualBboxSerializer(gis_serializers.GeoFeatureModelSerializer):
+class LocationGeoFeatureMethodManualBboxSerializer(
+    gis_serializers.GeoFeatureModelSerializer
+):
     new_geometry = gis_serializers.GeometrySerializerMethodField()
 
     class Meta:

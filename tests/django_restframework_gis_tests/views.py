@@ -17,9 +17,9 @@ from .serializers import (
     LocatedFileGeoFeatureSerializer,
     LocationGeoFeatureBboxSerializer,
     LocationGeoFeatureFalseIdSerializer,
-    LocationGeoFeatureMethodSerializer,
     LocationGeoFeatureMethodAutoBboxSerializer,
     LocationGeoFeatureMethodManualBboxSerializer,
+    LocationGeoFeatureMethodSerializer,
     LocationGeoFeatureNoIdSerializer,
     LocationGeoFeatureSerializer,
     LocationGeoFeatureSlugSerializer,
@@ -248,7 +248,9 @@ class GeojsonLocationMethodFieldAutoBboxList(generics.ListCreateAPIView):
     queryset = Location.objects.all()
 
 
-geojson_location_method_field_auto_bbox_list = GeojsonLocationMethodFieldAutoBboxList.as_view()
+geojson_location_method_field_auto_bbox_list = (
+    GeojsonLocationMethodFieldAutoBboxList.as_view()
+)
 
 
 class GeojsonLocationMethodFieldManualBboxList(generics.ListCreateAPIView):
@@ -257,7 +259,9 @@ class GeojsonLocationMethodFieldManualBboxList(generics.ListCreateAPIView):
     queryset = Location.objects.all()
 
 
-geojson_location_method_field_manual_bbox_list = GeojsonLocationMethodFieldManualBboxList.as_view()
+geojson_location_method_field_manual_bbox_list = (
+    GeojsonLocationMethodFieldManualBboxList.as_view()
+)
 
 
 class GeojsonNullableDetails(generics.RetrieveUpdateDestroyAPIView):
