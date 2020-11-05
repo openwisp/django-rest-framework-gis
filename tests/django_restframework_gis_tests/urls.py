@@ -65,6 +65,16 @@ urlpatterns = [
         views.geojson_location_bbox_list,
         name='api_geojson_location_bbox_list',
     ),
+    url(
+        r'^geojson-location-method-field-auto-bbox/$',
+        views.geojson_location_method_field_auto_bbox_list,
+        name='api_geojson_location_method_field_auto_bbox_list',
+    ),
+    url(
+        r'^geojson-location-method-field-manual-bbox/$',
+        views.geojson_location_method_field_manual_bbox_list,
+        name='api_geojson_location_method_field_manual_bbox_list',
+    ),
     # Filters
     url(
         r'^filters/contained_in_bbox$',
