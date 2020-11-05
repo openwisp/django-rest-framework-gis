@@ -6,6 +6,7 @@ from rest_framework.serializers import (
     LIST_SERIALIZER_KWARGS,
     ListSerializer,
     ModelSerializer,
+    SerializerMethodField,
 )
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
@@ -132,7 +133,12 @@ class GeoFeatureModelSerializer(ModelSerializer):
         # MUST be present in output according to GeoJSON spec
         field = self.fields[self.Meta.geo_field]
         geo_value = field.get_attribute(instance)
-        feature["geometry"] = field.to_representation(geo_value)
+        if isinstance(field, SerializerMethodField):
+            method = getattr(field.parent, field.method_name)
+            geo_value = method(instance)
+            feature["geometry"] = field.to_representation(instance)
+        else:
+            feature["geometry"] = field.to_representation(geo_value)
         processed_fields.add(self.Meta.geo_field)
 
         # Bounding Box
@@ -143,7 +149,11 @@ class GeoFeatureModelSerializer(ModelSerializer):
         # otherwise it can be determined via another field
         elif self.Meta.bbox_geo_field:
             field = self.fields[self.Meta.bbox_geo_field]
-            value = field.get_attribute(instance)
+            if isinstance(field, SerializerMethodField):
+                method = getattr(field.parent, field.method_name)
+                value = method(instance)
+            else:
+                value = field.get_attribute(instance)
             feature["bbox"] = value.extent if hasattr(value, 'extent') else None
             processed_fields.add(self.Meta.bbox_geo_field)
 
