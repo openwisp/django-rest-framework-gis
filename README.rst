@@ -714,7 +714,20 @@ To run tests in docker use
 Running QA-checks
 =================
 
-You can run qa-checks by using
+Install the test requirements:
+
+.. code-block:: shell
+
+    pip install -r requirements-test.txt
+
+Reformat the code according to
+`our coding style conventions with <https://openwisp.io/docs/developer/contributing.html#coding-style-conventions>`_:
+
+.. code-block:: shell
+
+    openwisp-qa-format
+
+Run the QA checks by using
 
 .. code-block:: shell
 
