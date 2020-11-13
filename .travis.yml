@@ -7,14 +7,11 @@ notifications:
   webhooks: https://www.travisbuddy.com/
   on_success: never
 
-addons:
-  postgresql: "12"
-  apt:
-    packages:
-      - postgresql-12-postgis-3
-
 services:
   - postgresql
+
+addons:
+  postgresql: "13"
 
 matrix:
   include:
@@ -35,10 +32,11 @@ branches:
 
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
-  - sudo apt-get update -q
-  - sudo apt-get install binutils libproj-dev gdal-bin -y
+  - yes | sudo sh /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+  - sudo apt-get install postgresql-13-postgis-3 binutils libproj-dev gdal-bin -y
   - pip install -U pip setuptools wheel
   - pip install -U -r requirements-test.txt
+
 install:
   - pip install tox
   - pip install docutils pygments  # for setup.py check -r -s
