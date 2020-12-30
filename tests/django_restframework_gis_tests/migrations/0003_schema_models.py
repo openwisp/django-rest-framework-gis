@@ -133,4 +133,25 @@ class Migration(migrations.Migration):
             ],
             options={"abstract": False},
         ),
+        migrations.CreateModel(
+            name="GeometryModel",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("random_field1", models.CharField(max_length=32)),
+                ("random_field2", models.IntegerField()),
+                (
+                    "points",
+                    django.contrib.gis.db.models.fields.GeometryField(srid=4326),
+                ),
+            ],
+            options={"abstract": False},
+        ),
     ]

@@ -401,6 +401,23 @@ class TestSchemaGeneration(TestCase):
             },
         )
 
+    def test_geometry_field(self):
+        class GeometrySerializerFieldView(RetrieveAPIView):
+            serializer_class = GeometrySerializer
+
+        path = "/"
+        method = "GET"
+
+        view = create_view(GeometrySerializerFieldView, "POST", create_request("/"))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
+        geometry_schema = content["properties"]["geometry"]
+        geometry_schema.pop("type", None)
+        geometry_schema['properties'].pop("coordinates", None)
+        self.assertEqual(geometry_schema, {"properties": {"type": {"type": "string"}}})
+
     def check_bbox_schema(self):
         class TestMultiLineStringFieldView(RetrieveAPIView):
             serializer_class = MultiPointSerializer
@@ -435,20 +452,6 @@ class TestSchemaGeneration(TestCase):
         view = create_view(
             TestGeometrySerializerMethodField, "POST", create_request("/")
         )
-        inspector = GeoFeatureAutoSchema()
-        inspector.view = view
-        serializer = inspector.get_serializer(path, method)
-        with self.assertWarns(Warning):
-            inspector.map_serializer(serializer)
-
-    def test_warning_for_geometry_field(self):
-        class TestGeometryView(RetrieveAPIView):
-            serializer_class = GeometrySerializer
-
-        path = "/"
-        method = "GET"
-
-        view = create_view(TestGeometryView, "POST", create_request("/"))
         inspector = GeoFeatureAutoSchema()
         inspector.view = view
         serializer = inspector.get_serializer(path, method)

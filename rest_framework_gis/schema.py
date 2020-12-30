@@ -52,10 +52,25 @@ class GeoFeatureAutoSchema(AutoSchema):
         },
     }
 
+    GEO_FIELD_TO_SCHEMA[models.GeometryField] = {
+        'type': {'type': 'string'},
+        'coordinates': {
+            'oneOf': [  # If you have custom subclass of GeometryField, Override `oneOf` property.
+                GEO_FIELD_TO_SCHEMA[models.PointField],
+                GEO_FIELD_TO_SCHEMA[models.LineStringField],
+                GEO_FIELD_TO_SCHEMA[models.PolygonField],
+            ],
+            'example': GEO_FIELD_TO_SCHEMA[models.PolygonField]['coordinates'][
+                'example'
+            ],
+        },
+    }
+
     MULTI_FIELD_MAPPING = {
         models.PointField: models.MultiPointField,
         models.LineStringField: models.MultiLineStringField,
         models.PolygonField: models.MultiPolygonField,
+        models.GeometryField: models.GeometryCollectionField,
     }
 
     for singular_field, multi_field in MULTI_FIELD_MAPPING.items():

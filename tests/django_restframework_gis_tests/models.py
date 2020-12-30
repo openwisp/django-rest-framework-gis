@@ -5,6 +5,7 @@ __all__ = [
     'Location',
     'LocatedFile',
     'BoxedLocation',
+    'GeometryModel',
     'Nullable',
     'PointModel',
     'LineStringModel',
@@ -77,6 +78,10 @@ class LineStringModel(SchemaBaseModel):
 
 class PolygonModel(SchemaBaseModel):
     polygon = models.PolygonField()
+
+
+class GeometryModel(SchemaBaseModel):
+    points = models.GeometryField()
 
 
 class MultiPointModel(SchemaBaseModel):

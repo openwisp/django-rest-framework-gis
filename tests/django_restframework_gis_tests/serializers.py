@@ -6,12 +6,12 @@ from rest_framework_gis.fields import GeometrySerializerMethodField
 
 from .models import (
     BoxedLocation,
+    GeometryModel,
     LineStringModel,
     Location,
     MultiLineStringModel,
     MultiPointModel,
     MultiPolygonModel,
-    Nullable,
     PointModel,
     PolygonModel,
 )
@@ -225,6 +225,14 @@ class MultiPointSerializer(gis_serializers.GeoFeatureModelSerializer):
         auto_bbox = True
 
 
+class GeometrySerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = GeometryModel
+        geo_field = 'points'
+        fields = '__all__'
+        auto_bbox = True
+
+
 class GeometrySerializerMethodFieldSerializer(PointSerializer):
     other_point = GeometrySerializerMethodField()
 
@@ -235,13 +243,6 @@ class GeometrySerializerMethodFieldSerializer(PointSerializer):
     class Meta:
         model = Location
         geo_field = 'other_point'
-        fields = '__all__'
-
-
-class GeometrySerializer(gis_serializers.GeoFeatureModelSerializer):
-    class Meta:
-        model = Nullable
-        geo_field = 'geometry'
         fields = '__all__'
 
 
