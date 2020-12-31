@@ -617,14 +617,13 @@ We can also reverse the order of the results by passing ``order=desc``:
 ``/location/?point=-122.4862,37.7694&order=desc&format=json``
 
 Schema Generation
-=================
+-----------------
 
-Note: Schema generation support is available only for DRF >= 3.12
+Note: Schema generation support is available only for DRF >= 3.12.
 
-Simplest Approach would be, change DEFAULT_SCHEMA_CLASS to `rest_framework_gis.schema.GeoFeatureAutoSchema`
+Simplest Approach would be, change ``DEFAULT_SCHEMA_CLASS`` to ``rest_framework_gis.schema.GeoFeatureAutoSchema``:
 
 .. code-block:: python
-
     REST_FRAMEWORK = {
         ...
         'DEFAULT_SCHEMA_CLASS': 'rest_framework_gis.schema.GeoFeatureAutoSchema',
@@ -633,10 +632,8 @@ Simplest Approach would be, change DEFAULT_SCHEMA_CLASS to `rest_framework_gis.s
 
 If you do not want to change default schema generator class:
 
--  You can pass this class as an argument to `get_schema_view` `[Ref] <https://www.django-rest-framework.org/api-guide/schemas/#generating-a-dynamic-schema-with-schemaview>`__
--  You can pass this class as an argument to `generateschema` command `[Ref] <https://www.django-rest-framework.org/api-guide/schemas/#generating-a-static-schema-with-the-generateschema-management-command>`__
-
-
+-  You can pass this class as an argument to ``get_schema_view`` function `[Ref] <https://www.django-rest-framework.org/api-guide/schemas/#generating-a-dynamic-schema-with-schemaview>`__.
+-  You can pass this class as an argument to the ``generateschema`` command `[Ref] <https://www.django-rest-framework.org/api-guide/schemas/#generating-a-static-schema-with-the-generateschema-management-command>`__.
 
 Running the tests
 -----------------
