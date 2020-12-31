@@ -624,6 +624,7 @@ Note: Schema generation support is available only for DRF >= 3.12.
 Simplest Approach would be, change ``DEFAULT_SCHEMA_CLASS`` to ``rest_framework_gis.schema.GeoFeatureAutoSchema``:
 
 .. code-block:: python
+
     REST_FRAMEWORK = {
         ...
         'DEFAULT_SCHEMA_CLASS': 'rest_framework_gis.schema.GeoFeatureAutoSchema',

@@ -72,7 +72,6 @@ STATIC_URL = '/static/'
 
 TEMPLATE_STRING_IF_INVALID = 'INVALID_TEMPLATE: %s END_INVALID_TEMPLATE'
 
-
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework_gis.schema.GeoFeatureAutoSchema',
 }
