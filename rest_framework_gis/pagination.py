@@ -23,3 +23,12 @@ class GeoJsonPagination(pagination.PageNumberPagination):
                 ]
             )
         )
+
+    def get_paginated_response_schema(self, view):
+        schema = super().get_paginated_response_schema(view)
+        schema["properties"]["features"] = schema["properties"].pop("results")
+        schema["properties"] = {
+            "type": {"type": "string", "enum": ["FeatureCollection"]},
+            **schema["properties"],
+        }
+        return schema

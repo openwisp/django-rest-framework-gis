@@ -2,8 +2,19 @@ from django.contrib.gis.geos import Point
 from rest_framework import pagination, serializers
 
 from rest_framework_gis import serializers as gis_serializers
+from rest_framework_gis.fields import GeometrySerializerMethodField
 
-from .models import BoxedLocation, Location
+from .models import (
+    BoxedLocation,
+    GeometryModel,
+    LineStringModel,
+    Location,
+    MultiLineStringModel,
+    MultiPointModel,
+    MultiPolygonModel,
+    PointModel,
+    PolygonModel,
+)
 
 __all__ = [
     'LocationGeoSerializer',
@@ -17,6 +28,17 @@ __all__ = [
     'LocationGeoFeatureBboxSerializer',
     'LocationGeoFeatureMethodSerializer',
     'NoneGeoFeatureMethodSerializer',
+    'PointSerializer',
+    'ChildPointSerializer',
+    'ListChildPointSerializer',
+    'LineStringSerializer',
+    'PolygonSerializer',
+    'MultiPolygonSerializer',
+    'MultiLineStringSerializer',
+    'MultiPointSerializer',
+    'GeometrySerializerMethodFieldSerializer',
+    'GeometrySerializer',
+    'BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer',
 ]
 
 
@@ -150,3 +172,84 @@ class NoneGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
         model = Location
         geo_field = 'new_geometry'
         fields = ['name', 'slug', 'id']
+
+
+class PointSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = PointModel
+        geo_field = 'location'
+        fields = '__all__'
+
+
+class ChildPointSerializer(serializers.Serializer):
+    point = PointSerializer()
+
+
+class ListChildPointSerializer(serializers.Serializer):
+    points = PointSerializer(many=True)
+
+
+class LineStringSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = LineStringModel
+        geo_field = 'points'
+        fields = '__all__'
+
+
+class PolygonSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = PolygonModel
+        geo_field = 'polygon'
+        fields = '__all__'
+
+
+class MultiPolygonSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = MultiPolygonModel
+        geo_field = 'polygon'
+        fields = '__all__'
+
+
+class MultiLineStringSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = MultiLineStringModel
+        geo_field = 'points'
+        fields = '__all__'
+
+
+class MultiPointSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = MultiPointModel
+        geo_field = 'points'
+        fields = '__all__'
+        auto_bbox = True
+
+
+class GeometrySerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = GeometryModel
+        geo_field = 'points'
+        fields = '__all__'
+        auto_bbox = True
+
+
+class GeometrySerializerMethodFieldSerializer(PointSerializer):
+    other_point = GeometrySerializerMethodField()
+
+    @staticmethod
+    def get_other_point(obj):
+        return Point(obj.location.lat / 2, obj.location.lon / 2)
+
+    class Meta:
+        model = Location
+        geo_field = 'other_point'
+        fields = '__all__'
+
+
+class BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer(
+    BoxedLocationGeoFeatureSerializer
+):
+    class Meta(BoxedLocationGeoFeatureSerializer.Meta):
+        fields = BoxedLocationGeoFeatureSerializer.Meta.fields + [
+            BoxedLocationGeoFeatureSerializer.Meta.bbox_geo_field
+        ]

@@ -1,7 +1,19 @@
 from django.contrib.gis.db import models
 from django.utils.text import slugify
 
-__all__ = ['Location', 'LocatedFile', 'BoxedLocation', 'Nullable']
+__all__ = [
+    'Location',
+    'LocatedFile',
+    'BoxedLocation',
+    'GeometryModel',
+    'Nullable',
+    'PointModel',
+    'LineStringModel',
+    'PolygonModel',
+    'MultiPolygonModel',
+    'MultiLineStringModel',
+    'MultiPointModel',
+]
 
 
 class BaseModel(models.Model):
@@ -46,3 +58,39 @@ class BoxedLocation(BaseModel):
 
 class Nullable(BaseModel):
     geometry = models.GeometryField(blank=True, null=True)
+
+
+class SchemaBaseModel(models.Model):
+    random_field1 = models.CharField(max_length=32)
+    random_field2 = models.IntegerField()
+
+    class Meta:
+        abstract = True
+
+
+class PointModel(SchemaBaseModel):
+    location = models.PointField()
+
+
+class LineStringModel(SchemaBaseModel):
+    points = models.LineStringField()
+
+
+class PolygonModel(SchemaBaseModel):
+    polygon = models.PolygonField()
+
+
+class GeometryModel(SchemaBaseModel):
+    points = models.GeometryField()
+
+
+class MultiPointModel(SchemaBaseModel):
+    points = models.MultiPointField()
+
+
+class MultiLineStringModel(SchemaBaseModel):
+    points = models.MultiLineStringField()
+
+
+class MultiPolygonModel(SchemaBaseModel):
+    polygon = models.MultiPolygonField()

@@ -24,7 +24,9 @@ has_spatialite = (
 )
 
 try:
-    has_geometry_distance = True
+    from django.contrib.gis.db.models.functions import GeometryDistance
+
+    has_geometry_distance = GeometryDistance and True
 except ImportError:
     has_geometry_distance = False
 
