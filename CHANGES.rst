@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.17.0 [2021-01-25]
+---------------------------
+
+- [feature] Added
+  `OpenAPI Schema Generation <https://github.com/openwisp/django-rest-framework-gis#schema-generation>`_
+  (`#219 <https://github.com/openwisp/django-rest-framework-gis/issues/219>`_) - special
+  thanks to `Dhaval Mehta <https://github.com/dhaval-mehta>`_
+
 Version 0.16.0 [2020-09-07]
 ---------------------------
 
