@@ -3,7 +3,7 @@ Average of 5 measurements for python2 and python3.
 Launch the performance test with::
 
     cd tests
-    django test --keepdb django_restframework_gis_tests.test_performance
+    ./manage.py test --keepdb django_restframework_gis_tests.test_performance
 
 For more information regarding how the measurement is performed read the code in
 `test_performance.py <https://github.com/openwisp/django-rest-framework-gis/blob/master/tests/django_restframework_gis_tests/test_performance.py>`__.
