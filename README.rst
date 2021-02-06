@@ -750,8 +750,8 @@ Contributing
 8. Document your changes
 9. Send pull request
 
-.. |Build Status| image:: https://travis-ci.org/openwisp/django-rest-framework-gis.svg?branch=master
-   :target: https://travis-ci.org/openwisp/django-rest-framework-gis
+.. |Build Status| image:: https://github.com/openwisp/django-rest-framework-gis/workflows/Django%20Rest%20Framework%20Gis%20CI%20Build/badge.svg?branch=master
+   :target: https://github.com/openwisp/django-rest-framework-gis/actions?query=workflow%3A%22Django+Rest+Framework+Gis+CI+Build%22
 .. |Coverage Status| image:: https://coveralls.io/repos/openwisp/django-rest-framework-gis/badge.svg
    :target: https://coveralls.io/r/openwisp/django-rest-framework-gis
 .. |Requirements Status| image:: https://requires.io/github/openwisp/django-rest-framework-gis/requirements.svg?branch=master
