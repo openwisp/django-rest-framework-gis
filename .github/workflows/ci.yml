@@ -1,0 +1,115 @@
+---
+name: Django Rest Framework Gis CI Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Python==${{ matrix.env.python }} | ${{ matrix.env.TOXENV }}
+    runs-on: ubuntu-20.04
+
+    services:
+      postgres:
+        image: postgis/postgis:10-2.5
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: django_restframework_gis
+        ports: 
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - python: 3.6
+            TOXENV: py36-django22-djangorestframework310
+          - python: 3.7
+            TOXENV: py37-django22-djangorestframework310
+          - python: 3.8
+            TOXENV: py38-django22-djangorestframework310
+          - python: 3.9
+            TOXENV: py39-django22-djangorestframework310
+          - python: 3.6
+            TOXENV: py36-django22-djangorestframework312
+          - python: 3.7
+            TOXENV: py37-django22-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django22-djangorestframework312
+          - python: 3.9
+            TOXENV: py39-django22-djangorestframework312
+          - python: 3.6
+            TOXENV: py36-django30-djangorestframework312
+          - python: 3.7
+            TOXENV: py37-django30-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django30-djangorestframework312
+          - python: 3.9
+            TOXENV: py39-django30-djangorestframework312
+          - python: 3.6
+            TOXENV: py36-django31-djangorestframework312
+          - python: 3.7
+            TOXENV: py37-django31-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django31-djangorestframework312
+          - python: 3.9
+            TOXENV: py39-django31-djangorestframework312
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Python ${{ matrix.env.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.env.python }}
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install binutils libproj-dev gdal-bin -y
+
+      - name: Install python dependencies
+        run: |
+          pip install -U "pip==20.2.4" wheel setuptools
+          pip install -U -r requirements-test.txt
+          pip install tox docutils pygments
+
+      - name: QA checks
+        run: |
+          ./run-qa-checks
+
+      - name: Tests
+        run: |
+          tox -e ${{ matrix.env.TOXENV }}
+          python setup.py check -r -s
+        env:
+          POSTGRES_HOST: localhost
+
+      - name: Upload Coverage
+        run: coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: |
+           python-${{ matrix.env.env }}
+          COVERALLS_PARALLEL: true
+
+  coveralls:
+    name: Finish Coveralls
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+      - name: Finished
+        run: |
+          pip3 install --upgrade coveralls
+          coveralls --finish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
