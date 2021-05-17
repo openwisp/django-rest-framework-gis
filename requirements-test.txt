@@ -2,5 +2,5 @@ psycopg2
 django-filter>=2.0
 contexttimer
 # QA checks
-openwisp-utils[qa]~=0.6
+openwisp-utils[qa]~=0.7.0
 packaging~=20.4
