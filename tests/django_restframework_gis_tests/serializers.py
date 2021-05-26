@@ -203,6 +203,12 @@ class PolygonSerializer(gis_serializers.GeoFeatureModelSerializer):
         fields = '__all__'
 
 
+class PolygonModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PolygonModel
+        fields = '__all__'
+
+
 class MultiPolygonSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = MultiPolygonModel

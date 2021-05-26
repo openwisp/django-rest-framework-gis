@@ -27,6 +27,7 @@ from .views import (
     GeojsonLocationContainedInBBoxList,
     GeojsonLocationContainedInTileList,
     GeojsonLocationWithinDistanceOfPointList,
+    ModelViewWithPolygon,
     geojson_location_list,
 )
 
@@ -607,4 +608,58 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                     "explode": False,
                 },
             ],
+        )
+
+    def test_geometry_field(self):
+        path = "/"
+        method = "GET"
+        view = create_view(ModelViewWithPolygon, "GET", create_request("/"))
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        serializer = inspector.get_serializer(path, method)
+        content = inspector.map_serializer(serializer)
+
+        self.assertEqual(
+            content,
+            {
+                "type": "object",
+                "properties": {
+                    "id": {'type': 'integer', 'readOnly': True},
+                    'polygon': {
+                        'properties': {
+                            'coordinates': {
+                                'example': [
+                                    [0.0, 0.0],
+                                    [0.0, 50.0],
+                                    [50.0, 50.0],
+                                    [50.0, 0.0],
+                                    [0.0, 0.0],
+                                ],
+                                'items': {
+                                    'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
+                                    'items': {
+                                        'example': [12.9721, 77.5933],
+                                        'items': {'format': 'float', 'type': 'number'},
+                                        'maxItems': 3,
+                                        'minItems': 2,
+                                        'type': 'array',
+                                    },
+                                    'minItems': 4,
+                                    'type': 'array',
+                                },
+                                'type': 'array',
+                            },
+                            'type': {'enum': ['Polygon'], 'type': 'string'},
+                        },
+                        'type': 'object',
+                    },
+                    "random_field1": {"type": "string", "maxLength": 32},
+                    "random_field2": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                    },
+                },
+                "required": ["random_field1", "random_field2", "polygon"],
+            },
         )

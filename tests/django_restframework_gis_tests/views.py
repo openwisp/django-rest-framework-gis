@@ -11,7 +11,7 @@ from rest_framework_gis.filters import (
 )
 from rest_framework_gis.pagination import GeoJsonPagination
 
-from .models import BoxedLocation, LocatedFile, Location, Nullable
+from .models import BoxedLocation, LocatedFile, Location, Nullable, PolygonModel
 from .serializers import (
     BoxedLocationGeoFeatureSerializer,
     LocatedFileGeoFeatureSerializer,
@@ -24,6 +24,7 @@ from .serializers import (
     LocationGeoSerializer,
     NoneGeoFeatureMethodSerializer,
     PaginatedLocationGeoSerializer,
+    PolygonModelSerializer,
 )
 
 
@@ -247,3 +248,8 @@ class GeojsonNullableDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 geojson_nullable_details = GeojsonNullableDetails.as_view()
+
+
+class ModelViewWithPolygon(generics.RetrieveUpdateDestroyAPIView):
+    model = PolygonModel
+    serializer_class = PolygonModelSerializer
