@@ -4,7 +4,7 @@ from django.contrib.gis.db import models
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.utils import model_meta
 
-from rest_framework_gis.fields import GeometrySerializerMethodField
+from rest_framework_gis.fields import GeometryField, GeometrySerializerMethodField
 from rest_framework_gis.serializers import (
     GeoFeatureModelListSerializer,
     GeoFeatureModelSerializer,
@@ -109,6 +109,12 @@ class GeoFeatureAutoSchema(AutoSchema):
     def map_field(self, field):
         if isinstance(field, GeoFeatureModelListSerializer):
             return self._map_geo_feature_model_list_serializer(field)
+
+        if isinstance(field, GeometryField):
+            return {
+                "type": "object",
+                "properties": self._map_geo_field(field.parent, field.field_name),
+            }
 
         return super().map_field(field)
 
