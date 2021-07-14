@@ -1,4 +1,4 @@
-psycopg2
+psycopg2~=2.8.0
 django-filter>=2.0
 contexttimer
 # QA checks
