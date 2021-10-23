@@ -562,8 +562,8 @@ class TestRestFrameworkGis(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         location_reloaded = Location.objects.get(pk=location.id)
-        self.assertEquals(location_reloaded.name, 'geojson successful patch test')
-        self.assertEquals(
+        self.assertEqual(location_reloaded.name, 'geojson successful patch test')
+        self.assertEqual(
             location_reloaded.geometry, Point(10.1, 10.1, srid=location.geometry.srid)
         )
 
@@ -578,8 +578,8 @@ class TestRestFrameworkGis(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         location_reloaded = Location.objects.get(pk=location.id)
-        self.assertEquals(location_reloaded.name, 'geojson successful patch test')
-        self.assertEquals(
+        self.assertEqual(location_reloaded.name, 'geojson successful patch test')
+        self.assertEqual(
             location_reloaded.geometry, Point(135.0, 45.0, srid=location.geometry.srid)
         )
 
