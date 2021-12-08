@@ -29,38 +29,40 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - python: 3.6
-            TOXENV: py36-django22-djangorestframework310
           - python: 3.7
             TOXENV: py37-django22-djangorestframework310
           - python: 3.8
             TOXENV: py38-django22-djangorestframework310
           - python: 3.9
             TOXENV: py39-django22-djangorestframework310
-          - python: 3.6
-            TOXENV: py36-django22-djangorestframework312
           - python: 3.7
             TOXENV: py37-django22-djangorestframework312
           - python: 3.8
             TOXENV: py38-django22-djangorestframework312
           - python: 3.9
             TOXENV: py39-django22-djangorestframework312
-          - python: 3.6
-            TOXENV: py36-django30-djangorestframework312
           - python: 3.7
             TOXENV: py37-django30-djangorestframework312
           - python: 3.8
             TOXENV: py38-django30-djangorestframework312
           - python: 3.9
             TOXENV: py39-django30-djangorestframework312
-          - python: 3.6
-            TOXENV: py36-django31-djangorestframework312
           - python: 3.7
             TOXENV: py37-django31-djangorestframework312
           - python: 3.8
             TOXENV: py38-django31-djangorestframework312
           - python: 3.9
             TOXENV: py39-django31-djangorestframework312
+          - python: 3.7
+            TOXENV: py37-django32-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django32-djangorestframework312
+          - python: 3.9
+            TOXENV: py39-django32-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django40-djangorestframework_master
+          - python: 3.9
+            TOXENV: py39-django40-djangorestframework_master
     steps:
       - uses: actions/checkout@v2
         with:
@@ -78,7 +80,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          pip install -U "pip==20.2.4" wheel setuptools
+          pip install -U pip wheel setuptools
           pip install -U -r requirements-test.txt
           pip install tox docutils pygments
 
