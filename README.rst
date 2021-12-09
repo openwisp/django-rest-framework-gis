@@ -754,8 +754,9 @@ Contributing
    :target: https://github.com/openwisp/django-rest-framework-gis/actions?query=workflow%3A%22Django+Rest+Framework+Gis+CI+Build%22
 .. |Coverage Status| image:: https://coveralls.io/repos/openwisp/django-rest-framework-gis/badge.svg
    :target: https://coveralls.io/r/openwisp/django-rest-framework-gis
-.. |Requirements Status| image:: https://requires.io/github/openwisp/django-rest-framework-gis/requirements.svg?branch=master
-   :target: https://requires.io/github/openwisp/django-rest-framework-gis/requirements/?branch=master
+.. |Requirements Status| image:: https://img.shields.io/librariesio/release/github/openwisp/django-rest-framework-gis
+   :target: https://libraries.io/github/openwisp/django-rest-framework-gis#repository_dependencies
+   :alt: Dependency monitoring
 .. |PyPI version| image:: https://badge.fury.io/py/djangorestframework-gis.svg
    :target: http://badge.fury.io/py/djangorestframework-gis
 .. |PyPI downloads| image:: https://pepy.tech/badge/djangorestframework-gis/month
