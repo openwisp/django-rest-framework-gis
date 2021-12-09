@@ -61,6 +61,16 @@ jobs:
             TOXENV: py38-django31-djangorestframework312
           - python: 3.9
             TOXENV: py39-django31-djangorestframework312
+          - python: 3.7
+            TOXENV: py37-django32-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django32-djangorestframework312
+          - python: 3.9
+            TOXENV: py39-django32-djangorestframework312
+          - python: 3.8
+            TOXENV: py38-django40-djangorestframework_master
+          - python: 3.9
+            TOXENV: py39-django40-djangorestframework_master
     steps:
       - uses: actions/checkout@v2
         with:
@@ -78,7 +88,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          pip install -U "pip==20.2.4" wheel setuptools
+          pip install -U pip wheel setuptools
           pip install -U -r requirements-test.txt
           pip install tox docutils pygments
 

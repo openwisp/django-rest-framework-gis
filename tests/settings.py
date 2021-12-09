@@ -16,6 +16,8 @@ DATABASES = {
     },
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 SECRET_KEY = 'fn)t*+$)ugeyip6-#txyy$5wf2ervc0d2n#h)qb)y5@ly$t*@w'
 
 INSTALLED_APPS = (
@@ -25,6 +27,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.gis',
     # rest framework
     'rest_framework',
     'rest_framework_gis',
