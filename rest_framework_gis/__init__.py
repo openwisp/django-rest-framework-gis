@@ -1,3 +1,5 @@
+import django
+
 VERSION = (0, 17, 0, 'final')
 __version__ = VERSION  # alias
 
@@ -13,5 +15,7 @@ def get_version():
             version = '%s %s' % (version, VERSION[3])
     return version
 
+
 if django.VERSION < (3, 2):
     default_app_config = 'rest_framework_gis.apps.AppConfig'
+
