@@ -21,7 +21,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
           POSTGRES_DB: django_restframework_gis
-        ports: 
+        ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
@@ -68,9 +68,9 @@ jobs:
           - python: 3.9
             TOXENV: py39-django32-djangorestframework312
           - python: 3.8
-            TOXENV: py38-django40-djangorestframework_master
+            TOXENV: py38-django40-djangorestframework313
           - python: 3.9
-            TOXENV: py39-django40-djangorestframework_master
+            TOXENV: py39-django40-djangorestframework313
     steps:
       - uses: actions/checkout@v2
         with:

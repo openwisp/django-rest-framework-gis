@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 0.18.0 [2022-01-07]
+---------------------------
+
+- [fix] Add schema generation support for plain GeometryFields `#257
+  <https://github.com/openwisp/django-rest-framework-gis/issues/#257>`_
+- [fix] Fixed psycopg2 compatibility for Django 3.0
+- [feature] Added support and CI testing for Django 3.2 and Django 4.0
+
 Version 0.17.0 [2021-01-25]
 ---------------------------
 

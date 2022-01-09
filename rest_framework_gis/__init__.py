@@ -1,8 +1,7 @@
 import django
 
-VERSION = (0, 17, 0, 'final')
+VERSION = (0, 18, 0, 'final')
 __version__ = VERSION  # alias
-
 
 def get_version():
     version = '%s.%s' % (VERSION[0], VERSION[1])
