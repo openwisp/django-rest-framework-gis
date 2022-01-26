@@ -17,8 +17,14 @@ class GeometryField(Field):
 
     type_name = 'GeometryField'
 
-    def __init__(self, precision=None, remove_duplicates=False, **kwargs):
+    def __init__(
+        self, precision=None, remove_duplicates=False, auto_bbox=False, **kwargs
+    ):
+        """
+        :param auto_bbox: Whether the GeoJSON object should include a bounding box
+        """
         self.precision = precision
+        self.auto_bbox = auto_bbox
         self.remove_dupes = remove_duplicates
         super().__init__(**kwargs)
         self.style.setdefault('base_template', 'textarea.html')
@@ -45,6 +51,9 @@ class GeometryField(Field):
                 geometry['coordinates'] = self._rm_redundant_points(
                     geometry['coordinates'], geometry['type']
                 )
+
+        if self.auto_bbox:
+            geojson["bbox"] = value.extent
         return geojson
 
     def to_internal_value(self, value):
