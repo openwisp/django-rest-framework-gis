@@ -51,7 +51,6 @@ class GeometryField(Field):
                 geometry['coordinates'] = self._rm_redundant_points(
                     geometry['coordinates'], geometry['type']
                 )
-
         if self.auto_bbox:
             geojson["bbox"] = value.extent
         return geojson
