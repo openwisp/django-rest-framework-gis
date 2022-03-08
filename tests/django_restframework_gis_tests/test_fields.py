@@ -586,3 +586,95 @@ class TestRmRedundant(BaseTestCase):
                 }
             },
         )
+
+
+class TestBoundingBox(BaseTestCase):
+    def test_boundingbox_Point(self):
+        model = self.get_instance(Point)
+        Serializer = self.create_serializer(auto_bbox=True)
+        data = Serializer(model).data
+        self.assertEqual(
+            self.normalize(data),
+            {
+                'geometry': {
+                    "type": "Point",
+                    "bbox": [-105.0162, 39.5742, -105.0162, 39.5742],
+                    "coordinates": [-105.0162, 39.5742],
+                }
+            },
+        )
+
+    def test_boundingbox_MultiPoint(self):
+        model = self.get_instance(MultiPoint)
+        Serializer = self.create_serializer(auto_bbox=True)
+        data = Serializer(model).data
+        self.assertEqual(
+            self.normalize(data),
+            {
+                "geometry": {
+                    "type": "MultiPoint",
+                    "bbox": [-105.0162, 35.049, -80.6665, 39.5742],
+                    "coordinates": [
+                        [-105.0162, 39.5742],
+                        [-80.6665, 35.0539],
+                        [-80.6665, 35.0539],
+                        [-80.672, 35.049],
+                    ],
+                }
+            },
+        )
+
+    def test_boundingbox_LineString(self):
+        model = self.get_instance(LineString)
+        Serializer = self.create_serializer(auto_bbox=True)
+        data = Serializer(model).data
+        self.assertEqual(
+            self.normalize(data),
+            {
+                "geometry": {
+                    "type": "LineString",
+                    "bbox": [-101.7443, 38.8739, -97.6354, 39.33],
+                    "coordinates": [
+                        [-101.7443, 39.3215],
+                        [-101.4021, 39.3300],
+                        [-101.4038, 39.3300],
+                        [-101.4038, 39.3300],
+                        [-97.6354, 38.8739],
+                    ],
+                }
+            },
+        )
+
+    def test_boundingbox_Polygon(self):
+        model = self.get_instance(Polygon)
+        Serializer = self.create_serializer(auto_bbox=True)
+        data = Serializer(model).data
+        self.assertEqual(
+            self.normalize(data),
+            {
+                "geometry": {
+                    "type": "Polygon",
+                    "bbox": [-84.3228, 34.985, -82.5677, 36.0335],
+                    "coordinates": [
+                        [
+                            [-84.3228, 34.9895],
+                            [-82.6062, 36.0335],
+                            [-82.6062, 35.9913],
+                            [-82.6062, 35.9791],
+                            [-82.5787, 35.9613],
+                            [-82.5787, 35.9613],  # Dupe
+                            [-82.5677, 35.9513],
+                            [-84.2211, 34.9850],
+                            [-84.3228, 34.9895],
+                        ],
+                        [
+                            [-75.6903, 35.7420],
+                            [-75.5914, 35.7420],
+                            [-75.5914, 35.7420],  # Dupe
+                            [-75.7067, 35.7420],
+                            [-75.6903, 35.7420],
+                        ],
+                    ],
+                }
+            },
+        )
