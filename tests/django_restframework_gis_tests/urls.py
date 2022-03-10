@@ -8,6 +8,11 @@ urlpatterns = [
     # geojson
     path('geojson/', views.geojson_location_list, name='api_geojson_location_list'),
     path(
+        'geojson_writable_id/',
+        views.geojson_location_writable_id_list,
+        name='api_geojson_location_writable_id_list',
+    ),
+    path(
         'geojson/<int:pk>/',
         views.geojson_location_details,
         name='api_geojson_location_details',

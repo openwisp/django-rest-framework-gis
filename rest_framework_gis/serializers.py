@@ -214,6 +214,9 @@ class GeoFeatureModelSerializer(ModelSerializer):
         if 'geometry' in feature:
             attrs[self.Meta.geo_field] = feature['geometry']
 
+        if self.Meta.id_field and 'id' in feature:
+            attrs[self.Meta.id_field] = feature['id']
+
         if self.Meta.bbox_geo_field and 'bbox' in feature:
             attrs[self.Meta.bbox_geo_field] = Polygon.from_bbox(feature['bbox'])
 

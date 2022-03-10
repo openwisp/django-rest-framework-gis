@@ -329,6 +329,22 @@ class TestRestFrameworkGis(TestCase):
         with self.assertRaises(KeyError):
             response.data['id']
 
+    def test_post_geojson_id_attribute(self):
+        self.assertEqual(Location.objects.count(), 0)
+        data = {
+            "type": "Feature",
+            "id": "42",
+            "properties": {"name": "point"},
+            "geometry": {"type": "Point", "coordinates": [10.1, 10.1]},
+        }
+        url = reverse('api_geojson_location_writable_id_list')
+        response = self.client.post(
+            url, data=json.dumps(data), content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Location.objects.count(), 1)
+        self.assertEqual(Location.objects.first().id, 42)
+
     def test_geojson_no_id_attribute_slug(self):
         location = Location.objects.create(
             name='noid test', geometry='POINT (10.1 10.1)'

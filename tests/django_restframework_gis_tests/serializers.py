@@ -107,6 +107,17 @@ class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
         fields = ('name',)
 
 
+class LocationGeoFeatureWritableIdSerializer(LocationGeoFeatureSerializer):
+    """ default id attribute  """
+
+    class Meta:
+        model = Location
+        geo_field = 'geometry'
+        fields = ('id', 'name', 'timestamp')
+
+    id = serializers.CharField()
+
+
 class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
     """ located file geo serializer  """
 
