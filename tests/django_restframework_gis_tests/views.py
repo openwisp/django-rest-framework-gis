@@ -21,6 +21,7 @@ from .serializers import (
     LocationGeoFeatureNoIdSerializer,
     LocationGeoFeatureSerializer,
     LocationGeoFeatureSlugSerializer,
+    LocationGeoFeatureWritableIdSerializer,
     LocationGeoSerializer,
     NoneGeoFeatureMethodSerializer,
     PaginatedLocationGeoSerializer,
@@ -55,6 +56,16 @@ class GeojsonLocationList(generics.ListCreateAPIView):
 
 
 geojson_location_list = GeojsonLocationList.as_view()
+
+
+class GeojsonLocationWritableIdList(generics.ListCreateAPIView):
+    model = Location
+    serializer_class = LocationGeoFeatureWritableIdSerializer
+    queryset = Location.objects.all()
+    pagination_class = GeoJsonPagination
+
+
+geojson_location_writable_id_list = GeojsonLocationWritableIdList.as_view()
 
 
 class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
