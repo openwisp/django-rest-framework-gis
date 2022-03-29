@@ -430,6 +430,25 @@ class TestRestFrameworkGisFilters(TestCase):
                 'Chicago',
             ],
         )
+        distance = 5
+        url_params = '?point=%i,%i&dist=%i&format=json' % (point[0], point[1], distance)
+        response = self.client.get(
+            '%s%s' % (self.location_order_distance_to_point, url_params)
+        )
+        self.assertEqual(len(response.data['features']), 8)
+        self.assertEqual(
+            [city['properties']['name'] for city in response.data['features']],
+            [
+                'Chicago',
+                'Lawrence',
+                'Oklahoma City',
+                'Dallas',
+                'Houston',
+                'Pueblo',
+                'Victoria',
+                'Wellington',
+            ],
+        )
 
     @skipIf(
         has_spatialite,

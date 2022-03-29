@@ -19,7 +19,8 @@ RUN apk update && apk upgrade \
         proj-dev
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONIOENCODING=UTF-8
+    PYTHONIOENCODING=UTF-8 \
+    PGPORT=5431
 
 WORKDIR /project
 

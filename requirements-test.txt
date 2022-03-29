@@ -4,3 +4,5 @@ contexttimer
 # QA checks
 openwisp-utils[qa]~=0.7.0
 packaging~=20.4
+coreapi==2.3.3
+coreschema==0.0.4

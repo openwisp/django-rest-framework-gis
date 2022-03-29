@@ -1,6 +1,9 @@
 from math import cos, pi
+import coreapi
+import coreschema
 
 from django.contrib.gis import forms
+import django.contrib.gis.measure
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point, Polygon
 from django.core.exceptions import ImproperlyConfigured
@@ -274,26 +277,91 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
 
     def filter_queryset(self, request, queryset, view):
         if not GeometryDistance:
-            raise ValueError('GeometryDistance not available on this version of django')
+            raise ValueError("GeometryDistance not available on this version of django")
 
-        filter_field = getattr(view, 'distance_ordering_filter_field', None)
+        filter_field = getattr(view, "distance_ordering_filter_field", None)
 
         if not filter_field:
             return queryset
 
         point = self.get_filter_point(request, srid=self.srid)
+        print("\nPOINT: ", point)
         if not point:
             return queryset
 
         order = request.query_params.get(self.order_param)
-        if order == 'desc':
-            return queryset.order_by(-GeometryDistance(filter_field, point))
+        if order == "desc":
+            queryset = queryset.order_by(-GeometryDistance(filter_field, point))
         else:
-            return queryset.order_by(GeometryDistance(filter_field, point))
+            queryset = queryset.order_by(GeometryDistance(filter_field, point))
+
+        # distance in meters
+        dist_string = request.query_params.get(self.dist_param, 1000)
+        try:
+            dist = float(dist_string)
+        except ValueError:
+            raise ParseError(
+                "Invalid distance string supplied for parameter {}".format(
+                    self.dist_param,
+                ),
+            )
+
+        convert_distance_input = getattr(view, "distance_filter_convert_meters", False)
+        if convert_distance_input:
+            # Warning:  assumes that the point is (lon,lat)
+            dist = self.dist_to_deg(dist, point[1])
+        geoDjango_filter = "dwithin"  # use dwithin for points
+        return queryset.filter(
+            Q(**{f"{filter_field}__{geoDjango_filter}": (point, dist)}),
+            # Using the following line gives error:
+            # Only numeric values of degree units are allowed on geographic DWithin queries.
+            # Q(**{f"{filter_field}__{geoDjango_filter}": (point, django.contrib.gis.measure.Distance(m=dist))}),
+
+        )
+
+    def get_schema_fields(self, view):
+        params = super().get_schema_fields(view)
+        params.extend(
+            [
+                coreapi.Field(
+                    name=self.point_param,
+                    required=False,
+                    location="query",
+                    schema=coreschema.Array(
+                        title="point parameter title",
+                        description="Point represented in **longitude,latitude** format.",
+                        items={"type": "float"},
+                        min_items=2,
+                        max_items=2,
+                    ),
+                ),
+                coreapi.Field(
+                    name=self.dist_param,
+                    required=False,
+                    location="query",
+                    schema=coreschema.Number(
+                        title="distance parameter",
+                        description="Distance from the point (in meters) to limit the search area.",
+                    ),
+                ),
+                coreapi.Field(
+                    name=self.order_param,
+                    required=False,
+                    location="query",
+                    schema=coreschema.Enum(
+                        enum=("asc", "desc"),
+                        title="order direction",
+                        description="The direction to sort results when comparing distance.",
+                    ),
+                ),
+            ],
+        )
+
+        return params
 
     def get_schema_operation_parameters(self, view):
         params = super().get_schema_operation_parameters(view)
-        params.append(
+        params.extend([
             {
                 "name": self.order_param,
                 "required": False,
@@ -307,4 +375,6 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
                 "style": "form",
                 "explode": False,
             }
+            ]
         )
+        return params

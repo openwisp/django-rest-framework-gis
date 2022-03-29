@@ -27,6 +27,7 @@ from .views import (
     GeojsonLocationContainedInBBoxList,
     GeojsonLocationContainedInTileList,
     GeojsonLocationWithinDistanceOfPointList,
+    GeojsonLocationOrderDistanceToPointList,
     ModelViewWithPolygon,
     geojson_location_list,
 )
@@ -662,4 +663,56 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                 },
                 "required": ["random_field1", "random_field2", "polygon"],
             },
+        )
+
+    def test_distance_to_point_ordering_filter(self):
+        path = "/"
+        method = "GET"
+        view = create_view(
+            GeojsonLocationOrderDistanceToPointList, "GET", create_request("/")
+        )
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        generated_schema = inspector.get_filter_parameters(path, method)
+        self.assertListEqual(
+            generated_schema,
+            [
+                {
+                    "name": "dist",
+                    "required": False,
+                    "in": "query",
+                    "schema": {"type": "number", "format": "float", "default": 1000},
+                    "description": "Represents **Distance** in **Distance to point** filter. "
+                    "Default value is used only if ***point*** is passed.",
+                },
+                {
+                    "name": "point",
+                    "required": False,
+                    "in": "query",
+                    "description": "Point represented in **x,y** format. "
+                    "Represents **point** in **Distance to point filter**",
+                    "schema": {
+                        "type": "array",
+                        "items": {"type": "float"},
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "example": [0, 10],
+                    },
+                    "style": "form",
+                    "explode": False,
+                },
+                {
+                    "name": "order",
+                    "required": False,
+                    "in": "query",
+                    "description": "",
+                    "schema": {
+                        "type": "enum",
+                        "items": {"type": "string", "enum": ["asc", "desc"]},
+                        "example": "desc",
+                    },
+                    "style": "form",
+                    "explode": False,
+                }
+            ],
         )
