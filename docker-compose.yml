@@ -11,7 +11,6 @@ services:
             - postgres
         environment:
             - DJANGO_SETTINGS_MODULE=settings
-            - PGPORT=5431
         volumes:
             - root_dir:/root
             - ./rest_framework_gis:/project/rest_framework_gis
@@ -26,9 +25,8 @@ services:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
           POSTGRES_DB: django_restframework_gis
-          PGPORT: 5431
         ports: 
-          - 5431:5431
+          - 5432:5432
         volumes:
             - postgres_data:/var/lib/postgresql/data
 

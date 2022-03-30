@@ -356,7 +356,8 @@ class TestRestFrameworkGisFilters(TestCase):
     def test_DistanceToPointOrderingFilter_filtering(self):
         """
         Checks that the DistanceOrderingFilter returns the objects in the correct order
-        given the geometry defined by the URL parameters
+        given the geometry defined by the URL parameters. Also checks that the
+        DistanceToPointOrderingFilter can accept a dist parameter
         """
         self.assertEqual(Location.objects.count(), 0)
 
@@ -430,25 +431,15 @@ class TestRestFrameworkGisFilters(TestCase):
                 'Chicago',
             ],
         )
+
+        # Test dist parameter
         distance = 5
         url_params = '?point=%i,%i&dist=%i&format=json' % (point[0], point[1], distance)
         response = self.client.get(
             '%s%s' % (self.location_order_distance_to_point, url_params)
         )
-        self.assertEqual(len(response.data['features']), 8)
-        self.assertEqual(
-            [city['properties']['name'] for city in response.data['features']],
-            [
-                'Chicago',
-                'Lawrence',
-                'Oklahoma City',
-                'Dallas',
-                'Houston',
-                'Pueblo',
-                'Victoria',
-                'Wellington',
-            ],
-        )
+        self.assertEqual(len(response.data['features']), 1)
+        self.assertEqual(response.data['features'][0]['properties']['name'], 'Chicago')
 
     @skipIf(
         has_spatialite,

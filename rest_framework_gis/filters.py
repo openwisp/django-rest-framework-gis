@@ -3,7 +3,6 @@ import coreapi
 import coreschema
 
 from django.contrib.gis import forms
-import django.contrib.gis.measure
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point, Polygon
 from django.core.exceptions import ImproperlyConfigured
@@ -277,20 +276,19 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
 
     def filter_queryset(self, request, queryset, view):
         if not GeometryDistance:
-            raise ValueError("GeometryDistance not available on this version of django")
+            raise ValueError('GeometryDistance not available on this version of django')
 
-        filter_field = getattr(view, "distance_ordering_filter_field", None)
+        filter_field = getattr(view, 'distance_ordering_filter_field', None)
 
         if not filter_field:
             return queryset
 
         point = self.get_filter_point(request, srid=self.srid)
-        print("\nPOINT: ", point)
         if not point:
             return queryset
 
         order = request.query_params.get(self.order_param)
-        if order == "desc":
+        if order == 'desc':
             queryset = queryset.order_by(-GeometryDistance(filter_field, point))
         else:
             queryset = queryset.order_by(GeometryDistance(filter_field, point))
@@ -313,10 +311,6 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
         geoDjango_filter = "dwithin"  # use dwithin for points
         return queryset.filter(
             Q(**{f"{filter_field}__{geoDjango_filter}": (point, dist)}),
-            # Using the following line gives error:
-            # Only numeric values of degree units are allowed on geographic DWithin queries.
-            # Q(**{f"{filter_field}__{geoDjango_filter}": (point, django.contrib.gis.measure.Distance(m=dist))}),
-
         )
 
     def get_schema_fields(self, view):
