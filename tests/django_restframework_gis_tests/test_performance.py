@@ -22,7 +22,7 @@ if (
         NUMBER_OF_LOCATIONS = 10000
 
         def _create_data(self):
-            """ creates a bunch of gis models instances """
+            """creates a bunch of gis models instances"""
             locations = []
             name = 'l{0}'
             slug = 'l{0}'

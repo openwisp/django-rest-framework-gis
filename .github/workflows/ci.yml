@@ -90,7 +90,7 @@ jobs:
         run: |
           pip install -U pip wheel setuptools
           pip install -U -r requirements-test.txt
-          pip install tox docutils pygments
+          pip install tox docutils pygments twine
 
       - name: QA checks
         run: |
@@ -99,7 +99,6 @@ jobs:
       - name: Tests
         run: |
           tox -e ${{ matrix.env.TOXENV }}
-          python setup.py check -r -s
         env:
           POSTGRES_HOST: localhost
 

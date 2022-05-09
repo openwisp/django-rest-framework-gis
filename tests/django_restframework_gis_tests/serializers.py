@@ -43,7 +43,7 @@ __all__ = [
 
 
 class LocationGeoSerializer(serializers.ModelSerializer):
-    """ location geo serializer  """
+    """location geo serializer"""
 
     details = serializers.HyperlinkedIdentityField(view_name='api_location_details')
 
@@ -59,7 +59,7 @@ class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
 
 
 class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
-    """ location geo serializer  """
+    """location geo serializer"""
 
     details = serializers.HyperlinkedIdentityField(
         view_name='api_geojson_location_details'
@@ -76,7 +76,7 @@ class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
 
 
 class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
-    """ use slug as id attribute  """
+    """use slug as id attribute"""
 
     class Meta:
         model = Location
@@ -86,7 +86,7 @@ class LocationGeoFeatureSlugSerializer(LocationGeoFeatureSerializer):
 
 
 class LocationGeoFeatureFalseIdSerializer(LocationGeoFeatureSerializer):
-    """ id attribute set as False """
+    """id attribute set as False"""
 
     class Meta:
         model = Location
@@ -108,7 +108,7 @@ class LocationGeoFeatureNoIdSerializer(LocationGeoFeatureSerializer):
 
 
 class LocationGeoFeatureWritableIdSerializer(LocationGeoFeatureSerializer):
-    """ default id attribute  """
+    """default id attribute"""
 
     class Meta:
         model = Location
@@ -119,7 +119,7 @@ class LocationGeoFeatureWritableIdSerializer(LocationGeoFeatureSerializer):
 
 
 class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
-    """ located file geo serializer  """
+    """located file geo serializer"""
 
     details = serializers.HyperlinkedIdentityField(
         view_name='api_geojson_located_file_details'
@@ -137,7 +137,7 @@ class LocatedFileGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer)
 
 
 class BoxedLocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
-    """ location geo serializer  """
+    """location geo serializer"""
 
     details = serializers.HyperlinkedIdentityField(
         view_name='api_geojson_boxedlocation_details'

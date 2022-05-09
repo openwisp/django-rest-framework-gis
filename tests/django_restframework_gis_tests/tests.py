@@ -106,7 +106,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 2)
 
     def test_post_location_list_geojson_as_multipartformdata(self):
-        """ emulate sending geojson string in webform """
+        """emulate sending geojson string in webform"""
         self.assertEqual(Location.objects.count(), 0)
         data = {
             "name": "geojson input test",
@@ -278,7 +278,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data['geometry'][0], self.gdal_error_message)
 
     def test_geojson_format(self):
-        """ test geojson format """
+        """test geojson format"""
         location = Location.objects.create(
             name='geojson test', geometry='POINT (135.0 45.0)'
         )
@@ -339,7 +339,9 @@ class TestRestFrameworkGis(TestCase):
         }
         url = reverse('api_geojson_location_writable_id_list')
         response = self.client.post(
-            url, data=json.dumps(data), content_type='application/json',
+            url,
+            data=json.dumps(data),
+            content_type='application/json',
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
@@ -489,7 +491,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 1)
 
     def test_geofeatured_model_post_as_multipartformdata(self):
-        """ emulate sending geojson string in webform """
+        """emulate sending geojson string in webform"""
         self.assertEqual(Location.objects.count(), 0)
         data = {
             "name": "geojson input test",
@@ -716,14 +718,17 @@ class TestRestFrameworkGis(TestCase):
     def test_pickle(self):
         geometry = GEOSGeometry('POINT (30 10)')
         geojsondict = GeoJsonDict(
-            (('type', geometry.geom_type), ('coordinates', geometry.coords),)
+            (
+                ('type', geometry.geom_type),
+                ('coordinates', geometry.coords),
+            )
         )
         pickled = pickle.dumps(geojsondict)
         restored = pickle.loads(pickled)
         self.assertEqual(restored, geojsondict)
 
     def test_geometrycollection_geojson(self):
-        """ test geometry collection geojson behaviour """
+        """test geometry collection geojson behaviour"""
         location = Location.objects.create(
             name='geometry collection geojson test',
             geometry='GEOMETRYCOLLECTION ('

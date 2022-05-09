@@ -1,6 +1,21 @@
 Changelog
 =========
 
+Version 1.0.0 [2022-05-09]
+--------------------------
+
+Features
+~~~~~~~~
+
+- Added support Bounding Box to ``GeometryField`` via the ``auto_bbox``
+  initialization argument
+
+Bugfixes
+~~~~~~~~
+
+- Avoid ``default_app_config`` Deprecation Warning in Django >= 3.2
+- Fixed deserialization of the ``id_field``
+
 Version 0.18.0 [2022-01-07]
 ---------------------------
 
