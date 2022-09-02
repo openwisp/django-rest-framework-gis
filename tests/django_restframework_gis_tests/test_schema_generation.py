@@ -541,7 +541,7 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                 "description": "Specify a bounding box as filter: in_bbox=min_lon,min_lat,max_lon,max_lat",
                 "schema": {
                     "type": "array",
-                    "items": {"type": "float"},
+                    "items": {"type": "number", "format": "float"},
                     "minItems": 4,
                     "maxItems": 4,
                     "example": [0, 0, 10, 10],
@@ -599,7 +599,7 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                     "Represents **point** in **Distance to point filter**",
                     "schema": {
                         "type": "array",
-                        "items": {"type": "float"},
+                        "items": {"type": "number", "format": "float"},
                         "minItems": 2,
                         "maxItems": 2,
                         "example": [0, 10],
