@@ -1,0 +1,32 @@
+repos:
+  # Remove unused imports/variables
+  - repo: https://github.com/myint/autoflake
+    rev: v2.2.0
+    hooks:
+      - id: autoflake
+        args:
+          - "--in-place"
+          - "--remove-all-unused-imports"
+          - "--remove-unused-variables"
+
+  - repo: https://github.com/pycqa/flake8
+    rev: "6.1.0"
+    hooks:
+      - id: flake8
+        exclude: |
+          ./tests/.*settings.*.py
+          docs/.*
+        args:
+        - '--max-line-length=110'
+        - '--ignore=W605,W503,W504'
+
+  - repo: https://github.com/pycqa/isort
+    rev: "5.12.0"
+    hooks:
+      - id: isort
+        args:
+        - 'multi_line_output=3'
+        - 'use_parentheses=True'
+        - 'include_trailing_comma=True'
+        - 'force_grid_wrap=0'
+        - 'line_length=88'
