@@ -20,7 +20,7 @@ services:
         command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests && ./run-qa-checks"
 
     postgres:
-        image: mdillon/postgis:10-alpine
+        image: postgis/postgis:13-3.3
         environment:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
