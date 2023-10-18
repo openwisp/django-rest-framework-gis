@@ -250,6 +250,9 @@ to be serialized as the "geometry". For example:
             # as with a ModelSerializer.
             fields = ('id', 'address', 'city', 'state')
 
+If your model is geometry-less, you can set ``geo_field`` to ``None``
+and a null geometry will be produced.
+
 Using GeometrySerializerMethodField as "geo_field"
 ##################################################
 
