@@ -116,7 +116,7 @@ class GeometryFilter(django_filters.Filter):
 
 class GeoFilterSet(django_filters.FilterSet):
     GEOFILTER_FOR_DBFIELD_DEFAULTS = {
-        models.GeometryField: {'filter_class': GeometryFilter},
+        models.GeometryField: {'filterset_class': GeometryFilter},
     }
 
     def __new__(cls, *args, **kwargs):
