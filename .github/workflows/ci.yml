@@ -92,10 +92,6 @@ jobs:
           pip install -U -r requirements-test.txt
           pip install tox docutils pygments twine
 
-      - name: QA checks
-        run: |
-          ./run-qa-checks
-
       - name: Tests
         run: |
           tox -e ${{ matrix.env.TOXENV }}
@@ -109,6 +105,10 @@ jobs:
           COVERALLS_FLAG_NAME: |
            python-${{ matrix.env.env }}
           COVERALLS_PARALLEL: true
+
+      - name: QA checks
+        run: |
+          ./run-qa-checks
 
   coveralls:
     name: Finish Coveralls
