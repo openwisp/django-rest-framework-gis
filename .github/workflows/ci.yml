@@ -108,6 +108,7 @@ jobs:
 
       - name: QA checks
         run: |
+          pip install "importlib-metadata<5.0"  # remove when flake8 is upgraded
           ./run-qa-checks
 
   coveralls:
