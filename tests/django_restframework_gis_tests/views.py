@@ -208,7 +208,7 @@ class LocationFilter(GeoFilterSet):
 class GeojsonLocationContainedInGeometry(generics.ListAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationGeoSerializer
-    filter_class = LocationFilter
+    filterset_class = LocationFilter
 
     filter_backends = (DjangoFilterBackend,)
 
