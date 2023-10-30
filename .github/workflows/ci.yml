@@ -10,7 +10,21 @@ on:
       - master
 
 jobs:
-  build:
+  qa-tests:
+    name: QA tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: QA checks
+        run: |
+          pip install -r requirements-test-qa.txt
+          pip install "importlib-metadata<5.0"  # remove when flake8 is upgraded
+          ./run-qa-checks
+
+  unit-tests:
     name: Python==${{ matrix.env.python }} | ${{ matrix.env.TOXENV }}
     runs-on: ubuntu-20.04
 
@@ -72,9 +86,7 @@ jobs:
           - python: 3.9
             TOXENV: py39-django40-djangorestframework313
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.env.python }}
         uses: actions/setup-python@v2
@@ -89,7 +101,7 @@ jobs:
       - name: Install python dependencies
         run: |
           pip install -U pip wheel setuptools
-          pip install -U -r requirements-test.txt
+          pip install -U -r requirements-unit-test.txt
           pip install tox docutils pygments twine
 
       - name: Tests
@@ -106,14 +118,9 @@ jobs:
            python-${{ matrix.env.env }}
           COVERALLS_PARALLEL: true
 
-      - name: QA checks
-        run: |
-          pip install "importlib-metadata<5.0"  # remove when flake8 is upgraded
-          ./run-qa-checks
-
   coveralls:
     name: Finish Coveralls
-    needs: build
+    needs: unit-tests
     runs-on: ubuntu-latest
     container: python:3-slim
     steps:
