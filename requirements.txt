@@ -1,0 +1,16 @@
+autopep8==1.6.0
+certifi==2021.10.8
+distlib==0.3.4
+filelock==3.6.0
+packaging==21.3
+platformdirs==2.5.1
+pluggy==1.0.0
+py==1.11.0
+pycodestyle==2.8.0
+pyparsing==3.0.7
+six==1.16.0
+toml==0.10.2
+tox==3.24.5
+virtualenv==20.13.4
+coreapi==2.3.3
+coreschema==0.0.4
