@@ -308,3 +308,4 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
                 "explode": False,
             }
         )
+        return params
