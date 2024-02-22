@@ -292,8 +292,8 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
             return queryset.order_by(GeometryDistance(filter_field, point))
 
     def get_schema_operation_parameters(self, view):
-        params = super().get_schema_operation_parameters(view)
-        params.append(
+        return [
+            *super().get_schema_operation_parameters(view),
             {
                 "name": self.order_param,
                 "required": False,
@@ -306,5 +306,5 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
                 },
                 "style": "form",
                 "explode": False,
-            }
-        )
+            },
+        ]
