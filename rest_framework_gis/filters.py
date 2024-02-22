@@ -306,5 +306,5 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
                 },
                 "style": "form",
                 "explode": False,
-            }
+            },
         ]
