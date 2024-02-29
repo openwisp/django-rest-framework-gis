@@ -173,6 +173,36 @@ class LocationGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializ
         exclude = []
 
 
+class LocationGeoFeatureMethodAutoBboxSerializer(
+    gis_serializers.GeoFeatureModelSerializer
+):
+    new_geometry = gis_serializers.GeometrySerializerMethodField()
+
+    class Meta:
+        model = Location
+        geo_field = 'new_geometry'
+        auto_bbox = True
+        exclude = []
+
+    def get_new_geometry(self, obj):
+        return obj.geometry
+
+
+class LocationGeoFeatureMethodManualBboxSerializer(
+    gis_serializers.GeoFeatureModelSerializer
+):
+    new_geometry = gis_serializers.GeometrySerializerMethodField()
+
+    class Meta:
+        model = Location
+        geo_field = 'new_geometry'
+        bbox_geo_field = 'new_geometry'
+        exclude = []
+
+    def get_new_geometry(self, obj):
+        return obj.geometry
+
+
 class NoneGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
     new_geometry = gis_serializers.GeometrySerializerMethodField()
 
