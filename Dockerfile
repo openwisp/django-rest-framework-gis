@@ -23,6 +23,6 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /project
 
-COPY requirements-test.txt /project/
+COPY requirements-unit-test.txt /project/
 
-RUN pip install --no-cache-dir -r requirements-test.txt
+RUN pip install --no-cache-dir -r requirements-unit-test.txt

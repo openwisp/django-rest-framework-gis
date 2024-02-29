@@ -721,7 +721,7 @@ Install the test requirements:
 
 .. code-block:: shell
 
-    pip install -r requirements-test.txt
+    pip install -r requirements-test-qa.txt
 
 Reformat the code according to
 `our coding style conventions with <https://openwisp.io/docs/developer/contributing.html#coding-style-conventions>`_:
