@@ -23,6 +23,11 @@ urlpatterns = [
         name='api_geojson_nullable_details',
     ),
     path(
+        'geojson_nogeo/<int:pk>/',
+        views.geojson_nullable_details_nogeo,
+        name='api_geojson_nullable_details_nogeo',
+    ),
+    path(
         'geojson_hidden/<int:pk>/',
         views.geojson_location_details_hidden,
         name='api_geojson_location_details_hidden',
