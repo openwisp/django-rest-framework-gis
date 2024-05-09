@@ -1,0 +1,2 @@
+# QA checks
+openwisp-utils[qa]~=1.0.0
