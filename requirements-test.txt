@@ -3,4 +3,4 @@ django-filter>=2.0
 contexttimer
 # QA checks
 openwisp-utils[qa]~=1.0.5
-packaging~=20.4
+packaging~=24.1
