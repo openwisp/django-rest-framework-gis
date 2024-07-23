@@ -251,6 +251,9 @@ to be serialized as the "geometry". For example:
             # as with a ModelSerializer.
             fields = ('id', 'address', 'city', 'state')
 
+If your model is geometry-less, you can set ``geo_field`` to ``None``
+and a null geometry will be produced.
+
 Using GeometrySerializerMethodField as "geo_field"
 ##################################################
 
@@ -755,8 +758,8 @@ Contributing
 8. Document your changes
 9. Send pull request
 
-.. |Build Status| image:: https://github.com/openwisp/django-rest-framework-gis/workflows/Django%20Rest%20Framework%20Gis%20CI%20Build/badge.svg?branch=master
-   :target: https://github.com/openwisp/django-rest-framework-gis/actions?query=workflow%3A%22Django+Rest+Framework+Gis+CI+Build%22
+.. |Build Status| image:: https://github.com/openwisp/django-rest-framework-gis/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/openwisp/django-rest-framework-gis/actions/workflows/ci.yml
 .. |Coverage Status| image:: https://coveralls.io/repos/openwisp/django-rest-framework-gis/badge.svg
    :target: https://coveralls.io/r/openwisp/django-rest-framework-gis
 .. |Requirements Status| image:: https://img.shields.io/librariesio/release/github/openwisp/django-rest-framework-gis
