@@ -16,7 +16,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:10-2.5
+        image: postgis/postgis:13-3.3
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
@@ -71,6 +71,39 @@ jobs:
             TOXENV: py38-django40-djangorestframework313
           - python: 3.9
             TOXENV: py39-django40-djangorestframework313
+          - python: 3.8
+            TOXENV: py38-django41-djangorestframework313
+          - python: 3.9
+            TOXENV: py39-django41-djangorestframework313
+          - python: "3.10"
+            TOXENV: py310-django41-djangorestframework313
+          - python: 3.11
+            TOXENV: py311-django41-djangorestframework313
+          - python: 3.8
+            TOXENV: py38-django42-djangorestframework313
+          - python: 3.9
+            TOXENV: py39-django42-djangorestframework313
+          - python: "3.10"
+            TOXENV: py310-django42-djangorestframework313
+          - python: 3.11
+            TOXENV: py311-django42-djangorestframework313
+          - python: 3.8
+            TOXENV: py38-django41-djangorestframework314
+          - python: 3.9
+            TOXENV: py39-django41-djangorestframework314
+          - python: "3.10"
+            TOXENV: py310-django41-djangorestframework314
+          - python: 3.11
+            TOXENV: py311-django41-djangorestframework314
+          - python: 3.8
+            TOXENV: py38-django42-djangorestframework314
+          - python: 3.9
+            TOXENV: py39-django42-djangorestframework314
+          - python: "3.10"
+            TOXENV: py310-django42-djangorestframework314
+          - python: 3.11
+            TOXENV: py311-django42-djangorestframework314
+
     steps:
       - uses: actions/checkout@v2
         with:
