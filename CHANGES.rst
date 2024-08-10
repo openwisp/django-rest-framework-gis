@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Version 1.0.1 [2024-07-07]
+
+- [fix] Add missing return statement for schema `#293
+ <https://github.com/openwisp/django-rest-framework-gis/issues/293>`_
+
+- Updated django-filter filterset_class syntax
+
+- Allow geometry-less models
+
+
 Version 1.0.0 [2022-05-09]
 --------------------------
 
@@ -20,7 +30,7 @@ Version 0.18.0 [2022-01-07]
 ---------------------------
 
 - [fix] Add schema generation support for plain GeometryFields `#257
-  <https://github.com/openwisp/django-rest-framework-gis/issues/#257>`_
+  <https://github.com/openwisp/django-rest-framework-gis/issues/257>`_
 - [fix] Fixed psycopg2 compatibility for Django 3.0
 - [feature] Added support and CI testing for Django 3.2 and Django 4.0
 
