@@ -1,8 +1,4 @@
-from unittest import SkipTest
-
-import rest_framework
 from django.test import RequestFactory, TestCase
-from packaging import version
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.schemas.openapi import SchemaGenerator
@@ -30,11 +26,6 @@ from .views import (
     ModelViewWithPolygon,
     geojson_location_list,
 )
-
-is_pre_drf_312 = version.parse(rest_framework.VERSION) < version.parse('3.12')
-
-if is_pre_drf_312:
-    raise SkipTest('Skip this test if DRF < 3.12')
 
 
 def create_request(path):

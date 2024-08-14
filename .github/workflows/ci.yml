@@ -29,48 +29,32 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - python: 3.6
-            TOXENV: py36-django22-djangorestframework310
-          - python: 3.7
-            TOXENV: py37-django22-djangorestframework310
-          - python: 3.8
-            TOXENV: py38-django22-djangorestframework310
-          - python: 3.9
-            TOXENV: py39-django22-djangorestframework310
-          - python: 3.6
-            TOXENV: py36-django22-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django22-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django22-djangorestframework312
-          - python: 3.9
-            TOXENV: py39-django22-djangorestframework312
-          - python: 3.6
-            TOXENV: py36-django30-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django30-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django30-djangorestframework312
-          - python: 3.9
-            TOXENV: py39-django30-djangorestframework312
-          - python: 3.6
-            TOXENV: py36-django31-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django31-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django31-djangorestframework312
-          - python: 3.9
-            TOXENV: py39-django31-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django32-djangorestframework312
-          - python: 3.8
+          - python: '3.8'
             TOXENV: py38-django32-djangorestframework312
-          - python: 3.9
+          - python: '3.8'
+            TOXENV: py38-django32-djangorestframework313
+          - python: '3.8'
+            TOXENV: py38-django32-djangorestframework314
+          - python: '3.8'
+            TOXENV: py38-django42-djangorestframework314
+          - python: '3.9'
             TOXENV: py39-django32-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django40-djangorestframework313
-          - python: 3.9
-            TOXENV: py39-django40-djangorestframework313
+          - python: '3.9'
+            TOXENV: py39-django32-djangorestframework313
+          - python: '3.9'
+            TOXENV: py39-django32-djangorestframework314
+          - python: '3.9'
+            TOXENV: py39-django42-djangorestframework314
+          - python: '3.10'
+            TOXENV: py310-django32-djangorestframework312
+          - python: '3.10'
+            TOXENV: py310-django32-djangorestframework313
+          - python: '3.10'
+            TOXENV: py310-django32-djangorestframework314
+          - python: '3.10'
+            TOXENV: py310-django42-djangorestframework314
+          - python: '3.11'
+            TOXENV: py311-django42-djangorestframework314
     steps:
       - uses: actions/checkout@v4
         with:
@@ -114,9 +98,6 @@ jobs:
           format: cobertura
           flag-name: python-${{ matrix.env.env }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-
-
 
   coveralls:
     needs: build
