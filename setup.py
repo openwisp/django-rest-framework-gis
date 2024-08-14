@@ -36,7 +36,7 @@ setup(
     platforms=['Platform Indipendent'],
     keywords=['django', 'rest-framework', 'gis', 'geojson'],
     packages=find_packages(exclude=['tests', 'tests.*']),
-    install_requires=['djangorestframework'],
+    install_requires=['djangorestframework>=3.12,<3.15', 'django-filter~=23.5'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
