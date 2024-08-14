@@ -1,6 +1,30 @@
 Changelog
 =========
 
+Version 1.1.0 [2024-08-14]
+--------------------------
+
+Features
+~~~~~~~~
+
+- Allowed ``GeoFeatureModelSerializer`` to support models without geometry field.
+
+Changes
+~~~~~~~
+
+**Dependencies:**
+
+- Bumped ``django-filters~=23.5``.
+- Added support for Django ``4.2``.
+- Dropped support for Python ``3.6`` and ``3.7``.
+- Dropped support for Django ``2.2``, ``3.0``, ``3.1`` and ``4.0``.
+- Dropped support for ``djangorestframework < 3.12``.
+
+Bugfixes
+~~~~~~~~
+
+- Fixed schema generation for ``DistanceToPointOrderingFilter``
+
 Version 1.0.0 [2022-05-09]
 --------------------------
 
