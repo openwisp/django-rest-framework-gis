@@ -5,7 +5,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('django_restframework_gis_tests', '0003_schema_models'),
     ]

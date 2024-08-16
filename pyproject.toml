@@ -1,0 +1,22 @@
+[tool.coverage.run]
+source = ["rest_framework_gis"]
+parallel = true
+concurrency = ["multiprocessing"]
+omit = [
+    "rest_framework_gis/__init__.py",
+    "*/tests/*",
+    "*/migrations/*",
+]
+
+[tool.docstrfmt]
+extend_exclude = ["**/*.py", "README.rst"]
+
+[tool.isort]
+known_third_party = ["django", "rest_framework"]
+default_section = "THIRDPARTY"
+line_length = 88
+multi_line_output = 3
+use_parentheses = true
+include_trailing_comma = true
+force_grid_wrap = 0
+
