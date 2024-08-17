@@ -6,7 +6,7 @@ django-rest-framework-gis
 Geographic add-ons for Django Rest Framework.
 
 - `Discussions <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
-- `Mailing List <http://bit.ly/1M4sLTp>`__.
+- `Mailing List <http://bit.ly/1M4sLTp>`__
 
 Install last stable version from pypi
 -------------------------------------
