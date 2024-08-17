@@ -3,8 +3,10 @@ django-rest-framework-gis
 
 |Build Status| |Coverage Status| |Requirements Status| |PyPI version| |PyPI downloads| |Black|
 
-Geographic add-ons for Django Rest Framework - `Mailing
-List <http://bit.ly/1M4sLTp>`__.
+Geographic add-ons for Django Rest Framework.
+
+- `Discussions <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
+- `Mailing List <http://bit.ly/1M4sLTp>`__.
 
 Install last stable version from pypi
 -------------------------------------
@@ -745,9 +747,8 @@ In docker testing, QA checks are executed automatically.
 Contributing
 ------------
 
-1. Join the `Django REST Framework GIS Mailing
-   List <https://groups.google.com/forum/#!forum/django-rest-framework-gis>`__
-   and announce your intentions
+1. Announce your intentions in the
+  `Github Discussions Forum <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
 2. Follow the `PEP8 Style Guide for Python
    Code <http://www.python.org/dev/peps/pep-0008/>`__
 3. Fork this repo
