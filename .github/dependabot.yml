@@ -11,3 +11,9 @@ updates:
       interval: "monthly"
     commit-message:
       prefix: "[deps] "
+  - package-ecosystem: "github-actions" # Check for GitHub Actions updates
+    directory: "/"
+    schedule:
+      interval: "monthly" # Check for updates weekly
+    commit-message:
+      prefix: "[ci] "
