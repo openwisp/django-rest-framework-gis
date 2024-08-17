@@ -1,4 +1,6 @@
 from django.test import RequestFactory, TestCase
+from packaging.version import parse as parse_version
+from rest_framework import VERSION as DRF_VERSION
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.schemas.openapi import SchemaGenerator
@@ -489,28 +491,28 @@ class TestPaginationSchemaGeneration(TestCase):
         )
         self.assertIn("features", generated_schema["properties"])
         generated_schema["properties"].pop("features")
-        self.assertDictEqual(
-            generated_schema,
-            {
-                "type": "object",
-                "properties": {
-                    "type": {"type": "string", "enum": ["FeatureCollection"]},
-                    "count": {"type": "integer", "example": 123},
-                    "next": {
-                        "type": "string",
-                        "nullable": True,
-                        "format": "uri",
-                        "example": "http://api.example.org/accounts/?page=4",
-                    },
-                    "previous": {
-                        "type": "string",
-                        "nullable": True,
-                        "format": "uri",
-                        "example": "http://api.example.org/accounts/?page=2",
-                    },
+        expected_schema = {
+            "type": "object",
+            "properties": {
+                "type": {"type": "string", "enum": ["FeatureCollection"]},
+                "count": {"type": "integer", "example": 123},
+                "next": {
+                    "type": "string",
+                    "nullable": True,
+                    "format": "uri",
+                    "example": "http://api.example.org/accounts/?page=4",
+                },
+                "previous": {
+                    "type": "string",
+                    "nullable": True,
+                    "format": "uri",
+                    "example": "http://api.example.org/accounts/?page=2",
                 },
             },
-        )
+        }
+        if parse_version(DRF_VERSION) >= parse_version('3.15'):
+            expected_schema['required'] = ['count', 'results']
+        self.assertDictEqual(generated_schema, expected_schema)
 
 
 class TestRestFrameworkGisFiltersSchema(TestCase):
