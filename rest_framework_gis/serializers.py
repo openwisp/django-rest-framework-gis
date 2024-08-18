@@ -72,8 +72,11 @@ class GeoFeatureModelSerializer(ModelSerializer):
             default_id_field = primary_key
         meta.id_field = getattr(meta, 'id_field', default_id_field)
 
-        if not hasattr(meta, 'geo_field') or not meta.geo_field:
-            raise ImproperlyConfigured("You must define a 'geo_field'.")
+        if not hasattr(meta, 'geo_field'):
+            raise ImproperlyConfigured(
+                "You must define a 'geo_field'. "
+                "Set it to None if there is no geometry."
+            )
 
         def check_excludes(field_name, field_role):
             """make sure the field is not excluded"""
@@ -93,7 +96,9 @@ class GeoFeatureModelSerializer(ModelSerializer):
                     meta.fields += additional_fields
 
         check_excludes(meta.geo_field, 'geo_field')
-        add_to_fields(meta.geo_field)
+
+        if meta.geo_field is not None:
+            add_to_fields(meta.geo_field)
 
         meta.bbox_geo_field = getattr(meta, 'bbox_geo_field', None)
         if meta.bbox_geo_field:
@@ -128,12 +133,15 @@ class GeoFeatureModelSerializer(ModelSerializer):
         # must be "Feature" according to GeoJSON spec
         feature["type"] = "Feature"
 
-        # required geometry attribute
-        # MUST be present in output according to GeoJSON spec
-        field = self.fields[self.Meta.geo_field]
-        geo_value = field.get_attribute(instance)
-        feature["geometry"] = field.to_representation(geo_value)
-        processed_fields.add(self.Meta.geo_field)
+        # geometry attribute
+        # must be present in output according to GeoJSON spec
+        if self.Meta.geo_field:
+            field = self.fields[self.Meta.geo_field]
+            geo_value = field.get_attribute(instance)
+            feature["geometry"] = field.to_representation(geo_value)
+            processed_fields.add(self.Meta.geo_field)
+        else:
+            feature["geometry"] = None
 
         # Bounding Box
         # if auto_bbox feature is enabled
@@ -211,7 +219,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         """
         attrs = feature["properties"]
 
-        if 'geometry' in feature:
+        if 'geometry' in feature and self.Meta.geo_field:
             attrs[self.Meta.geo_field] = feature['geometry']
 
         if self.Meta.id_field and 'id' in feature:

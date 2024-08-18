@@ -16,7 +16,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:10-2.5
+        image: postgis/postgis:15-3.4-alpine
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
@@ -29,65 +29,58 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - python: 3.6
-            TOXENV: py36-django22-djangorestframework310
-          - python: 3.7
-            TOXENV: py37-django22-djangorestframework310
-          - python: 3.8
-            TOXENV: py38-django22-djangorestframework310
-          - python: 3.9
-            TOXENV: py39-django22-djangorestframework310
-          - python: 3.6
-            TOXENV: py36-django22-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django22-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django22-djangorestframework312
-          - python: 3.9
-            TOXENV: py39-django22-djangorestframework312
-          - python: 3.6
-            TOXENV: py36-django30-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django30-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django30-djangorestframework312
-          - python: 3.9
-            TOXENV: py39-django30-djangorestframework312
-          - python: 3.6
-            TOXENV: py36-django31-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django31-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django31-djangorestframework312
-          - python: 3.9
-            TOXENV: py39-django31-djangorestframework312
-          - python: 3.7
-            TOXENV: py37-django32-djangorestframework312
-          - python: 3.8
+          - python: '3.8'
             TOXENV: py38-django32-djangorestframework312
-          - python: 3.9
+          - python: '3.8'
+            TOXENV: py38-django32-djangorestframework313
+          - python: '3.8'
+            TOXENV: py38-django32-djangorestframework314
+          - python: '3.8'
+            TOXENV: py38-django42-djangorestframework314
+          - python: '3.9'
             TOXENV: py39-django32-djangorestframework312
-          - python: 3.8
-            TOXENV: py38-django40-djangorestframework313
-          - python: 3.9
-            TOXENV: py39-django40-djangorestframework313
+          - python: '3.9'
+            TOXENV: py39-django32-djangorestframework313
+          - python: '3.9'
+            TOXENV: py39-django32-djangorestframework314
+          - python: '3.9'
+            TOXENV: py39-django42-djangorestframework314
+          - python: '3.10'
+            TOXENV: py310-django32-djangorestframework312
+          - python: '3.10'
+            TOXENV: py310-django32-djangorestframework313
+          - python: '3.10'
+            TOXENV: py310-django32-djangorestframework314
+          - python: '3.10'
+            TOXENV: py310-django42-djangorestframework314
+          - python: '3.11'
+            TOXENV: py311-django42-djangorestframework314
+          - python: '3.11'
+            TOXENV: py311-django50-djangorestframework315
+          - python: '3.12'
+            TOXENV: py312-django50-djangorestframework315
+          - python: '3.11'
+            TOXENV: py311-django51-djangorestframework315
+          - python: '3.12'
+            TOXENV: py312-django51-djangorestframework315
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set up Python ${{ matrix.env.python }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.env.python }}
+          cache: 'pip'
+          cache-dependency-path: |
+            **/requirements*.txt
 
-      - name: Install system packages
+      - name: Install Dependencies
+        id: deps
         run: |
-          sudo apt-get update
-          sudo apt-get install binutils libproj-dev gdal-bin -y
-
-      - name: Install python dependencies
-        run: |
+          sudo apt -qq update
+          sudo apt -qq -y install binutils libproj-dev gdal-bin
           pip install -U pip wheel setuptools
           pip install -U -r requirements-test.txt
           pip install tox docutils pygments twine
@@ -97,28 +90,28 @@ jobs:
           ./run-qa-checks
 
       - name: Tests
+        if: ${{ !cancelled() && steps.deps.conclusion == 'success' }}
         run: |
           tox -e ${{ matrix.env.TOXENV }}
+          coverage combine
+          coverage xml
         env:
           POSTGRES_HOST: localhost
 
       - name: Upload Coverage
-        run: coveralls --service=github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: |
-           python-${{ matrix.env.env }}
-          COVERALLS_PARALLEL: true
+        if: ${{ success() }}
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel: true
+          format: cobertura
+          flag-name: python-${{ matrix.env.env }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   coveralls:
-    name: Finish Coveralls
     needs: build
     runs-on: ubuntu-latest
-    container: python:3-slim
     steps:
-      - name: Finished
-        run: |
-          pip3 install --upgrade coveralls
-          coveralls --finish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true

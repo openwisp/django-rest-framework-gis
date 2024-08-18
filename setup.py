@@ -1,20 +1,9 @@
 #!/usr/bin/env python
 import os
-import sys
 
 from setuptools import find_packages, setup
 
 from rest_framework_gis import get_version
-
-if sys.argv[-1] == 'publish':
-    os.system("python setup.py sdist bdist_wheel")
-    os.system("twine upload -s dist/*")
-    os.system("rm -rf dist build")
-    args = {'version': get_version()}
-    print("You probably want to also tag the version now:")
-    print("  git tag -a %(version)s -m 'version %(version)s'" % args)
-    print("  git push --tags")
-    sys.exit()
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -36,7 +25,7 @@ setup(
     platforms=['Platform Indipendent'],
     keywords=['django', 'rest-framework', 'gis', 'geojson'],
     packages=find_packages(exclude=['tests', 'tests.*']),
-    install_requires=['djangorestframework'],
+    install_requires=['djangorestframework>=3.12,<3.16', 'django-filter>=23.5,<25.0'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
@@ -47,10 +36,11 @@ setup(
         'Framework :: Django',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3 :: Only',
     ],
     project_urls={

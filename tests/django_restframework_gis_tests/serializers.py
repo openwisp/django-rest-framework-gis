@@ -12,6 +12,7 @@ from .models import (
     MultiLineStringModel,
     MultiPointModel,
     MultiPolygonModel,
+    Nullable,
     PointModel,
     PolygonModel,
 )
@@ -182,6 +183,13 @@ class NoneGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = Location
         geo_field = 'new_geometry'
+        fields = ['name', 'slug', 'id']
+
+
+class NoGeoFeatureMethodSerializer(gis_serializers.GeoFeatureModelSerializer):
+    class Meta:
+        model = Nullable
+        geo_field = None
         fields = ['name', 'slug', 'id']
 
 

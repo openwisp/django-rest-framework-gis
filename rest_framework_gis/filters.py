@@ -116,7 +116,7 @@ class GeometryFilter(django_filters.Filter):
 
 class GeoFilterSet(django_filters.FilterSet):
     GEOFILTER_FOR_DBFIELD_DEFAULTS = {
-        models.GeometryField: {'filter_class': GeometryFilter},
+        models.GeometryField: {'filterset_class': GeometryFilter},
     }
 
     def __new__(cls, *args, **kwargs):
@@ -292,8 +292,8 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
             return queryset.order_by(GeometryDistance(filter_field, point))
 
     def get_schema_operation_parameters(self, view):
-        params = super().get_schema_operation_parameters(view)
-        params.append(
+        return [
+            *super().get_schema_operation_parameters(view),
             {
                 "name": self.order_param,
                 "required": False,
@@ -306,5 +306,5 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
                 },
                 "style": "form",
                 "explode": False,
-            }
-        )
+            },
+        ]

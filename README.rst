@@ -3,8 +3,10 @@ django-rest-framework-gis
 
 |Build Status| |Coverage Status| |Requirements Status| |PyPI version| |PyPI downloads| |Black|
 
-Geographic add-ons for Django Rest Framework - `Mailing
-List <http://bit.ly/1M4sLTp>`__.
+Geographic add-ons for Django Rest Framework.
+
+- `Discussions <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
+- `Mailing List <http://bit.ly/1M4sLTp>`__
 
 Install last stable version from pypi
 -------------------------------------
@@ -39,6 +41,7 @@ Compatibility with DRF, Django and Python
 
 ========================  ============================ ==================== ==================================
 DRF-gis version           DRF version                  Django version       Python version
+**1.1.x**                 **3.12** up to **3.15**      **3.2, 4.2 to 5.1**  **3.8** to **3.12**
 **1.0.x**                 **3.10** up to **3.13**      **2.2 to 4.0**       **3.6** to **3.9**
 **0.18.x**                **3.10** up to **3.13**      **2.2 to 4.0**       **3.6** to **3.9**
 **0.17.x**                **3.10** up to **3.12**      **2.2 to 3.1**       **3.6** to **3.8**
@@ -249,6 +252,9 @@ to be serialized as the "geometry". For example:
             # you can also explicitly declare which fields you want to include
             # as with a ModelSerializer.
             fields = ('id', 'address', 'city', 'state')
+
+If your model is geometry-less, you can set ``geo_field`` to ``None``
+and a null geometry will be produced.
 
 Using GeometrySerializerMethodField as "geo_field"
 ##################################################
@@ -741,9 +747,8 @@ In docker testing, QA checks are executed automatically.
 Contributing
 ------------
 
-1. Join the `Django REST Framework GIS Mailing
-   List <https://groups.google.com/forum/#!forum/django-rest-framework-gis>`__
-   and announce your intentions
+1. Announce your intentions in the
+  `Github Discussions Forum <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
 2. Follow the `PEP8 Style Guide for Python
    Code <http://www.python.org/dev/peps/pep-0008/>`__
 3. Fork this repo
@@ -754,8 +759,8 @@ Contributing
 8. Document your changes
 9. Send pull request
 
-.. |Build Status| image:: https://github.com/openwisp/django-rest-framework-gis/workflows/Django%20Rest%20Framework%20Gis%20CI%20Build/badge.svg?branch=master
-   :target: https://github.com/openwisp/django-rest-framework-gis/actions?query=workflow%3A%22Django+Rest+Framework+Gis+CI+Build%22
+.. |Build Status| image:: https://github.com/openwisp/django-rest-framework-gis/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/openwisp/django-rest-framework-gis/actions/workflows/ci.yml
 .. |Coverage Status| image:: https://coveralls.io/repos/openwisp/django-rest-framework-gis/badge.svg
    :target: https://coveralls.io/r/openwisp/django-rest-framework-gis
 .. |Requirements Status| image:: https://img.shields.io/librariesio/release/github/openwisp/django-rest-framework-gis

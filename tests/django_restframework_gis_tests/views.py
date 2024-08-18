@@ -23,6 +23,7 @@ from .serializers import (
     LocationGeoFeatureSlugSerializer,
     LocationGeoFeatureWritableIdSerializer,
     LocationGeoSerializer,
+    NoGeoFeatureMethodSerializer,
     NoneGeoFeatureMethodSerializer,
     PaginatedLocationGeoSerializer,
     PolygonModelSerializer,
@@ -167,6 +168,15 @@ class GeojsonLocationDetailsNone(generics.RetrieveUpdateDestroyAPIView):
 geojson_location_details_none = GeojsonLocationDetailsNone.as_view()
 
 
+class GeojsonNullableDetailsNoGeo(generics.RetrieveUpdateDestroyAPIView):
+    model = Nullable
+    serializer_class = NoGeoFeatureMethodSerializer
+    queryset = Nullable.objects.all()
+
+
+geojson_nullable_details_nogeo = GeojsonNullableDetailsNoGeo.as_view()
+
+
 class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
     lookup_field = 'slug'
@@ -208,7 +218,7 @@ class LocationFilter(GeoFilterSet):
 class GeojsonLocationContainedInGeometry(generics.ListAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationGeoSerializer
-    filter_class = LocationFilter
+    filterset_class = LocationFilter
 
     filter_backends = (DjangoFilterBackend,)
 

@@ -65,7 +65,7 @@ class GeometryField(Field):
             value = json.dumps(value)
         try:
             return GEOSGeometry(value)
-        except (GEOSException):
+        except GEOSException:
             raise ValidationError(
                 _(
                     'Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'
