@@ -133,7 +133,7 @@ class TestRestFrameworkGis(TestCase):
             ),
         }
         response = self.client.post(
-            self.location_list_url, data, HTTP_ACCEPT='text/html'
+            self.location_list_url, data, headers={"accept": 'text/html'}
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
@@ -289,7 +289,7 @@ class TestRestFrameworkGis(TestCase):
             self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
         else:
             self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
-        response = self.client.get(url, HTTP_ACCEPT='text/html')
+        response = self.client.get(url, headers={"accept": 'text/html'})
         self.assertContains(response, "Kool geojson test")
 
     def test_geojson_id_attribute(self):
@@ -391,7 +391,7 @@ class TestRestFrameworkGis(TestCase):
             self.geojson_location_list_url,
             data=json.dumps(data),
             content_type='application/json',
-            HTTP_ACCEPT='text/html',
+            headers={"accept": 'text/html'},
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
@@ -495,12 +495,12 @@ class TestRestFrameworkGis(TestCase):
 
     def test_HTML_browsable_geojson_location_list(self):
         response = self.client.get(
-            self.geojson_location_list_url, HTTP_ACCEPT='text/html'
+            self.geojson_location_list_url, headers={"accept": 'text/html'}
         )
         self.assertEqual(response.status_code, 200)
         self._create_locations()
         response = self.client.get(
-            self.geojson_location_list_url, HTTP_ACCEPT='text/html'
+            self.geojson_location_list_url, headers={"accept": 'text/html'}
         )
         self.assertContains(response, 'l1')
         self.assertContains(response, 'l2')
@@ -512,7 +512,7 @@ class TestRestFrameworkGis(TestCase):
             "geometry": json.dumps({"type": "Point", "coordinates": [10.1, 10.1]}),
         }
         response = self.client.post(
-            self.geojson_location_list_url, data, HTTP_ACCEPT='text/html'
+            self.geojson_location_list_url, data, headers={"accept": 'text/html'}
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
@@ -524,7 +524,7 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(Location.objects.count(), 0)
         data = {"name": "HTML test WKT", "geometry": "POINT (10.1 10.1)"}
         response = self.client.post(
-            self.geojson_location_list_url, data, HTTP_ACCEPT='text/html'
+            self.geojson_location_list_url, data, headers={"accept": 'text/html'}
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Location.objects.count(), 1)
@@ -535,7 +535,7 @@ class TestRestFrameworkGis(TestCase):
     def test_geojson_HTML_widget_value(self):
         self._create_locations()
         response = self.client.get(
-            self.geojson_location_list_url, HTTP_ACCEPT='text/html'
+            self.geojson_location_list_url, headers={"accept": 'text/html'}
         )
         self.assertContains(response, '<textarea name="geometry"')
         self.assertContains(response, '"type": "Point"')
@@ -545,7 +545,7 @@ class TestRestFrameworkGis(TestCase):
     def test_geojson_HTML_widget_value_pre_drf_39(self):
         self._create_locations()
         response = self.client.get(
-            self.geojson_location_list_url, HTTP_ACCEPT='text/html'
+            self.geojson_location_list_url, headers={"accept": 'text/html'}
         )
         self.assertContains(response, '<textarea name="geometry"')
         self.assertContains(response, '&quot;type&quot;: &quot;Point&quot;')
