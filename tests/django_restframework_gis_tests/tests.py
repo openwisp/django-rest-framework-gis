@@ -10,11 +10,7 @@ from unittest import skipIf
 import django
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.test import TestCase
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 import rest_framework
 from django.core.exceptions import ImproperlyConfigured
@@ -40,16 +36,10 @@ class TestRestFrameworkGis(TestCase):
             'Unable to convert to python object:'
             ' Invalid geometry pointer returned from "OGR_G_CreateGeometryFromJson".'
         )
-        if django.VERSION >= (2, 0, 0):
-            self.value_error_message = (
-                "Unable to convert to python object:"
-                " String input unrecognized as WKT EWKT, and HEXEWKB."
-            )
-        else:
-            self.value_error_message = (
-                "Unable to convert to python object:"
-                " String or unicode input unrecognized as WKT EWKT, and HEXEWKB."
-            )
+        self.value_error_message = (
+            "Unable to convert to python object:"
+            " String input unrecognized as WKT EWKT, and HEXEWKB."
+        )
         self.type_error_message = (
             "Unable to convert to python object: Improper geometry input type:"
         )

@@ -1,11 +1,7 @@
 import json
 
 from django.test import TestCase
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from django.core.exceptions import ImproperlyConfigured
 
