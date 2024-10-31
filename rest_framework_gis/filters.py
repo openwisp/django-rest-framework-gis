@@ -2,6 +2,8 @@ from math import cos, pi
 
 from django.contrib.gis import forms
 from django.contrib.gis.db import models
+from django.contrib.gis.db.models.fields import BaseSpatialField
+from django.contrib.gis.db.models.functions import GeometryDistance
 from django.contrib.gis.geos import Point, Polygon
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
@@ -17,24 +19,8 @@ except ImportError:  # pragma: no cover
         'restframework-gis filters depend on package "django-filter" '
         'which is missing. Install with "pip install django-filter".'
     )
-try:
-    # Django >= 2.0
-    from django.contrib.gis.db.models.fields import BaseSpatialField
-except ImportError:
-    try:  # pragma: no cover
-        # django >= 1.8,<2.0
-        from django.contrib.gis.db.models.lookups import gis_lookups
-    except ImportError:  # pragma: no cover
-        # django <= 1.7
-        gis_lookups = models.sql.query.ALL_TERMS
-else:
-    gis_lookups = BaseSpatialField.get_lookups()
 
-try:
-    # Django >= 3.0
-    from django.contrib.gis.db.models.functions import GeometryDistance
-except ImportError:
-    GeometryDistance = None
+gis_lookups = BaseSpatialField.get_lookups()
 
 
 __all__ = [
@@ -273,9 +259,6 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
     order_param = 'order'
 
     def filter_queryset(self, request, queryset, view):
-        if not GeometryDistance:
-            raise ValueError('GeometryDistance not available on this version of django')
-
         filter_field = getattr(view, 'distance_ordering_filter_field', None)
 
         if not filter_field:

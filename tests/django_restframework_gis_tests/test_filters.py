@@ -3,13 +3,10 @@ import urllib
 from unittest import skipIf
 
 from django.conf import settings
+from django.contrib.gis.db.models.functions import GeometryDistance
 from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.test import TestCase
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .models import Location
 from .views import (
@@ -22,13 +19,6 @@ has_spatialite = (
     settings.DATABASES['default']['ENGINE']
     == 'django.contrib.gis.db.backends.spatialite'
 )
-
-try:
-    from django.contrib.gis.db.models.functions import GeometryDistance
-
-    has_geometry_distance = GeometryDistance and True
-except ImportError:
-    has_geometry_distance = False
 
 
 class TestRestFrameworkGisFilters(TestCase):
@@ -349,10 +339,6 @@ class TestRestFrameworkGisFilters(TestCase):
         has_spatialite,
         'Skipped test for spatialite backend: missing feature "GeometryDistance"',
     )
-    @skipIf(
-        not has_geometry_distance,
-        'Skipped test for Django < 3.0: missing feature "GeometryDistance"',
-    )
     def test_DistanceToPointOrderingFilter_filtering(self):
         """
         Checks that the DistanceOrderingFilter returns the objects in the correct order
@@ -563,10 +549,6 @@ class TestRestFrameworkGisFilters(TestCase):
             'Invalid distance string supplied for parameter dist',
         )
 
-    @skipIf(
-        not has_geometry_distance,
-        'Skipped test for Django < 3.0: missing feature "GeometryDistance"',
-    )
     def test_DistanceToPointOrderingFilter_filtering_none(self):
         url_params = '?point=&format=json'
         response = self.client.get(
@@ -576,10 +558,6 @@ class TestRestFrameworkGisFilters(TestCase):
             response.data, {'type': 'FeatureCollection', 'features': []}
         )
 
-    @skipIf(
-        not has_geometry_distance,
-        'Skipped test for Django < 3.0: missing feature "GeometryDistance"',
-    )
     def test_DistanceToPointOrderingFilter_ordering_filter_field_none(self):
         original_value = (
             GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field
@@ -595,11 +573,3 @@ class TestRestFrameworkGisFilters(TestCase):
         GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field = (
             original_value
         )
-
-    @skipIf(has_geometry_distance, 'Skipped test for Django >= 3.0')
-    def test_DistanceToPointOrderingFilter_not_available(self):
-        url_params = '?point=12,42&format=json'
-        with self.assertRaises(ValueError):
-            self.client.get(
-                '%s%s' % (self.location_order_distance_to_point, url_params)
-            )

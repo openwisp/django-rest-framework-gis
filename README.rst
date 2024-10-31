@@ -602,7 +602,7 @@ at latitudes > 60 degrees are > 25%.
 DistanceToPointOrderingFilter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Provides a ``DistanceToPointOrderingFilter``, **available on Django >= 3.0**, which is a subclass of ``DistanceToPointFilter``.
+Provides a ``DistanceToPointOrderingFilter``, which is a subclass of ``DistanceToPointFilter``.
 Orders a queryset by distance to a given point, from the nearest to the most distant point.
 
 ``views.py:``
