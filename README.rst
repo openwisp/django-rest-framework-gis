@@ -692,11 +692,11 @@ The recommended way to run the tests is by using
 `pip install tox`.
 
 You can use ``tox -l`` to list the available environments, and then e.g. use
-the following to run all tests with Python 3.6 and Django 1.11:
+the following to run all tests with Python 3.8 and Django 4.2:
 
 .. code-block:: bash
 
-    tox -e py36-django111
+    tox -e py38-django42
 
 By default Django's test runner is used, but there is a variation of tox's
 envlist to use pytest (using the ``-pytest`` suffix).
@@ -705,7 +705,7 @@ You can pass optional arguments to the test runner like this:
 
 .. code-block:: bash
 
-    tox -e py36-django111-pytest -- -k test_foo
+    tox -e py38-django42-pytest -- -k test_foo
 
 Running tests manually
 ======================
