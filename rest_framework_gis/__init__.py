@@ -13,11 +13,3 @@ def get_version():
             version = '%s %s' % (version, VERSION[3])
     return version
 
-
-try:
-    import django
-
-    if django.VERSION < (3, 2):
-        default_app_config = 'rest_framework_gis.apps.AppConfig'
-except ImportError:
-    pass
