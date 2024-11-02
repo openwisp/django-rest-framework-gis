@@ -30,27 +30,9 @@ jobs:
       matrix:
         env:
           - python: '3.8'
-            TOXENV: py38-django32-djangorestframework312
-          - python: '3.8'
-            TOXENV: py38-django32-djangorestframework313
-          - python: '3.8'
-            TOXENV: py38-django32-djangorestframework314
-          - python: '3.8'
             TOXENV: py38-django42-djangorestframework314
           - python: '3.9'
-            TOXENV: py39-django32-djangorestframework312
-          - python: '3.9'
-            TOXENV: py39-django32-djangorestframework313
-          - python: '3.9'
-            TOXENV: py39-django32-djangorestframework314
-          - python: '3.9'
             TOXENV: py39-django42-djangorestframework314
-          - python: '3.10'
-            TOXENV: py310-django32-djangorestframework312
-          - python: '3.10'
-            TOXENV: py310-django32-djangorestframework313
-          - python: '3.10'
-            TOXENV: py310-django32-djangorestframework314
           - python: '3.10'
             TOXENV: py310-django42-djangorestframework314
           - python: '3.11'
