@@ -3,7 +3,6 @@ import urllib
 from unittest import skipIf
 
 from django.conf import settings
-from django.contrib.gis.db.models.functions import GeometryDistance
 from django.contrib.gis.geos import GEOSGeometry, Polygon
 from django.test import TestCase
 from django.urls import reverse
