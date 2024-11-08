@@ -53,7 +53,7 @@ class TestRestFrameworkGisBBox(TestCase):
             elif fid == 2:
                 self.assertEqual(feature['bbox'], self.bl2.bbox_geometry.extent)
             else:
-                self.fail("Unexpected id: {0}".format(fid))
+                self.fail(f"Unexpected id: {fid}")
         BoxedLocation.objects.all().delete()
 
     def test_post_location_list_geojson(self):

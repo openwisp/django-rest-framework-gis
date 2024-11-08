@@ -273,13 +273,13 @@ class TestRestFrameworkGisFilters(TestCase):
         distance = 5000  # meters
         point_on_alcatraz = [-122.4222, 37.82667]
 
-        url_params = '?dist=%0.4f&point=hello&format=json' % (distance,)
+        url_params = f'?dist={distance:0.4f}&point=hello&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertEqual(response.status_code, 400)
 
-        url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (
+        url_params = '?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json'.format(
             distance,
             point_on_alcatraz[0],
             point_on_alcatraz[1],
@@ -298,7 +298,7 @@ class TestRestFrameworkGisFilters(TestCase):
 
         # Make sure we only get back the ones within the distance
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertEqual(len(response.data['features']), 1)
         for result in response.data['features']:
@@ -306,13 +306,13 @@ class TestRestFrameworkGisFilters(TestCase):
 
         # Make sure we get back all the ones within the distance
         distance = 7000
-        url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (
+        url_params = '?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json'.format(
             distance,
             point_on_alcatraz[0],
             point_on_alcatraz[1],
         )
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertEqual(len(response.data['features']), 2)
         for result in response.data['features']:
@@ -322,7 +322,7 @@ class TestRestFrameworkGisFilters(TestCase):
 
         # Make sure we only get back the ones within the distance
         degrees = 0.05
-        url_params = '?dist=%0.4f&point=%0.4f,%0.4f&format=json' % (
+        url_params = '?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json'.format(
             degrees,
             point_on_alcatraz[0],
             point_on_alcatraz[1],
@@ -347,7 +347,7 @@ class TestRestFrameworkGisFilters(TestCase):
 
         url_params = '?point=hello&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_order_distance_to_point, url_params)
+            f'{self.location_order_distance_to_point}{url_params}'
         )
         self.assertEqual(response.status_code, 400)
 
@@ -380,7 +380,7 @@ class TestRestFrameworkGisFilters(TestCase):
 
         url_params = '?point=%i,%i&format=json' % (point[0], point[1])
         response = self.client.get(
-            '%s%s' % (self.location_order_distance_to_point, url_params)
+            f'{self.location_order_distance_to_point}{url_params}'
         )
         self.assertEqual(len(response.data['features']), 8)
         self.assertEqual(
@@ -399,7 +399,7 @@ class TestRestFrameworkGisFilters(TestCase):
 
         url_params = '?point=%i,%i&order=desc&format=json' % (point[0], point[1])
         response = self.client.get(
-            '%s%s' % (self.location_order_distance_to_point, url_params)
+            f'{self.location_order_distance_to_point}{url_params}'
         )
         self.assertEqual(len(response.data['features']), 8)
         self.assertEqual(
@@ -444,11 +444,9 @@ class TestRestFrameworkGisFilters(TestCase):
         except AttributeError:
             quoted_param = urllib.parse.quote(point_inside_ggpark_geojson)
 
-        url_params = "?contains_properly=%s" % (quoted_param,)
+        url_params = f"?contains_properly={quoted_param}"
 
-        response = self.client.get(
-            '{0}{1}'.format(self.geojson_contained_in_geometry, url_params)
-        )
+        response = self.client.get(f'{self.geojson_contained_in_geometry}{url_params}')
         self.assertEqual(len(response.data), 1)
 
         geometry_response = GEOSGeometry(json.dumps(response.data[0]['geometry']))
@@ -510,7 +508,7 @@ class TestRestFrameworkGisFilters(TestCase):
     def test_DistanceToPointFilter_filtering_none(self):
         url_params = '?dist=5000&point=&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertDictEqual(
             response.data, {'type': 'FeatureCollection', 'features': []}
@@ -521,7 +519,7 @@ class TestRestFrameworkGisFilters(TestCase):
         GeojsonLocationWithinDistanceOfPointList.distance_filter_field = None
         url_params = '?dist=5000&point=&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertDictEqual(
             response.data, {'type': 'FeatureCollection', 'features': []}
@@ -531,7 +529,7 @@ class TestRestFrameworkGisFilters(TestCase):
     def test_DistanceToPointFilter_ValueError_point(self):
         url_params = '?dist=500.0&point=hello&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertEqual(
             response.data['detail'],
@@ -541,7 +539,7 @@ class TestRestFrameworkGisFilters(TestCase):
     def test_DistanceToPointFilter_ValueError_distance(self):
         url_params = '?dist=wrong&point=12.0,42.0&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_within_distance_of_point_list_url, url_params)
+            f'{self.location_within_distance_of_point_list_url}{url_params}'
         )
         self.assertEqual(
             response.data['detail'],
@@ -551,7 +549,7 @@ class TestRestFrameworkGisFilters(TestCase):
     def test_DistanceToPointOrderingFilter_filtering_none(self):
         url_params = '?point=&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_order_distance_to_point, url_params)
+            f'{self.location_order_distance_to_point}{url_params}'
         )
         self.assertDictEqual(
             response.data, {'type': 'FeatureCollection', 'features': []}
@@ -564,7 +562,7 @@ class TestRestFrameworkGisFilters(TestCase):
         GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field = None
         url_params = '?point=&format=json'
         response = self.client.get(
-            '%s%s' % (self.location_order_distance_to_point, url_params)
+            f'{self.location_order_distance_to_point}{url_params}'
         )
         self.assertDictEqual(
             response.data, {'type': 'FeatureCollection', 'features': []}

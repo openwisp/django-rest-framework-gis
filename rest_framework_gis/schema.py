@@ -101,9 +101,7 @@ class GeoFeatureAutoSchema(AutoSchema):
         try:
             return self.GEO_FIELD_TO_SCHEMA[geo_field.__class__]
         except KeyError:
-            warnings.warn(
-                "Geometry generation for {field} is not supported.".format(field=field)
-            )
+            warnings.warn(f"Geometry generation for {field} is not supported.")
             return {}
 
     def map_field(self, field):

@@ -660,7 +660,7 @@ class TestRestFrameworkGis(TestCase):
         )
         for geom_type in geom_types:
             with self.subTest(geom_type=geom_type):
-                value = f.to_representation(GEOSGeometry('{} EMPTY'.format(geom_type)))
+                value = f.to_representation(GEOSGeometry(f'{geom_type} EMPTY'))
                 self.assertIsNotNone(value)
                 if geom_type == 'LINEARRING':
                     geom_type = 'LINESTRING'
@@ -697,9 +697,7 @@ class TestRestFrameworkGis(TestCase):
         response = self.client.get(self.geojson_location_list_url)
         self.assertEqual(response.data['type'], 'FeatureCollection')
         self.assertEqual(len(response.data['features']), 2)
-        response = self.client.get(
-            '{0}?page_size=1'.format(self.geojson_location_list_url)
-        )
+        response = self.client.get(f'{self.geojson_location_list_url}?page_size=1')
         self.assertEqual(response.data['type'], 'FeatureCollection')
         self.assertEqual(len(response.data['features']), 1)
         self.assertIn('next', response.data)

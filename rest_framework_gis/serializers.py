@@ -81,9 +81,7 @@ class GeoFeatureModelSerializer(ModelSerializer):
         def check_excludes(field_name, field_role):
             """make sure the field is not excluded"""
             if hasattr(meta, 'exclude') and field_name in meta.exclude:
-                raise ImproperlyConfigured(
-                    "You cannot exclude your '{0}'.".format(field_role)
-                )
+                raise ImproperlyConfigured(f"You cannot exclude your '{field_role}'.")
 
         def add_to_fields(field_name):
             """Make sure the field is included in the fields"""
