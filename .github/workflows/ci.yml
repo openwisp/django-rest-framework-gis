@@ -29,8 +29,6 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - python: '3.8'
-            TOXENV: py38-django42-djangorestframework314
           - python: '3.9'
             TOXENV: py39-django42-djangorestframework314
           - python: '3.10'
