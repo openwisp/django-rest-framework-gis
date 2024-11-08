@@ -4,7 +4,6 @@ unit tests for restframework_gis
 
 import json
 import pickle
-import sys
 from unittest import skipIf
 
 import rest_framework
@@ -284,10 +283,7 @@ class TestRestFrameworkGis(TestCase):
             'geometry': {'type': 'Point', 'coordinates': [135.0, 45.0]},
         }
         response = self.client.get(url)
-        if sys.version_info > (3, 0, 0):
-            self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
-        else:
-            self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
+        self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
         response = self.client.get(url, headers={"accept": 'text/html'})
         self.assertContains(response, "Kool geojson test")
 
@@ -549,10 +545,6 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, '<textarea name="geometry"')
         self.assertContains(response, '&quot;type&quot;: &quot;Point&quot;')
         self.assertContains(response, '&quot;coordinates&quot;: [')
-        # TODO: remove this when python 2 will be deprecated
-        self.assertNotContains(
-            response, 'u&#39;type&#39;: u&#39;Point&#39;, u&#39;coordinates&#39;:'
-        )
 
     def test_patch_geojson_location(self):
         location = Location.objects.create(
@@ -768,8 +760,5 @@ class TestRestFrameworkGis(TestCase):
             },
         }
         response = self.client.get(url)
-        if sys.version_info > (3, 0, 0):
-            self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
-        else:
-            self.assertItemsEqual(json.dumps(response.data), json.dumps(expected))
+        self.assertCountEqual(json.dumps(response.data), json.dumps(expected))
         self.assertContains(response, "Kool geometry collection geojson test")
