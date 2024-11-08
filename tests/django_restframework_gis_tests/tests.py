@@ -7,7 +7,6 @@ import pickle
 import sys
 from unittest import skipIf
 
-import django
 import rest_framework
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ImproperlyConfigured
