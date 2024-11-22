@@ -4,9 +4,7 @@ unit tests for restframework_gis
 
 import json
 import pickle
-from unittest import skipIf
 
-import rest_framework
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
@@ -17,8 +15,6 @@ from rest_framework_gis.fields import GeoJsonDict
 
 from .models import LocatedFile, Location, Nullable
 from .serializers import LocationGeoSerializer
-
-is_pre_drf_39 = not rest_framework.VERSION.startswith('3.9')
 
 
 class TestRestFrameworkGis(TestCase):
@@ -526,7 +522,6 @@ class TestRestFrameworkGis(TestCase):
         location = Location.objects.all()[0]
         self.assertEqual(location.name, "HTML test WKT")
 
-    @skipIf(is_pre_drf_39, 'Skip this test if DRF < 3.9')
     def test_geojson_HTML_widget_value(self):
         self._create_locations()
         response = self.client.get(
@@ -535,16 +530,6 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, '<textarea name="geometry"')
         self.assertContains(response, '"type": "Point"')
         self.assertContains(response, '"coordinates": [')
-
-    @skipIf(not is_pre_drf_39, 'Skip this test if DRF >= 3.9')
-    def test_geojson_HTML_widget_value_pre_drf_39(self):
-        self._create_locations()
-        response = self.client.get(
-            self.geojson_location_list_url, headers={"accept": 'text/html'}
-        )
-        self.assertContains(response, '<textarea name="geometry"')
-        self.assertContains(response, '&quot;type&quot;: &quot;Point&quot;')
-        self.assertContains(response, '&quot;coordinates&quot;: [')
 
     def test_patch_geojson_location(self):
         location = Location.objects.create(

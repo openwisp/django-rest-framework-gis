@@ -13,12 +13,7 @@ class AppConfig(BaseConfig):
 
         from .fields import GeometryField
 
-        try:
-            # drf 3.0
-            field_mapping = ModelSerializer._field_mapping.mapping
-        except AttributeError:
-            # drf 3.1
-            field_mapping = ModelSerializer.serializer_field_mapping
+        field_mapping = ModelSerializer.serializer_field_mapping
 
         # map GeoDjango fields to drf-gis GeometryField
         field_mapping.update(
