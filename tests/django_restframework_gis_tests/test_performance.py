@@ -49,7 +49,7 @@ if (
             with Timer() as t:
                 JSONRenderer().render(serializer.data)
             # print results
-            msg = 'GeoJSON rendering of {0} objects ' 'completed in {1}'.format(
+            msg = 'GeoJSON rendering of {} objects ' 'completed in {}'.format(
                 self.NUMBER_OF_LOCATIONS, t.elapsed
             )
-            print('\n\033[95m{0}\033[0m'.format(msg))
+            print(f'\n\033[95m{msg}\033[0m')

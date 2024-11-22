@@ -72,9 +72,7 @@ class GeometryField(Field):
                 )
             )
         except (ValueError, TypeError, GDALException) as e:
-            raise ValidationError(
-                _('Unable to convert to python object: {}'.format(str(e)))
-            )
+            raise ValidationError(_(f'Unable to convert to python object: {str(e)}'))
 
     def validate_empty_values(self, data):
         if data == '':
@@ -127,8 +125,7 @@ class GeometrySerializerMethodField(SerializerMethodField):
 
 class GeoJsonDict(OrderedDict):
     """
-    Used for serializing GIS values to GeoJSON values
-    TODO: remove this when support for python 2.6/2.7 will be dropped
+    Used for serializing GIS values to GeoJSON values.
     """
 
     def __init__(self, *args, **kwargs):

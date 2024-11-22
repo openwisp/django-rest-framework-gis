@@ -46,7 +46,7 @@ class InBBoxFilter(BaseFilterBackend):
             p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
         except ValueError:
             raise ParseError(
-                'Invalid bbox string supplied for parameter {0}'.format(self.bbox_param)
+                f'Invalid bbox string supplied for parameter {self.bbox_param}'
             )
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
@@ -66,7 +66,7 @@ class InBBoxFilter(BaseFilterBackend):
         bbox = self.get_filter_bbox(request)
         if not bbox:
             return queryset
-        return queryset.filter(Q(**{'%s__%s' % (filter_field, geoDjango_filter): bbox}))
+        return queryset.filter(Q(**{f'{filter_field}__{geoDjango_filter}': bbox}))
 
     def get_schema_operation_parameters(self, view):
         return [
@@ -127,7 +127,7 @@ class TMSTileFilter(InBBoxFilter):
             z, x, y = (int(n) for n in tile_string.split('/'))
         except ValueError:
             raise ParseError(
-                'Invalid tile string supplied for parameter {0}'.format(self.tile_param)
+                f'Invalid tile string supplied for parameter {self.tile_param}'
             )
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
@@ -158,7 +158,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             (x, y) = (float(n) for n in point_string.split(','))
         except ValueError:
             raise ParseError(
-                'Invalid geometry string supplied for parameter {0}'.format(
+                'Invalid geometry string supplied for parameter {}'.format(
                     self.point_param
                 )
             )
@@ -212,7 +212,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = float(dist_string)
         except ValueError:
             raise ParseError(
-                'Invalid distance string supplied for parameter {0}'.format(
+                'Invalid distance string supplied for parameter {}'.format(
                     self.dist_param
                 )
             )
@@ -222,7 +222,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(
-            Q(**{'%s__%s' % (filter_field, geoDjango_filter): (point, dist)})
+            Q(**{f'{filter_field}__{geoDjango_filter}': (point, dist)})
         )
 
     def get_schema_operation_parameters(self, view):

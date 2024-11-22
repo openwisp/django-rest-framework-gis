@@ -116,7 +116,7 @@ GeometryCollection = {
 class BaseTestCase(TestCase):
     @staticmethod
     def get_instance(data_dict):
-        class Model(object):
+        class Model:
             def __init__(self, geojson_dict):
                 self.geometry = GEOSGeometry(json.dumps(geojson_dict))
 
