@@ -4,6 +4,7 @@ unit tests for restframework_gis
 
 import json
 import pickle
+from html import escape
 
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.exceptions import ImproperlyConfigured
@@ -528,8 +529,8 @@ class TestRestFrameworkGis(TestCase):
             self.geojson_location_list_url, headers={"accept": 'text/html'}
         )
         self.assertContains(response, '<textarea name="geometry"')
-        self.assertContains(response, '"type": "Point"')
-        self.assertContains(response, '"coordinates": [')
+        self.assertContains(response, escape('"type": "Point"'))
+        self.assertContains(response, escape('"coordinates": ['))
 
     def test_patch_geojson_location(self):
         location = Location.objects.create(
