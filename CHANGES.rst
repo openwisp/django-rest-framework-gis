@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.2.0 [Unreleased]
+--------------------------
+
+Work in progress.
+
 Version 1.1.0 [2024-08-17]
 --------------------------
 

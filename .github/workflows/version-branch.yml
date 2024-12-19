@@ -1,0 +1,12 @@
+name: Replicate Commits to Version Branch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  version-branch:
+    uses: openwisp/openwisp-utils/.github/workflows/reusable-version-branch.yml@master
+    with:
+      module_name: rest_framework_gis
