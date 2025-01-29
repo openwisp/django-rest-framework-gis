@@ -18,7 +18,12 @@ class GeometryField(Field):
     type_name = 'GeometryField'
 
     def __init__(
-        self, precision=None, remove_duplicates=False, auto_bbox=False, **kwargs
+        self,
+        precision=None,
+        remove_duplicates=False,
+        auto_bbox=False,
+        transform=4326,
+        **kwargs,
     ):
         """
         :param auto_bbox: Whether the GeoJSON object should include a bounding box
@@ -26,6 +31,7 @@ class GeometryField(Field):
         self.precision = precision
         self.auto_bbox = auto_bbox
         self.remove_dupes = remove_duplicates
+        self.transform = transform
         super().__init__(**kwargs)
         self.style.setdefault('base_template', 'textarea.html')
 
@@ -34,6 +40,14 @@ class GeometryField(Field):
             return value
         # we expect value to be a GEOSGeometry instance
         if value.geojson:
+            # NOTE: For repeated transformations a gdal.CoordTransform is recommended
+            if (
+                self.transform is not None
+                and value.srid is not None
+                and value.srid != 4326
+            ):
+                value.transform(self.transform)
+
             geojson = GeoJsonDict(value.geojson)
         # in this case we're dealing with an empty point
         else:
