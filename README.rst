@@ -97,10 +97,15 @@ This field takes four optional arguments:
 - ``auto_bbox``: If ``True``, the GeoJSON object will include
   a `bounding box <https://datatracker.ietf.org/doc/html/rfc7946#section-5>`_,
   which is the smallest possible rectangle enclosing the geometry.
-- ``transform`` (defaults to ``None``): If ``None`` (or the input geometry does not have
-  a SRID), the GeoJSON's coordinates will not be transformed. If any other `spatial
-  reference <https://docs.djangoproject.com/en/5.0/ref/contrib/gis/geos/#django.contrib.gis.geos.GEOSGeometry.transform>`,
-   the GeoJSON's coordinates will be transformed correspondingly.
+- ``transform`` (defaults to ``None``): Can be set to any value that is accepted by 
+  |GEOSGeometry.transform|_. Set to `4326` if your input geometries are in another 
+  projection and you want to produce output according to the `GeoJSON standard
+  <https://datatracker.ietf.org/doc/html/rfc7946#section-4>`_. If ``None`` (or the 
+  input geometries do not have a SRID), the output coordinates will not be 
+  transformed.
+
+.. |GEOSGeometry.transform| replace:: ``GEOSGeometry.transform``
+.. _GEOSGeometry.transform: https://example.org
 
 **Note:** While ``precision`` and ``remove_duplicates`` are designed to reduce the
 byte size of the API response, they will also increase the processing time
