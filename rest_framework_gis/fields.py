@@ -22,7 +22,7 @@ class GeometryField(Field):
         precision=None,
         remove_duplicates=False,
         auto_bbox=False,
-        transform=4326,
+        transform=None,
         **kwargs,
     ):
         """
@@ -41,11 +41,7 @@ class GeometryField(Field):
         # we expect value to be a GEOSGeometry instance
         if value.geojson:
             # NOTE: For repeated transformations a gdal.CoordTransform is recommended
-            if (
-                self.transform is not None
-                and value.srid is not None
-                and value.srid != 4326
-            ):
+            if self.transform is not None and value.srid is not None:
                 value.transform(self.transform)
 
             geojson = GeoJsonDict(value.geojson)

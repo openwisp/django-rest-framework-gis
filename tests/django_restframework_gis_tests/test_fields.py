@@ -196,7 +196,7 @@ class TestTransform(BaseTestCase):
     def test_transform_Point_to_4326(self):
         model = self.get_instance(Point31287)
         model.geometry.srid = 31287
-        Serializer = self.create_serializer()
+        Serializer = self.create_serializer(transform=4326)
         data = Serializer(model).data
 
         expected_coords = (16.372500007573713, 48.20833306345481)
@@ -222,7 +222,7 @@ class TestTransform(BaseTestCase):
     def test_transform_Point_bbox_to_4326(self):
         model = self.get_instance(Point31287)
         model.geometry.srid = 31287
-        Serializer = self.create_serializer(auto_bbox=True)
+        Serializer = self.create_serializer(auto_bbox=True, transform=4326)
         data = Serializer(model).data
 
         expected_coords = (

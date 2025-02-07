@@ -58,7 +58,7 @@ class LocationGeoSerializer(serializers.ModelSerializer):
 class OtherSridLocationGeoSerializer(gis_serializers.GeoFeatureModelSerializer):
     """Other SRID location geo serializer"""
 
-    geometry = GeometryField(auto_bbox=True)
+    geometry = GeometryField(auto_bbox=True, transform=4326)
 
     class Meta:
         model = OtherSridLocation

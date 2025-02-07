@@ -97,7 +97,7 @@ This field takes four optional arguments:
 - ``auto_bbox``: If ``True``, the GeoJSON object will include
   a `bounding box <https://datatracker.ietf.org/doc/html/rfc7946#section-5>`_,
   which is the smallest possible rectangle enclosing the geometry.
-- ``transform`` (defaults to ``4326``): If ``None`` (or the input geometry does not have
+- ``transform`` (defaults to ``None``): If ``None`` (or the input geometry does not have
   a SRID), the GeoJSON's coordinates will not be transformed. If any other `spatial
   reference <https://docs.djangoproject.com/en/5.0/ref/contrib/gis/geos/#django.contrib.gis.geos.GEOSGeometry.transform>`,
    the GeoJSON's coordinates will be transformed correspondingly.
