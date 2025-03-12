@@ -2,4 +2,4 @@ psycopg2~=2.9.10
 django-filter>=2.0
 contexttimer
 # QA checks
-openwisp-utils[qa] @ https://github.com/openwisp/openwisp-utils/tarball/1.2
+openwisp-utils[qa] @ git+https://github.com/openwisp/openwisp-utils@1.1.1
