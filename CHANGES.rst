@@ -4,7 +4,8 @@ Changelog
 Version 1.2.0 [Unreleased]
 --------------------------
 
-Work in progress.
+- Added Django ``5.2`` to automated testing build.
+- Added Python ``3.13`` to automated testing build.
 
 Version 1.1.0 [2024-08-17]
 --------------------------
