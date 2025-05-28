@@ -11,7 +11,14 @@ from rest_framework_gis.filters import (
 )
 from rest_framework_gis.pagination import GeoJsonPagination
 
-from .models import BoxedLocation, LocatedFile, Location, Nullable, PolygonModel
+from .models import (
+    BoxedLocation,
+    LocatedFile,
+    Location,
+    Nullable,
+    OtherSridLocation,
+    PolygonModel,
+)
 from .serializers import (
     BoxedLocationGeoFeatureSerializer,
     LocatedFileGeoFeatureSerializer,
@@ -25,6 +32,7 @@ from .serializers import (
     LocationGeoSerializer,
     NoGeoFeatureMethodSerializer,
     NoneGeoFeatureMethodSerializer,
+    OtherSridLocationGeoSerializer,
     PaginatedLocationGeoSerializer,
     PolygonModelSerializer,
 )
@@ -47,6 +55,15 @@ class LocationDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 location_details = LocationDetails.as_view()
+
+
+class OtherSridLocationDetails(generics.RetrieveUpdateDestroyAPIView):
+    model = OtherSridLocation
+    serializer_class = OtherSridLocationGeoSerializer
+    queryset = OtherSridLocation.objects.all()
+
+
+other_srid_location_details = OtherSridLocationDetails.as_view()
 
 
 class GeojsonLocationList(generics.ListCreateAPIView):

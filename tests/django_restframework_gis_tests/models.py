@@ -54,6 +54,10 @@ class Location(BaseModelGeometry):
     pass
 
 
+class OtherSridLocation(BaseModelGeometry):
+    geometry = models.GeometryField(srid=31287)
+
+
 class LocatedFile(BaseModelGeometry):
     file = models.FileField(upload_to='located_files', blank=True, null=True)
 
