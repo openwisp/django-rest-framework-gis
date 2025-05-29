@@ -7,7 +7,7 @@ from django.conf import settings
 # django test --keepdb django_restframework_gis_tests.test_performance
 # or by setting ``settings.TEST_PERFORMANCE`` to ``True``
 if (
-    'django_restframework_gis_tests.test_performance' in sys.argv
+    "django_restframework_gis_tests.test_performance" in sys.argv
     or settings.TEST_PERFORMANCE
 ):
     from contexttimer import Timer
@@ -24,9 +24,9 @@ if (
         def _create_data(self):
             """creates a bunch of gis models instances"""
             locations = []
-            name = 'l{0}'
-            slug = 'l{0}'
-            wkt = 'POINT (13.{0}125000020002 42.{0}565179379999)'
+            name = "l{0}"
+            slug = "l{0}"
+            wkt = "POINT (13.{0}125000020002 42.{0}565179379999)"
             for n in range(1, self.NUMBER_OF_LOCATIONS):
                 locations.append(
                     Location(
@@ -39,8 +39,8 @@ if (
             class PerfSerializer(gis_serializers.GeoFeatureModelSerializer):
                 class Meta:
                     model = Location
-                    geo_field = 'geometry'
-                    fields = '__all__'
+                    geo_field = "geometry"
+                    fields = "__all__"
 
             # create data
             self._create_data()
@@ -49,7 +49,7 @@ if (
             with Timer() as t:
                 JSONRenderer().render(serializer.data)
             # print results
-            msg = 'GeoJSON rendering of {} objects ' 'completed in {}'.format(
+            msg = "GeoJSON rendering of {} objects " "completed in {}".format(
                 self.NUMBER_OF_LOCATIONS, t.elapsed
             )
-            print(f'\n\033[95m{msg}\033[0m')
+            print(f"\n\033[95m{msg}\033[0m")

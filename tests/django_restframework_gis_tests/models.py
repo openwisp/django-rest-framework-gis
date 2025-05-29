@@ -2,17 +2,17 @@ from django.contrib.gis.db import models
 from django.utils.text import slugify
 
 __all__ = [
-    'Location',
-    'LocatedFile',
-    'BoxedLocation',
-    'GeometryModel',
-    'Nullable',
-    'PointModel',
-    'LineStringModel',
-    'PolygonModel',
-    'MultiPolygonModel',
-    'MultiLineStringModel',
-    'MultiPointModel',
+    "Location",
+    "LocatedFile",
+    "BoxedLocation",
+    "GeometryModel",
+    "Nullable",
+    "PointModel",
+    "LineStringModel",
+    "PolygonModel",
+    "MultiPolygonModel",
+    "MultiLineStringModel",
+    "MultiPointModel",
 ]
 
 
@@ -28,7 +28,7 @@ class BaseModel(models.Model):
         return self.name
 
     def _generate_slug(self):
-        if self.slug == '' or self.slug is None:
+        if self.slug == "" or self.slug is None:
             try:
                 name = str(self.name)
             except NameError:
@@ -55,7 +55,7 @@ class Location(BaseModelGeometry):
 
 
 class LocatedFile(BaseModelGeometry):
-    file = models.FileField(upload_to='located_files', blank=True, null=True)
+    file = models.FileField(upload_to="located_files", blank=True, null=True)
 
 
 class BoxedLocation(BaseModelGeometry):

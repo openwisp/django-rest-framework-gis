@@ -409,7 +409,7 @@ class TestSchemaGeneration(TestCase):
         content = inspector.map_serializer(serializer)
         geometry_schema = content["properties"]["geometry"]
         geometry_schema.pop("type", None)
-        geometry_schema['properties'].pop("coordinates", None)
+        geometry_schema["properties"].pop("coordinates", None)
         self.assertEqual(geometry_schema, {"properties": {"type": {"type": "string"}}})
 
     def check_bbox_schema(self):
@@ -510,8 +510,8 @@ class TestPaginationSchemaGeneration(TestCase):
                 },
             },
         }
-        if parse_version(DRF_VERSION) >= parse_version('3.15'):
-            expected_schema['required'] = ['count', 'results']
+        if parse_version(DRF_VERSION) >= parse_version("3.15"):
+            expected_schema["required"] = ["count", "results"]
         self.assertDictEqual(generated_schema, expected_schema)
 
 
@@ -617,34 +617,34 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
             {
                 "type": "object",
                 "properties": {
-                    "id": {'type': 'integer', 'readOnly': True},
-                    'polygon': {
-                        'properties': {
-                            'coordinates': {
-                                'example': [
+                    "id": {"type": "integer", "readOnly": True},
+                    "polygon": {
+                        "properties": {
+                            "coordinates": {
+                                "example": [
                                     [0.0, 0.0],
                                     [0.0, 50.0],
                                     [50.0, 50.0],
                                     [50.0, 0.0],
                                     [0.0, 0.0],
                                 ],
-                                'items': {
-                                    'example': [[22.4707, 70.0577], [12.9721, 77.5933]],
-                                    'items': {
-                                        'example': [12.9721, 77.5933],
-                                        'items': {'format': 'float', 'type': 'number'},
-                                        'maxItems': 3,
-                                        'minItems': 2,
-                                        'type': 'array',
+                                "items": {
+                                    "example": [[22.4707, 70.0577], [12.9721, 77.5933]],
+                                    "items": {
+                                        "example": [12.9721, 77.5933],
+                                        "items": {"format": "float", "type": "number"},
+                                        "maxItems": 3,
+                                        "minItems": 2,
+                                        "type": "array",
                                     },
-                                    'minItems': 4,
-                                    'type': 'array',
+                                    "minItems": 4,
+                                    "type": "array",
                                 },
-                                'type': 'array',
+                                "type": "array",
                             },
-                            'type': {'enum': ['Polygon'], 'type': 'string'},
+                            "type": {"enum": ["Polygon"], "type": "string"},
                         },
-                        'type': 'object',
+                        "type": "object",
                     },
                     "random_field1": {"type": "string", "maxLength": 32},
                     "random_field2": {

@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import Field, SerializerMethodField
 
-__all__ = ['GeometryField', 'GeometrySerializerMethodField']
+__all__ = ["GeometryField", "GeometrySerializerMethodField"]
 
 
 class GeometryField(Field):
@@ -15,7 +15,7 @@ class GeometryField(Field):
     A field to handle GeoDjango Geometry fields
     """
 
-    type_name = 'GeometryField'
+    type_name = "GeometryField"
 
     def __init__(
         self, precision=None, remove_duplicates=False, auto_bbox=False, **kwargs
@@ -27,7 +27,7 @@ class GeometryField(Field):
         self.auto_bbox = auto_bbox
         self.remove_dupes = remove_duplicates
         super().__init__(**kwargs)
-        self.style.setdefault('base_template', 'textarea.html')
+        self.style.setdefault("base_template", "textarea.html")
 
     def to_representation(self, value):
         if isinstance(value, dict) or value is None:
@@ -37,26 +37,26 @@ class GeometryField(Field):
             geojson = GeoJsonDict(value.geojson)
         # in this case we're dealing with an empty point
         else:
-            geojson = GeoJsonDict({'type': value.geom_type, 'coordinates': []})
-        if geojson['type'] == 'GeometryCollection':
-            geometries = geojson.get('geometries')
+            geojson = GeoJsonDict({"type": value.geom_type, "coordinates": []})
+        if geojson["type"] == "GeometryCollection":
+            geometries = geojson.get("geometries")
         else:
             geometries = [geojson]
         for geometry in geometries:
             if self.precision is not None:
-                geometry['coordinates'] = self._recursive_round(
-                    geometry['coordinates'], self.precision
+                geometry["coordinates"] = self._recursive_round(
+                    geometry["coordinates"], self.precision
                 )
             if self.remove_dupes:
-                geometry['coordinates'] = self._rm_redundant_points(
-                    geometry['coordinates'], geometry['type']
+                geometry["coordinates"] = self._rm_redundant_points(
+                    geometry["coordinates"], geometry["type"]
                 )
         if self.auto_bbox:
             geojson["bbox"] = value.extent
         return geojson
 
     def to_internal_value(self, value):
-        if value == '' or value is None:
+        if value == "" or value is None:
             return value
         if isinstance(value, GEOSGeometry):
             # value already has the correct representation
@@ -68,15 +68,15 @@ class GeometryField(Field):
         except GEOSException:
             raise ValidationError(
                 _(
-                    'Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB.'
+                    "Invalid format: string or unicode input unrecognized as GeoJSON, WKT EWKT or HEXEWKB."
                 )
             )
         except (ValueError, TypeError, GDALException) as e:
-            raise ValidationError(_(f'Unable to convert to python object: {str(e)}'))
+            raise ValidationError(_(f"Unable to convert to python object: {str(e)}"))
 
     def validate_empty_values(self, data):
-        if data == '':
-            self.fail('required')
+        if data == "":
+            self.fail("required")
         return super().validate_empty_values(data)
 
     def _recursive_round(self, value, precision):
@@ -85,7 +85,7 @@ class GeometryField(Field):
             value: number or nested array of numbers
             precision: integer valueue of number of decimals to keep
         """
-        if hasattr(value, '__iter__'):
+        if hasattr(value, "__iter__"):
             return tuple(self._recursive_round(v, precision) for v in value)
         return round(value, precision)
 
@@ -96,8 +96,8 @@ class GeometryField(Field):
             geo_type: GeoJSON type attribute for provided geometry, used to
                      determine structure of provided `geometry` argument
         """
-        if geo_type in ('MultiPoint', 'LineString'):
-            close = geo_type == 'LineString'
+        if geo_type in ("MultiPoint", "LineString"):
+            close = geo_type == "LineString"
             output = []
             for coord in geometry:
                 coord = tuple(coord)
@@ -106,10 +106,10 @@ class GeometryField(Field):
             if close and len(output) == 1:
                 output.append(output[0])
             return tuple(output)
-        if geo_type in ('MultiLineString', 'Polygon'):
-            return [self._rm_redundant_points(c, 'LineString') for c in geometry]
-        if geo_type == 'MultiPolygon':
-            return [self._rm_redundant_points(c, 'Polygon') for c in geometry]
+        if geo_type in ("MultiLineString", "Polygon"):
+            return [self._rm_redundant_points(c, "LineString") for c in geometry]
+        if geo_type == "MultiPolygon":
+            return [self._rm_redundant_points(c, "Polygon") for c in geometry]
         return geometry
 
 

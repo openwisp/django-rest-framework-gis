@@ -6,4 +6,4 @@ from .models import Location
 
 @admin.register(Location)
 class LocationAdmin(GeoModelAdmin):
-    list_display = ('name', 'geometry')
+    list_display = ("name", "geometry")
