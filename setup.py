@@ -31,7 +31,7 @@ setup(
         "django-filter>=23.5,<26.0",
     ],
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Topic :: Internet :: WWW/HTTP",
         "Intended Audience :: Developers",
