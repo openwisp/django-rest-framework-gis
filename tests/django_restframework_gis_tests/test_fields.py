@@ -148,7 +148,7 @@ class TestPrecision(BaseTestCase):
         data = Serializer(model).data
         self.assertEqual(
             self.normalize(data),
-            {'geometry': {"type": "Point", "coordinates": [-105.02, 39.57]}},
+            {"geometry": {"type": "Point", "coordinates": [-105.02, 39.57]}},
         )
 
     def test_precision_MultiPoint(self):
@@ -158,7 +158,7 @@ class TestPrecision(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "MultiPoint",
                     "coordinates": [
                         [-105.02, 39.57],
@@ -177,7 +177,7 @@ class TestPrecision(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "LineString",
                     "coordinates": [
                         [-101.74, 39.32],
@@ -197,7 +197,7 @@ class TestPrecision(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "MultiLineString",
                     "coordinates": [
                         [
@@ -229,7 +229,7 @@ class TestPrecision(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "Polygon",
                     "coordinates": [
                         [
@@ -263,7 +263,7 @@ class TestPrecision(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "MultiPolygon",
                     "coordinates": [
                         [
@@ -467,7 +467,7 @@ class TestRmRedundant(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "MultiPolygon",
                     "coordinates": [
                         [
@@ -521,7 +521,7 @@ class TestRmRedundant(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "MultiPolygon",
                     "coordinates": [
                         [
@@ -596,7 +596,7 @@ class TestBoundingBox(BaseTestCase):
         self.assertEqual(
             self.normalize(data),
             {
-                'geometry': {
+                "geometry": {
                     "type": "Point",
                     "bbox": [-105.0162, 39.5742, -105.0162, 39.5742],
                     "coordinates": [-105.0162, 39.5742],

@@ -15,43 +15,43 @@ class TestRestFrameworkGisBBox(TestCase):
     """
 
     def setUp(self):
-        self.geojson_boxedlocation_list_url = reverse('api_geojson_boxedlocation_list')
-        self.geojson_location_bbox_list_url = reverse('api_geojson_location_bbox_list')
+        self.geojson_boxedlocation_list_url = reverse("api_geojson_boxedlocation_list")
+        self.geojson_location_bbox_list_url = reverse("api_geojson_location_bbox_list")
 
     def _create_locations(self):
         self.bl1 = BoxedLocation.objects.create(
             id=1,
-            name='l1',
-            slug='l1',
-            geometry='POINT (13.007 42.423)',
-            bbox_geometry='POLYGON((12.997 42.413,12.997 42.433,13.017 42.433,13.017 42.413,12.997 42.413))',
+            name="l1",
+            slug="l1",
+            geometry="POINT (13.007 42.423)",
+            bbox_geometry="POLYGON((12.997 42.413,12.997 42.433,13.017 42.433,13.017 42.413,12.997 42.413))",
         )
         self.bl2 = BoxedLocation.objects.create(
             id=2,
-            name='l2',
-            slug='l2',
-            geometry='POINT (12.007 43.423)',
-            bbox_geometry='POLYGON((11.997 43.413,11.997 43.433,12.017 43.433,12.017 43.413,11.997 43.413))',
+            name="l2",
+            slug="l2",
+            geometry="POINT (12.007 43.423)",
+            bbox_geometry="POLYGON((11.997 43.413,11.997 43.433,12.017 43.433,12.017 43.413,11.997 43.413))",
         )
         self.l1 = Location.objects.create(
             id=1,
-            name='l1',
-            slug='l1',
-            geometry='POLYGON((12.997 42.413,12.997 42.433,13.017 42.433,13.017 42.413,12.997 42.413))',
+            name="l1",
+            slug="l1",
+            geometry="POLYGON((12.997 42.413,12.997 42.433,13.017 42.433,13.017 42.413,12.997 42.413))",
         )
 
     def test_list(self):
         self._create_locations()
         response = self.client.get(self.geojson_boxedlocation_list_url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data['features']), 2)
-        for feature in response.data['features']:
-            self.assertIn('bbox', feature)
-            fid = feature['id']
+        self.assertEqual(len(response.data["features"]), 2)
+        for feature in response.data["features"]:
+            self.assertIn("bbox", feature)
+            fid = feature["id"]
             if fid == 1:
-                self.assertEqual(feature['bbox'], self.bl1.bbox_geometry.extent)
+                self.assertEqual(feature["bbox"], self.bl1.bbox_geometry.extent)
             elif fid == 2:
-                self.assertEqual(feature['bbox'], self.bl2.bbox_geometry.extent)
+                self.assertEqual(feature["bbox"], self.bl2.bbox_geometry.extent)
             else:
                 self.fail(f"Unexpected id: {fid}")
         BoxedLocation.objects.all().delete()
@@ -66,7 +66,7 @@ class TestRestFrameworkGisBBox(TestCase):
         response = self.client.post(
             self.geojson_boxedlocation_list_url,
             data=json.dumps(data),
-            content_type='application/json',
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(BoxedLocation.objects.count(), 1)
@@ -79,8 +79,8 @@ class TestRestFrameworkGisBBox(TestCase):
         self._create_locations()
         response = self.client.get(self.geojson_location_bbox_list_url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data['features']), 1)
-        self.assertEqual(response.data['features'][0]['bbox'], self.l1.geometry.extent)
+        self.assertEqual(len(response.data["features"]), 1)
+        self.assertEqual(response.data["features"][0]["bbox"], self.l1.geometry.extent)
 
     def test_bbox_improperly_configured(self):
         self._create_locations()
@@ -88,8 +88,8 @@ class TestRestFrameworkGisBBox(TestCase):
         class LocationGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
             class Meta:
                 model = Location
-                geo_field = 'geometry'
-                bbox_geo_field = 'geometry'
+                geo_field = "geometry"
+                bbox_geo_field = "geometry"
                 auto_bbox = True
 
         with self.assertRaises(ImproperlyConfigured):
