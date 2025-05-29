@@ -50,8 +50,7 @@ setup(
     project_urls={
         'Bug Reports': 'https://github.com/openwisp/django-rest-framework-gis/issues',
         'Continuous Integration': (
-            'https://github.com/openwisp/django-rest-framework-gis/actions?'
-            'query=workflow%3A%22Django+Rest+Framework+Gis+CI+Build%22'
+            'https://github.com/openwisp/django-rest-framework-gis/actions/workflows/ci.yml'
         ),
         'Mailing List': 'https://groups.google.com/forum/#!forum/django-rest-framework-gis',
         'Code Coverage': 'https://coveralls.io/github/openwisp/django-rest-framework-gis',
