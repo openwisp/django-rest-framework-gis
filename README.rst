@@ -98,11 +98,11 @@ This field takes four optional arguments:
 - ``auto_bbox``: If ``True``, the GeoJSON object will include
   a `bounding box <https://datatracker.ietf.org/doc/html/rfc7946#section-5>`_,
   which is the smallest possible rectangle enclosing the geometry.
-- ``transform`` (defaults to ``None``): Can be set to any value that is accepted by 
-  |GEOSGeometry.transform|_. Set to `4326` if your input geometries are in another 
+- ``transform`` (defaults to ``None``): Can be set to any value that is accepted by
+  |GEOSGeometry.transform|_. Set to `4326` if your input geometries are in another
   projection and you want to produce output according to the `GeoJSON standard
-  <https://datatracker.ietf.org/doc/html/rfc7946#section-4>`_. If ``None`` (or the 
-  input geometries do not have a SRID), the output coordinates will not be 
+  <https://datatracker.ietf.org/doc/html/rfc7946#section-4>`_. If ``None`` (or the
+  input geometries do not have a SRID), the output coordinates will not be
   transformed.
 
 .. |GEOSGeometry.transform| replace:: ``GEOSGeometry.transform``
@@ -758,7 +758,7 @@ Contributing
 ------------
 
 1. Announce your intentions in the
-  `Github Discussions Forum <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
+   `Github Discussions Forum <https://github.com/openwisp/django-rest-framework-gis/discussions>`__
 2. Follow the `PEP8 Style Guide for Python
    Code <http://www.python.org/dev/peps/pep-0008/>`__
 3. Fork this repo
