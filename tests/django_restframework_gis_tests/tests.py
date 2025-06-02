@@ -313,9 +313,9 @@ class TestRestFrameworkGis(TestCase):
     def test_geojson_srid_transforms_to_wgs84(self):
         location = OtherSridLocation.objects.create(
             name="other SRID location",
-            geometry='POINT(625826.2376404074 483198.2074507246)',
+            geometry="POINT(625826.2376404074 483198.2074507246)",
         )
-        url = reverse('api_other_srid_location_details', args=[location.id])
+        url = reverse("api_other_srid_location_details", args=[location.id])
         response = self.client.get(url)
         expected_coords = (16.372500007573713, 48.20833306345481)
         expected_coords_bbox = (
@@ -324,7 +324,7 @@ class TestRestFrameworkGis(TestCase):
             16.372500007573713,
             48.20833306345481,
         )
-        self.assertEqual(response.data['properties']['name'], 'other SRID location')
+        self.assertEqual(response.data["properties"]["name"], "other SRID location")
         for received, expected in zip(
             response.data["geometry"]["coordinates"],
             expected_coords,

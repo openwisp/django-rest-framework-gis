@@ -41,7 +41,7 @@ __all__ = [
     "GeometrySerializerMethodFieldSerializer",
     "GeometrySerializer",
     "BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer",
-    "OtherSridLocationGeoSerializer"
+    "OtherSridLocationGeoSerializer",
 ]
 
 
@@ -62,8 +62,8 @@ class OtherSridLocationGeoSerializer(gis_serializers.GeoFeatureModelSerializer):
 
     class Meta:
         model = OtherSridLocation
-        geo_field = 'geometry'
-        fields = '__all__'
+        geo_field = "geometry"
+        fields = "__all__"
 
 
 class PaginatedLocationGeoSerializer(pagination.PageNumberPagination):
