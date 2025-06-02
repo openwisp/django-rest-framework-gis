@@ -1,11 +1,23 @@
 Changelog
 =========
 
-Version 1.2.0 [Unreleased]
+Version 1.2.0 [2025-06-02]
 --------------------------
+
+Features
+~~~~~~~~
+
+- Added ``transform`` optional argument to ``GeometryField`` `#188
+  <https://github.com/openwisp/django-rest-framework-gis/issues/188>`_.
+
+Changes
+~~~~~~~
+
+**Dependencies:**
 
 - Added Django ``5.2`` to automated testing build.
 - Added Python ``3.13`` to automated testing build.
+- Added support for Django REST Framework ``3.16.0``.
 
 Version 1.1.0 [2024-08-17]
 --------------------------
