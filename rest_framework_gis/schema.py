@@ -53,15 +53,15 @@ class GeoFeatureAutoSchema(AutoSchema):
     }
 
     GEO_FIELD_TO_SCHEMA[models.GeometryField] = {
-        'type': {'type': 'string'},
-        'coordinates': {
-            'oneOf': [  # If you have custom subclass of GeometryField, Override `oneOf` property.
+        "type": {"type": "string"},
+        "coordinates": {
+            "oneOf": [  # If you have custom subclass of GeometryField, Override `oneOf` property.
                 GEO_FIELD_TO_SCHEMA[models.PointField],
                 GEO_FIELD_TO_SCHEMA[models.LineStringField],
                 GEO_FIELD_TO_SCHEMA[models.PolygonField],
             ],
-            'example': GEO_FIELD_TO_SCHEMA[models.PolygonField]['coordinates'][
-                'example'
+            "example": GEO_FIELD_TO_SCHEMA[models.PolygonField]["coordinates"][
+                "example"
             ],
         },
     }

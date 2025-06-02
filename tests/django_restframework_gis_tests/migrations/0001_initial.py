@@ -11,77 +11,77 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='BoxedLocation',
+            name="BoxedLocation",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('name', models.CharField(max_length=32)),
-                ('slug', models.SlugField(blank=True, max_length=128, unique=True)),
-                ('timestamp', models.DateTimeField(blank=True, null=True)),
+                ("name", models.CharField(max_length=32)),
+                ("slug", models.SlugField(blank=True, max_length=128, unique=True)),
+                ("timestamp", models.DateTimeField(blank=True, null=True)),
                 (
-                    'geometry',
+                    "geometry",
                     django.contrib.gis.db.models.fields.GeometryField(srid=4326),
                 ),
                 (
-                    'bbox_geometry',
+                    "bbox_geometry",
                     django.contrib.gis.db.models.fields.PolygonField(srid=4326),
                 ),
             ],
-            options={'abstract': False},
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='LocatedFile',
+            name="LocatedFile",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('name', models.CharField(max_length=32)),
-                ('slug', models.SlugField(blank=True, max_length=128, unique=True)),
-                ('timestamp', models.DateTimeField(blank=True, null=True)),
+                ("name", models.CharField(max_length=32)),
+                ("slug", models.SlugField(blank=True, max_length=128, unique=True)),
+                ("timestamp", models.DateTimeField(blank=True, null=True)),
                 (
-                    'geometry',
+                    "geometry",
                     django.contrib.gis.db.models.fields.GeometryField(srid=4326),
                 ),
                 (
-                    'file',
-                    models.FileField(blank=True, null=True, upload_to='located_files'),
+                    "file",
+                    models.FileField(blank=True, null=True, upload_to="located_files"),
                 ),
             ],
-            options={'abstract': False},
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='Location',
+            name="Location",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('name', models.CharField(max_length=32)),
-                ('slug', models.SlugField(blank=True, max_length=128, unique=True)),
-                ('timestamp', models.DateTimeField(blank=True, null=True)),
+                ("name", models.CharField(max_length=32)),
+                ("slug", models.SlugField(blank=True, max_length=128, unique=True)),
+                ("timestamp", models.DateTimeField(blank=True, null=True)),
                 (
-                    'geometry',
+                    "geometry",
                     django.contrib.gis.db.models.fields.GeometryField(srid=4326),
                 ),
             ],
-            options={'abstract': False},
+            options={"abstract": False},
         ),
     ]

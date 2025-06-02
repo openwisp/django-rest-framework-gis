@@ -2,7 +2,7 @@ from django.apps import AppConfig as BaseConfig
 
 
 class AppConfig(BaseConfig):
-    name = 'rest_framework_gis'
+    name = "rest_framework_gis"
 
     def ready(self):
         """

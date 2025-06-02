@@ -6,32 +6,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('django_restframework_gis_tests', '0001_initial'),
+        ("django_restframework_gis_tests", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Nullable',
+            name="Nullable",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('name', models.CharField(max_length=32)),
-                ('slug', models.SlugField(blank=True, max_length=128, unique=True)),
-                ('timestamp', models.DateTimeField(blank=True, null=True)),
+                ("name", models.CharField(max_length=32)),
+                ("slug", models.SlugField(blank=True, max_length=128, unique=True)),
+                ("timestamp", models.DateTimeField(blank=True, null=True)),
                 (
-                    'geometry',
+                    "geometry",
                     django.contrib.gis.db.models.fields.GeometryField(
                         blank=True, null=True, srid=4326
                     ),
                 ),
             ],
-            options={'abstract': False},
+            options={"abstract": False},
         ),
     ]

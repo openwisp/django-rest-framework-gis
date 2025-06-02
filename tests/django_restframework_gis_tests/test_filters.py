@@ -15,8 +15,8 @@ from .views import (
 )
 
 has_spatialite = (
-    settings.DATABASES['default']['ENGINE']
-    == 'django.contrib.gis.db.backends.spatialite'
+    settings.DATABASES["default"]["ENGINE"]
+    == "django.contrib.gis.db.backends.spatialite"
 )
 
 
@@ -27,28 +27,28 @@ class TestRestFrameworkGisFilters(TestCase):
 
     def setUp(self):
         self.location_contained_in_bbox_list_url = reverse(
-            'api_geojson_location_list_contained_in_bbox_filter'
+            "api_geojson_location_list_contained_in_bbox_filter"
         )
         self.location_overlaps_bbox_list_url = reverse(
-            'api_geojson_location_list_overlaps_bbox_filter'
+            "api_geojson_location_list_overlaps_bbox_filter"
         )
         self.location_contained_in_tile_list_url = reverse(
-            'api_geojson_location_list_contained_in_tile_filter'
+            "api_geojson_location_list_contained_in_tile_filter"
         )
         self.location_overlaps_tile_list_url = reverse(
-            'api_geojson_location_list_overlaps_tile_filter'
+            "api_geojson_location_list_overlaps_tile_filter"
         )
         self.location_within_distance_of_point_list_url = reverse(
-            'api_geojson_location_list_within_distance_of_point_filter'
+            "api_geojson_location_list_within_distance_of_point_filter"
         )
         self.location_within_degrees_of_point_list_url = reverse(
-            'api_geojson_location_list_within_degrees_of_point_filter'
+            "api_geojson_location_list_within_degrees_of_point_filter"
         )
         self.geojson_contained_in_geometry = reverse(
-            'api_geojson_contained_in_geometry'
+            "api_geojson_contained_in_geometry"
         )
         self.location_order_distance_to_point = reverse(
-            'api_geojson_location_order_distance_to_point_list_filter'
+            "api_geojson_location_order_distance_to_point_list_filter"
         )
 
         treasure_island_geojson = """{
@@ -150,28 +150,28 @@ class TestRestFrameworkGisFilters(TestCase):
         xmax = 10
         ymax = 10
 
-        url_params = '?in_bbox=%d,%d,%d,%d&format=json' % (xmin, ymin, xmax, ymax)
+        url_params = "?in_bbox=%d,%d,%d,%d&format=json" % (xmin, ymin, xmax, ymax)
 
         # Square with bottom left at (1,1), top right at (9,9)
         isContained = Location()
-        isContained.name = 'isContained'
+        isContained.name = "isContained"
         isContained.geometry = Polygon(((1, 1), (9, 1), (9, 9), (1, 9), (1, 1)))
         isContained.save()
 
         isEqualToBounds = Location()
-        isEqualToBounds.name = 'isEqualToBounds'
+        isEqualToBounds.name = "isEqualToBounds"
         isEqualToBounds.geometry = Polygon(((0, 0), (10, 0), (10, 10), (0, 10), (0, 0)))
         isEqualToBounds.save()
 
         # Rectangle with bottom left at (-1,1), top right at (5,5)
         overlaps = Location()
-        overlaps.name = 'overlaps'
+        overlaps.name = "overlaps"
         overlaps.geometry = Polygon(((-1, 1), (5, 1), (5, 5), (-1, 5), (-1, 1)))
         overlaps.save()
 
         # Rectangle with bottom left at (-3,-3), top right at (-1,2)
         nonIntersecting = Location()
-        nonIntersecting.name = 'nonIntersecting'
+        nonIntersecting.name = "nonIntersecting"
         nonIntersecting.geometry = Polygon(
             ((-3, -3), (-1, -3), (-1, 2), (-3, 2), (-3, -3))
         )
@@ -181,23 +181,23 @@ class TestRestFrameworkGisFilters(TestCase):
         response = self.client.get(
             self.location_contained_in_bbox_list_url + url_params
         )
-        self.assertEqual(len(response.data['features']), 2)
-        for result in response.data['features']:
+        self.assertEqual(len(response.data["features"]), 2)
+        for result in response.data["features"]:
             self.assertEqual(
-                result['properties']['name'] in ('isContained', 'isEqualToBounds'), True
+                result["properties"]["name"] in ("isContained", "isEqualToBounds"), True
             )
 
         # Make sure we get overlapping results for the view which allows bounding box overlaps.
         response = self.client.get(self.location_overlaps_bbox_list_url + url_params)
-        self.assertEqual(len(response.data['features']), 3)
-        for result in response.data['features']:
+        self.assertEqual(len(response.data["features"]), 3)
+        for result in response.data["features"]:
             self.assertEqual(
-                result['properties']['name']
-                in ('isContained', 'isEqualToBounds', 'overlaps'),
+                result["properties"]["name"]
+                in ("isContained", "isEqualToBounds", "overlaps"),
                 True,
             )
 
-    @skipIf(has_spatialite, 'Skipped test for spatialite backend: not accurate enough')
+    @skipIf(has_spatialite, "Skipped test for spatialite backend: not accurate enough")
     def test_TileFilter_filtering(self):
         """
         Checks that the TMSTileFilter returns only objects strictly contained
@@ -210,16 +210,16 @@ class TestRestFrameworkGisFilters(TestCase):
         x = 1
         y = 0
 
-        url_params = '?tile=%d/%d/%d&format=json' % (z, x, y)
+        url_params = "?tile=%d/%d/%d&format=json" % (z, x, y)
 
         # Square with bottom left at (1,1), top right at (9,9)
         isContained = Location()
-        isContained.name = 'isContained'
+        isContained.name = "isContained"
         isContained.geometry = Polygon(((1, 1), (9, 1), (9, 9), (1, 9), (1, 1)))
         isContained.save()
 
         isEqualToBounds = Location()
-        isEqualToBounds.name = 'isEqualToBounds'
+        isEqualToBounds.name = "isEqualToBounds"
         isEqualToBounds.geometry = Polygon(
             ((0, 0), (0, 85.05113), (180, 85.05113), (180, 0), (0, 0))
         )
@@ -227,13 +227,13 @@ class TestRestFrameworkGisFilters(TestCase):
 
         # Rectangle with bottom left at (-1,1), top right at (5,5)
         overlaps = Location()
-        overlaps.name = 'overlaps'
+        overlaps.name = "overlaps"
         overlaps.geometry = Polygon(((-1, 1), (5, 1), (5, 5), (-1, 5), (-1, 1)))
         overlaps.save()
 
         # Rectangle with bottom left at (-3,-3), top right at (-1,2)
         nonIntersecting = Location()
-        nonIntersecting.name = 'nonIntersecting'
+        nonIntersecting.name = "nonIntersecting"
         nonIntersecting.geometry = Polygon(
             ((-3, -3), (-1, -3), (-1, 2), (-3, 2), (-3, -3))
         )
@@ -243,19 +243,19 @@ class TestRestFrameworkGisFilters(TestCase):
         response = self.client.get(
             self.location_contained_in_tile_list_url + url_params
         )
-        self.assertEqual(len(response.data['features']), 2)
-        for result in response.data['features']:
+        self.assertEqual(len(response.data["features"]), 2)
+        for result in response.data["features"]:
             self.assertEqual(
-                result['properties']['name'] in ('isContained', 'isEqualToBounds'), True
+                result["properties"]["name"] in ("isContained", "isEqualToBounds"), True
             )
 
         # Make sure we get overlapping results for the view which allows bounding box overlaps.
         response = self.client.get(self.location_overlaps_tile_list_url + url_params)
-        self.assertEqual(len(response.data['features']), 3)
-        for result in response.data['features']:
+        self.assertEqual(len(response.data["features"]), 3)
+        for result in response.data["features"]:
             self.assertEqual(
-                result['properties']['name']
-                in ('isContained', 'isEqualToBounds', 'overlaps'),
+                result["properties"]["name"]
+                in ("isContained", "isEqualToBounds", "overlaps"),
                 True,
             )
 
@@ -273,13 +273,13 @@ class TestRestFrameworkGisFilters(TestCase):
         distance = 5000  # meters
         point_on_alcatraz = [-122.4222, 37.82667]
 
-        url_params = f'?dist={distance:0.4f}&point=hello&format=json'
+        url_params = f"?dist={distance:0.4f}&point=hello&format=json"
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
         self.assertEqual(response.status_code, 400)
 
-        url_params = '?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json'.format(
+        url_params = "?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json".format(
             distance,
             point_on_alcatraz[0],
             point_on_alcatraz[1],
@@ -298,31 +298,31 @@ class TestRestFrameworkGisFilters(TestCase):
 
         # Make sure we only get back the ones within the distance
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
-        self.assertEqual(len(response.data['features']), 1)
-        for result in response.data['features']:
-            self.assertEqual(result['properties']['name'], treasure_island.name)
+        self.assertEqual(len(response.data["features"]), 1)
+        for result in response.data["features"]:
+            self.assertEqual(result["properties"]["name"], treasure_island.name)
 
         # Make sure we get back all the ones within the distance
         distance = 7000
-        url_params = '?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json'.format(
+        url_params = "?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json".format(
             distance,
             point_on_alcatraz[0],
             point_on_alcatraz[1],
         )
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
-        self.assertEqual(len(response.data['features']), 2)
-        for result in response.data['features']:
+        self.assertEqual(len(response.data["features"]), 2)
+        for result in response.data["features"]:
             self.assertIn(
-                result['properties']['name'], (ggpark.name, treasure_island.name)
+                result["properties"]["name"], (ggpark.name, treasure_island.name)
             )
 
         # Make sure we only get back the ones within the distance
         degrees = 0.05
-        url_params = '?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json'.format(
+        url_params = "?dist={:0.4f}&point={:0.4f},{:0.4f}&format=json".format(
             degrees,
             point_on_alcatraz[0],
             point_on_alcatraz[1],
@@ -330,9 +330,9 @@ class TestRestFrameworkGisFilters(TestCase):
         response = self.client.get(
             self.location_within_degrees_of_point_list_url + url_params
         )
-        self.assertEqual(len(response.data['features']), 1)
-        for result in response.data['features']:
-            self.assertEqual(result['properties']['name'], treasure_island.name)
+        self.assertEqual(len(response.data["features"]), 1)
+        for result in response.data["features"]:
+            self.assertEqual(result["properties"]["name"], treasure_island.name)
 
     @skipIf(
         has_spatialite,
@@ -345,74 +345,74 @@ class TestRestFrameworkGisFilters(TestCase):
         """
         self.assertEqual(Location.objects.count(), 0)
 
-        url_params = '?point=hello&format=json'
+        url_params = "?point=hello&format=json"
         response = self.client.get(
-            f'{self.location_order_distance_to_point}{url_params}'
+            f"{self.location_order_distance_to_point}{url_params}"
         )
         self.assertEqual(response.status_code, 400)
 
         Location.objects.create(
-            name='Houston', geometry='SRID=4326;POINT (-95.363151 29.763374)'
+            name="Houston", geometry="SRID=4326;POINT (-95.363151 29.763374)"
         )
         Location.objects.create(
-            name='Dallas', geometry='SRID=4326;POINT (-96.801611 32.782057)'
+            name="Dallas", geometry="SRID=4326;POINT (-96.801611 32.782057)"
         )
         Location.objects.create(
-            name='Oklahoma City', geometry='SRID=4326;POINT (-97.521157 34.464642)'
+            name="Oklahoma City", geometry="SRID=4326;POINT (-97.521157 34.464642)"
         )
         Location.objects.create(
-            name='Wellington', geometry='SRID=4326;POINT (174.783117 -41.315268)'
+            name="Wellington", geometry="SRID=4326;POINT (174.783117 -41.315268)"
         )
         Location.objects.create(
-            name='Pueblo', geometry='SRID=4326;POINT (-104.609252 38.255001)'
+            name="Pueblo", geometry="SRID=4326;POINT (-104.609252 38.255001)"
         )
         Location.objects.create(
-            name='Lawrence', geometry='SRID=4326;POINT (-95.235060 38.971823)'
+            name="Lawrence", geometry="SRID=4326;POINT (-95.235060 38.971823)"
         )
         Location.objects.create(
-            name='Chicago', geometry='SRID=4326;POINT (-87.650175 41.850385)'
+            name="Chicago", geometry="SRID=4326;POINT (-87.650175 41.850385)"
         )
         Location.objects.create(
-            name='Victoria', geometry='SRID=4326;POINT (-123.305196 48.462611)'
+            name="Victoria", geometry="SRID=4326;POINT (-123.305196 48.462611)"
         )
 
         point = [-90, 40]
 
-        url_params = '?point=%i,%i&format=json' % (point[0], point[1])
+        url_params = "?point=%i,%i&format=json" % (point[0], point[1])
         response = self.client.get(
-            f'{self.location_order_distance_to_point}{url_params}'
+            f"{self.location_order_distance_to_point}{url_params}"
         )
-        self.assertEqual(len(response.data['features']), 8)
+        self.assertEqual(len(response.data["features"]), 8)
         self.assertEqual(
-            [city['properties']['name'] for city in response.data['features']],
+            [city["properties"]["name"] for city in response.data["features"]],
             [
-                'Chicago',
-                'Lawrence',
-                'Oklahoma City',
-                'Dallas',
-                'Houston',
-                'Pueblo',
-                'Victoria',
-                'Wellington',
+                "Chicago",
+                "Lawrence",
+                "Oklahoma City",
+                "Dallas",
+                "Houston",
+                "Pueblo",
+                "Victoria",
+                "Wellington",
             ],
         )
 
-        url_params = '?point=%i,%i&order=desc&format=json' % (point[0], point[1])
+        url_params = "?point=%i,%i&order=desc&format=json" % (point[0], point[1])
         response = self.client.get(
-            f'{self.location_order_distance_to_point}{url_params}'
+            f"{self.location_order_distance_to_point}{url_params}"
         )
-        self.assertEqual(len(response.data['features']), 8)
+        self.assertEqual(len(response.data["features"]), 8)
         self.assertEqual(
-            [city['properties']['name'] for city in response.data['features']],
+            [city["properties"]["name"] for city in response.data["features"]],
             [
-                'Wellington',
-                'Victoria',
-                'Pueblo',
-                'Houston',
-                'Dallas',
-                'Oklahoma City',
-                'Lawrence',
-                'Chicago',
+                "Wellington",
+                "Victoria",
+                "Pueblo",
+                "Houston",
+                "Dallas",
+                "Oklahoma City",
+                "Lawrence",
+                "Chicago",
             ],
         )
 
@@ -446,113 +446,113 @@ class TestRestFrameworkGisFilters(TestCase):
 
         url_params = f"?contains_properly={quoted_param}"
 
-        response = self.client.get(f'{self.geojson_contained_in_geometry}{url_params}')
+        response = self.client.get(f"{self.geojson_contained_in_geometry}{url_params}")
         self.assertEqual(len(response.data), 1)
 
-        geometry_response = GEOSGeometry(json.dumps(response.data[0]['geometry']))
+        geometry_response = GEOSGeometry(json.dumps(response.data[0]["geometry"]))
 
         self.assertTrue(geometry_response.equals_exact(self.ggpark_geom))
-        self.assertEqual(response.data[0]['name'], ggpark.name)
+        self.assertEqual(response.data[0]["name"], ggpark.name)
 
         # try without any param, should return both
         response = self.client.get(self.geojson_contained_in_geometry)
         self.assertEqual(len(response.data), 2)
 
     def test_inBBOXFilter_filtering_none(self):
-        url_params = '?in_bbox=&format=json'
+        url_params = "?in_bbox=&format=json"
         response = self.client.get(
             self.location_contained_in_bbox_list_url + url_params
         )
         self.assertDictEqual(
-            response.data, {'type': 'FeatureCollection', 'features': []}
+            response.data, {"type": "FeatureCollection", "features": []}
         )
 
     def test_inBBOXFilter_ValueError(self):
-        url_params = '?in_bbox=0&format=json'
+        url_params = "?in_bbox=0&format=json"
         response = self.client.get(
             self.location_contained_in_bbox_list_url + url_params
         )
         self.assertEqual(
-            response.data['detail'],
-            'Invalid bbox string supplied for parameter in_bbox',
+            response.data["detail"],
+            "Invalid bbox string supplied for parameter in_bbox",
         )
 
     def test_inBBOXFilter_filter_field_none(self):
         original_value = GeojsonLocationContainedInBBoxList.bbox_filter_field
         GeojsonLocationContainedInBBoxList.bbox_filter_field = None
-        url_params = '?in_bbox=0,0,0,0&format=json'
+        url_params = "?in_bbox=0,0,0,0&format=json"
         response = self.client.get(
             self.location_contained_in_bbox_list_url + url_params
         )
         self.assertDictEqual(
-            response.data, {'type': 'FeatureCollection', 'features': []}
+            response.data, {"type": "FeatureCollection", "features": []}
         )
         GeojsonLocationContainedInBBoxList.bbox_filter_field = original_value
 
     def test_TileFilter_filtering_none(self):
-        url_params = '?tile=&format=json'
+        url_params = "?tile=&format=json"
         response = self.client.get(
             self.location_contained_in_tile_list_url + url_params
         )
-        self.assertEqual(response.data, {'type': 'FeatureCollection', 'features': []})
+        self.assertEqual(response.data, {"type": "FeatureCollection", "features": []})
 
     def test_TileFilter_ValueError(self):
-        url_params = '?tile=1/0&format=json'
+        url_params = "?tile=1/0&format=json"
         response = self.client.get(
             self.location_contained_in_tile_list_url + url_params
         )
         self.assertEqual(
-            response.data['detail'], 'Invalid tile string supplied for parameter tile'
+            response.data["detail"], "Invalid tile string supplied for parameter tile"
         )
 
     def test_DistanceToPointFilter_filtering_none(self):
-        url_params = '?dist=5000&point=&format=json'
+        url_params = "?dist=5000&point=&format=json"
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
         self.assertDictEqual(
-            response.data, {'type': 'FeatureCollection', 'features': []}
+            response.data, {"type": "FeatureCollection", "features": []}
         )
 
     def test_DistanceToPointFilter_filter_field_none(self):
         original_value = GeojsonLocationWithinDistanceOfPointList.distance_filter_field
         GeojsonLocationWithinDistanceOfPointList.distance_filter_field = None
-        url_params = '?dist=5000&point=&format=json'
+        url_params = "?dist=5000&point=&format=json"
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
         self.assertDictEqual(
-            response.data, {'type': 'FeatureCollection', 'features': []}
+            response.data, {"type": "FeatureCollection", "features": []}
         )
         GeojsonLocationWithinDistanceOfPointList.distance_filter_field = original_value
 
     def test_DistanceToPointFilter_ValueError_point(self):
-        url_params = '?dist=500.0&point=hello&format=json'
+        url_params = "?dist=500.0&point=hello&format=json"
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
         self.assertEqual(
-            response.data['detail'],
-            'Invalid geometry string supplied for parameter point',
+            response.data["detail"],
+            "Invalid geometry string supplied for parameter point",
         )
 
     def test_DistanceToPointFilter_ValueError_distance(self):
-        url_params = '?dist=wrong&point=12.0,42.0&format=json'
+        url_params = "?dist=wrong&point=12.0,42.0&format=json"
         response = self.client.get(
-            f'{self.location_within_distance_of_point_list_url}{url_params}'
+            f"{self.location_within_distance_of_point_list_url}{url_params}"
         )
         self.assertEqual(
-            response.data['detail'],
-            'Invalid distance string supplied for parameter dist',
+            response.data["detail"],
+            "Invalid distance string supplied for parameter dist",
         )
 
     def test_DistanceToPointOrderingFilter_filtering_none(self):
-        url_params = '?point=&format=json'
+        url_params = "?point=&format=json"
         response = self.client.get(
-            f'{self.location_order_distance_to_point}{url_params}'
+            f"{self.location_order_distance_to_point}{url_params}"
         )
         self.assertDictEqual(
-            response.data, {'type': 'FeatureCollection', 'features': []}
+            response.data, {"type": "FeatureCollection", "features": []}
         )
 
     def test_DistanceToPointOrderingFilter_ordering_filter_field_none(self):
@@ -560,12 +560,12 @@ class TestRestFrameworkGisFilters(TestCase):
             GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field
         )
         GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field = None
-        url_params = '?point=&format=json'
+        url_params = "?point=&format=json"
         response = self.client.get(
-            f'{self.location_order_distance_to_point}{url_params}'
+            f"{self.location_order_distance_to_point}{url_params}"
         )
         self.assertDictEqual(
-            response.data, {'type': 'FeatureCollection', 'features': []}
+            response.data, {"type": "FeatureCollection", "features": []}
         )
         GeojsonLocationOrderDistanceToPointList.distance_ordering_filter_field = (
             original_value

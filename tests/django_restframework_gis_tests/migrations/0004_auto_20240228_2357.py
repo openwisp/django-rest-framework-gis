@@ -6,23 +6,23 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('django_restframework_gis_tests', '0003_schema_models'),
+        ("django_restframework_gis_tests", "0003_schema_models"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='boxedlocation',
-            name='geometry',
+            model_name="boxedlocation",
+            name="geometry",
             field=django.contrib.gis.db.models.fields.GeometryField(srid=4326),
         ),
         migrations.AlterField(
-            model_name='locatedfile',
-            name='geometry',
+            model_name="locatedfile",
+            name="geometry",
             field=django.contrib.gis.db.models.fields.GeometryField(srid=4326),
         ),
         migrations.AlterField(
-            model_name='location',
-            name='geometry',
+            model_name="location",
+            name="geometry",
             field=django.contrib.gis.db.models.fields.GeometryField(srid=4326),
         ),
     ]

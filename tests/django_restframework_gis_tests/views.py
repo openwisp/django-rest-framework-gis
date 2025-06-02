@@ -90,7 +90,7 @@ class GeojsonLocationContainedInBBoxList(generics.ListAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
-    bbox_filter_field = 'geometry'
+    bbox_filter_field = "geometry"
     filter_backends = (InBBoxFilter,)
 
 
@@ -108,7 +108,7 @@ class GeojsonLocationContainedInTileList(generics.ListAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
-    bbox_filter_field = 'geometry'
+    bbox_filter_field = "geometry"
     filter_backends = (TMSTileFilter,)
 
 
@@ -127,7 +127,7 @@ class GeojsonLocationWithinDistanceOfPointList(generics.ListAPIView):
     serializer_class = LocationGeoFeatureSerializer
     distance_filter_convert_meters = True
     queryset = Location.objects.all()
-    distance_filter_field = 'geometry'
+    distance_filter_field = "geometry"
     filter_backends = (DistanceToPointFilter,)
 
 
@@ -149,7 +149,7 @@ class GeojsonLocationOrderDistanceToPointList(generics.ListAPIView):
     model = Location
     serializer_class = LocationGeoFeatureSerializer
     queryset = Location.objects.all()
-    distance_ordering_filter_field = 'geometry'
+    distance_ordering_filter_field = "geometry"
     filter_backends = (DistanceToPointOrderingFilter,)
 
 
@@ -196,7 +196,7 @@ geojson_nullable_details_nogeo = GeojsonNullableDetailsNoGeo.as_view()
 
 class GeojsonLocationSlugDetails(generics.RetrieveUpdateDestroyAPIView):
     model = Location
-    lookup_field = 'slug'
+    lookup_field = "slug"
     serializer_class = LocationGeoFeatureSlugSerializer
     queryset = Location.objects.all()
 
@@ -224,12 +224,12 @@ geojson_location_noid_details = GeojsonLocationNoIdDetails.as_view()
 
 class LocationFilter(GeoFilterSet):
     contains_properly = GeometryFilter(
-        field_name='geometry', lookup_expr='contains_properly'
+        field_name="geometry", lookup_expr="contains_properly"
     )
 
     class Meta:
         model = Location
-        fields = ['contains_properly']
+        fields = ["contains_properly"]
 
 
 class GeojsonLocationContainedInGeometry(generics.ListAPIView):

@@ -24,18 +24,18 @@ gis_lookups = BaseSpatialField.get_lookups()
 
 
 __all__ = [
-    'InBBoxFilter',
-    'InBBOXFilter',
-    'GeometryFilter',
-    'GeoFilterSet',
-    'TMSTileFilter',
-    'DistanceToPointFilter',
-    'DistanceToPointOrderingFilter',
+    "InBBoxFilter",
+    "InBBOXFilter",
+    "GeometryFilter",
+    "GeoFilterSet",
+    "TMSTileFilter",
+    "DistanceToPointFilter",
+    "DistanceToPointOrderingFilter",
 ]
 
 
 class InBBoxFilter(BaseFilterBackend):
-    bbox_param = 'in_bbox'  # The URL query parameter which contains the bbox.
+    bbox_param = "in_bbox"  # The URL query parameter which contains the bbox.
 
     def get_filter_bbox(self, request):
         bbox_string = request.query_params.get(self.bbox_param, None)
@@ -43,22 +43,22 @@ class InBBoxFilter(BaseFilterBackend):
             return None
 
         try:
-            p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(','))
+            p1x, p1y, p2x, p2y = (float(n) for n in bbox_string.split(","))
         except ValueError:
             raise ParseError(
-                f'Invalid bbox string supplied for parameter {self.bbox_param}'
+                f"Invalid bbox string supplied for parameter {self.bbox_param}"
             )
 
         x = Polygon.from_bbox((p1x, p1y, p2x, p2y))
         return x
 
     def filter_queryset(self, request, queryset, view):
-        filter_field = getattr(view, 'bbox_filter_field', None)
-        include_overlapping = getattr(view, 'bbox_filter_include_overlapping', False)
+        filter_field = getattr(view, "bbox_filter_field", None)
+        include_overlapping = getattr(view, "bbox_filter_include_overlapping", False)
         if include_overlapping:
-            geoDjango_filter = 'bboverlaps'
+            geoDjango_filter = "bboverlaps"
         else:
-            geoDjango_filter = 'contained'
+            geoDjango_filter = "contained"
 
         if not filter_field:
             return queryset
@@ -66,7 +66,7 @@ class InBBoxFilter(BaseFilterBackend):
         bbox = self.get_filter_bbox(request)
         if not bbox:
             return queryset
-        return queryset.filter(Q(**{f'{filter_field}__{geoDjango_filter}': bbox}))
+        return queryset.filter(Q(**{f"{filter_field}__{geoDjango_filter}": bbox}))
 
     def get_schema_operation_parameters(self, view):
         return [
@@ -96,13 +96,13 @@ class GeometryFilter(django_filters.Filter):
     field_class = forms.GeometryField
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('widget', forms.TextInput)
+        kwargs.setdefault("widget", forms.TextInput)
         super().__init__(*args, **kwargs)
 
 
 class GeoFilterSet(django_filters.FilterSet):
     GEOFILTER_FOR_DBFIELD_DEFAULTS = {
-        models.GeometryField: {'filterset_class': GeometryFilter},
+        models.GeometryField: {"filterset_class": GeometryFilter},
     }
 
     def __new__(cls, *args, **kwargs):
@@ -116,7 +116,7 @@ class GeoFilterSet(django_filters.FilterSet):
 
 
 class TMSTileFilter(InBBoxFilter):
-    tile_param = 'tile'  # The URL query parameter which contains the tile address
+    tile_param = "tile"  # The URL query parameter which contains the tile address
 
     def get_filter_bbox(self, request):
         tile_string = request.query_params.get(self.tile_param, None)
@@ -124,10 +124,10 @@ class TMSTileFilter(InBBoxFilter):
             return None
 
         try:
-            z, x, y = (int(n) for n in tile_string.split('/'))
+            z, x, y = (int(n) for n in tile_string.split("/"))
         except ValueError:
             raise ParseError(
-                f'Invalid tile string supplied for parameter {self.tile_param}'
+                f"Invalid tile string supplied for parameter {self.tile_param}"
             )
 
         bbox = Polygon.from_bbox(tile_edges(x, y, z))
@@ -146,8 +146,8 @@ class TMSTileFilter(InBBoxFilter):
 
 
 class DistanceToPointFilter(BaseFilterBackend):
-    dist_param = 'dist'
-    point_param = 'point'  # The URL query parameter which contains the
+    dist_param = "dist"
+    point_param = "point"  # The URL query parameter which contains the
 
     def get_filter_point(self, request, **kwargs):
         point_string = request.query_params.get(self.point_param, None)
@@ -155,10 +155,10 @@ class DistanceToPointFilter(BaseFilterBackend):
             return None
 
         try:
-            (x, y) = (float(n) for n in point_string.split(','))
+            (x, y) = (float(n) for n in point_string.split(","))
         except ValueError:
             raise ParseError(
-                'Invalid geometry string supplied for parameter {}'.format(
+                "Invalid geometry string supplied for parameter {}".format(
                     self.point_param
                 )
             )
@@ -195,9 +195,9 @@ class DistanceToPointFilter(BaseFilterBackend):
         return distance / (earthRadius * latitudeCorrection) * rad2deg
 
     def filter_queryset(self, request, queryset, view):
-        filter_field = getattr(view, 'distance_filter_field', None)
-        convert_distance_input = getattr(view, 'distance_filter_convert_meters', False)
-        geoDjango_filter = 'dwithin'  # use dwithin for points
+        filter_field = getattr(view, "distance_filter_field", None)
+        convert_distance_input = getattr(view, "distance_filter_convert_meters", False)
+        geoDjango_filter = "dwithin"  # use dwithin for points
 
         if not filter_field:
             return queryset
@@ -212,7 +212,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = float(dist_string)
         except ValueError:
             raise ParseError(
-                'Invalid distance string supplied for parameter {}'.format(
+                "Invalid distance string supplied for parameter {}".format(
                     self.dist_param
                 )
             )
@@ -222,7 +222,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             dist = self.dist_to_deg(dist, point[1])
 
         return queryset.filter(
-            Q(**{f'{filter_field}__{geoDjango_filter}': (point, dist)})
+            Q(**{f"{filter_field}__{geoDjango_filter}": (point, dist)})
         )
 
     def get_schema_operation_parameters(self, view):
@@ -256,10 +256,10 @@ class DistanceToPointFilter(BaseFilterBackend):
 
 class DistanceToPointOrderingFilter(DistanceToPointFilter):
     srid = 4326
-    order_param = 'order'
+    order_param = "order"
 
     def filter_queryset(self, request, queryset, view):
-        filter_field = getattr(view, 'distance_ordering_filter_field', None)
+        filter_field = getattr(view, "distance_ordering_filter_field", None)
 
         if not filter_field:
             return queryset
@@ -269,7 +269,7 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
             return queryset
 
         order = request.query_params.get(self.order_param)
-        if order == 'desc':
+        if order == "desc":
             return queryset.order_by(-GeometryDistance(filter_field, point))
         else:
             return queryset.order_by(GeometryDistance(filter_field, point))
