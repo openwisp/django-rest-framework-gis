@@ -14,7 +14,7 @@ from django.urls import reverse
 from rest_framework_gis import serializers as gis_serializers
 from rest_framework_gis.fields import GeoJsonDict
 
-from .models import LocatedFile, Location, Nullable
+from .models import LocatedFile, Location, Nullable, OtherSridLocation
 from .serializers import LocationGeoSerializer
 
 
@@ -309,6 +309,33 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.data["properties"]["name"], "falseid test")
         with self.assertRaises(KeyError):
             response.data["id"]
+
+    def test_geojson_srid_transforms_to_wgs84(self):
+        location = OtherSridLocation.objects.create(
+            name="other SRID location",
+            geometry="POINT(625826.2376404074 483198.2074507246)",
+        )
+        url = reverse("api_other_srid_location_details", args=[location.id])
+        response = self.client.get(url)
+        expected_coords = (16.372500007573713, 48.20833306345481)
+        expected_coords_bbox = (
+            16.372500007573713,
+            48.20833306345481,
+            16.372500007573713,
+            48.20833306345481,
+        )
+        self.assertEqual(response.data["properties"]["name"], "other SRID location")
+        for received, expected in zip(
+            response.data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(received, expected, places=5)
+
+        for received, expected in zip(
+            response.data["geometry"]["bbox"],
+            expected_coords_bbox,
+        ):
+            self.assertAlmostEqual(received, expected, places=5)
 
     def test_post_geojson_id_attribute(self):
         self.assertEqual(Location.objects.count(), 0)

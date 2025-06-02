@@ -2,7 +2,7 @@ from django.contrib.gis.geos import Point
 from rest_framework import pagination, serializers
 
 from rest_framework_gis import serializers as gis_serializers
-from rest_framework_gis.fields import GeometrySerializerMethodField
+from rest_framework_gis.fields import GeometryField, GeometrySerializerMethodField
 
 from .models import (
     BoxedLocation,
@@ -13,6 +13,7 @@ from .models import (
     MultiPointModel,
     MultiPolygonModel,
     Nullable,
+    OtherSridLocation,
     PointModel,
     PolygonModel,
 )
@@ -40,6 +41,7 @@ __all__ = [
     "GeometrySerializerMethodFieldSerializer",
     "GeometrySerializer",
     "BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer",
+    "OtherSridLocationGeoSerializer",
 ]
 
 
@@ -50,6 +52,17 @@ class LocationGeoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
+        fields = "__all__"
+
+
+class OtherSridLocationGeoSerializer(gis_serializers.GeoFeatureModelSerializer):
+    """Other SRID location geo serializer"""
+
+    geometry = GeometryField(auto_bbox=True, transform=4326)
+
+    class Meta:
+        model = OtherSridLocation
+        geo_field = "geometry"
         fields = "__all__"
 
 

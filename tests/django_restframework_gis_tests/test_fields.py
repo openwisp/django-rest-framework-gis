@@ -7,6 +7,7 @@ from rest_framework import serializers
 from rest_framework_gis import serializers as gis_serializers
 
 Point = {"type": "Point", "coordinates": [-105.0162, 39.5742]}
+Point31287 = {"type": "Point", "coordinates": [625826.2376404074, 483198.2074507246]}
 
 MultiPoint = {
     "type": "MultiPoint",
@@ -139,6 +140,102 @@ class BaseTestCase(TestCase):
         if isinstance(data, dict):
             return {k: self.normalize(v) for k, v in data.items()}
         return data
+
+
+class TestTransform(BaseTestCase):
+    def test_no_transform_4326_Point_no_srid(self):
+        model = self.get_instance(Point)
+        Serializer = self.create_serializer()
+        data = Serializer(model).data
+
+        expected_coords = (-105.0162, 39.5742)
+        for lat, lon in zip(
+            data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(lat, lon, places=5)
+
+    def test_no_transform_4326_Point_set_srid(self):
+        model = self.get_instance(Point)
+        model.geometry.srid = 4326
+        Serializer = self.create_serializer()
+        data = Serializer(model).data
+
+        expected_coords = (-105.0162, 39.5742)
+        for lat, lon in zip(
+            data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(lat, lon, places=5)
+
+    def test_transform_Point_no_transform(self):
+        model = self.get_instance(Point31287)
+        model.geometry.srid = 31287
+        Serializer = self.create_serializer(transform=None)
+        data = Serializer(model).data
+
+        expected_coords = (625826.2376404074, 483198.2074507246)
+        for lat, lon in zip(
+            data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(lat, lon, places=5)
+
+    def test_transform_Point_no_srid(self):
+        model = self.get_instance(Point31287)
+        Serializer = self.create_serializer()
+        data = Serializer(model).data
+
+        expected_coords = (625826.2376404074, 483198.2074507246)
+        for lat, lon in zip(
+            data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(lat, lon, places=5)
+
+    def test_transform_Point_to_4326(self):
+        model = self.get_instance(Point31287)
+        model.geometry.srid = 31287
+        Serializer = self.create_serializer(transform=4326)
+        data = Serializer(model).data
+
+        expected_coords = (16.372500007573713, 48.20833306345481)
+        for lat, lon in zip(
+            data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(lat, lon, places=5)
+
+    def test_transform_Point_to_3857(self):
+        model = self.get_instance(Point31287)
+        model.geometry.srid = 31287
+        Serializer = self.create_serializer(transform=3857)
+        data = Serializer(model).data
+
+        expected_coords = (1822578.363856016, 6141584.271938089)
+        for lat, lon in zip(
+            data["geometry"]["coordinates"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(lat, lon, places=1)
+
+    def test_transform_Point_bbox_to_4326(self):
+        model = self.get_instance(Point31287)
+        model.geometry.srid = 31287
+        Serializer = self.create_serializer(auto_bbox=True, transform=4326)
+        data = Serializer(model).data
+
+        expected_coords = (
+            16.372500007573713,
+            48.20833306345481,
+            16.372500007573713,
+            48.20833306345481,
+        )
+        for received, expected in zip(
+            data["geometry"]["bbox"],
+            expected_coords,
+        ):
+            self.assertAlmostEqual(received, expected, places=5)
 
 
 class TestPrecision(BaseTestCase):

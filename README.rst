@@ -84,7 +84,7 @@ Provides a ``GeometryField``, which is a subclass of Django Rest Framework
 geometry fields, providing custom ``to_native`` and ``from_native``
 methods for GeoJSON input/output.
 
-This field takes three optional arguments:
+This field takes four optional arguments:
 
 - ``precision``: Passes coordinates through Python's builtin ``round()`` function (`docs
   <https://docs.python.org/3/library/functions.html#round>`_), rounding values to
@@ -98,6 +98,15 @@ This field takes three optional arguments:
 - ``auto_bbox``: If ``True``, the GeoJSON object will include
   a `bounding box <https://datatracker.ietf.org/doc/html/rfc7946#section-5>`_,
   which is the smallest possible rectangle enclosing the geometry.
+- ``transform`` (defaults to ``None``): Can be set to any value that is accepted by 
+  |GEOSGeometry.transform|_. Set to `4326` if your input geometries are in another 
+  projection and you want to produce output according to the `GeoJSON standard
+  <https://datatracker.ietf.org/doc/html/rfc7946#section-4>`_. If ``None`` (or the 
+  input geometries do not have a SRID), the output coordinates will not be 
+  transformed.
+
+.. |GEOSGeometry.transform| replace:: ``GEOSGeometry.transform``
+.. _GEOSGeometry.transform: https://example.org
 
 **Note:** While ``precision`` and ``remove_duplicates`` are designed to reduce the
 byte size of the API response, they will also increase the processing time

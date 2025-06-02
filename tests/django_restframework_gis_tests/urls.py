@@ -18,6 +18,11 @@ urlpatterns = [
         name="api_geojson_location_details",
     ),
     path(
+        "geojson-other-srid/<int:pk>/",
+        views.other_srid_location_details,
+        name="api_other_srid_location_details",
+    ),
+    path(
         "geojson-nullable/<int:pk>/",
         views.geojson_nullable_details,
         name="api_geojson_nullable_details",
