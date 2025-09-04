@@ -1,36 +1,33 @@
 version: "3.7"
 
-
 services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - DJANGO_SETTINGS_MODULE=settings
+    volumes:
+      - root_dir:/root
+      - ./rest_framework_gis:/project/rest_framework_gis
+      - ./tests:/project/tests
+      - ./README.rst:/project/README.rst
+      - ./setup.py:/project/setup.py
+    command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests && ./run-qa-checks"
 
-    test:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        depends_on:
-            - postgres
-        environment:
-            - DJANGO_SETTINGS_MODULE=settings
-        volumes:
-            - root_dir:/root
-            - ./rest_framework_gis:/project/rest_framework_gis
-            - ./tests:/project/tests
-            - ./README.rst:/project/README.rst
-            - ./setup.py:/project/setup.py
-        command: sh -c "pip install -e . && python ./tests/manage.py test tests/django_restframework_gis_tests && ./run-qa-checks"
-
-    postgres:
-        image: postgis/postgis:15-3.4-alpine
-        environment:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: django_restframework_gis
-        ports:
-          - 5432:5432
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
-
+  postgres:
+    image: postgis/postgis:15-3.4-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: django_restframework_gis
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-    postgres_data:
-    root_dir:
+  postgres_data:
+  root_dir:

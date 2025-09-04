@@ -30,45 +30,45 @@ jobs:
       matrix:
         env:
           # DRF 3.14
-          - python: '3.9'
+          - python: "3.9"
             TOXENV: py39-django42-djangorestframework314
-          - python: '3.10'
+          - python: "3.10"
             TOXENV: py310-django42-djangorestframework314
-          - python: '3.11'
+          - python: "3.11"
             TOXENV: py311-django42-djangorestframework314
           # DRF 3.15
-          - python: '3.10'
+          - python: "3.10"
             TOXENV: py310-django50-djangorestframework315
-          - python: '3.11'
+          - python: "3.11"
             TOXENV: py311-django50-djangorestframework315
-          - python: '3.12'
+          - python: "3.12"
             TOXENV: py312-django50-djangorestframework315
-          - python: '3.13'
+          - python: "3.13"
             TOXENV: py313-django50-djangorestframework315
-          - python: '3.10'
+          - python: "3.10"
             TOXENV: py310-django51-djangorestframework315
-          - python: '3.11'
+          - python: "3.11"
             TOXENV: py311-django51-djangorestframework315
-          - python: '3.12'
+          - python: "3.12"
             TOXENV: py312-django51-djangorestframework315
           # DRF 3.16
-          - python: '3.11'
+          - python: "3.11"
             TOXENV: py311-django50-djangorestframework316
-          - python: '3.12'
+          - python: "3.12"
             TOXENV: py312-django50-djangorestframework316
-          - python: '3.11'
+          - python: "3.11"
             TOXENV: py311-django51-djangorestframework316
-          - python: '3.12'
+          - python: "3.12"
             TOXENV: py312-django51-djangorestframework316
-          - python: '3.13'
+          - python: "3.13"
             TOXENV: py313-django51-djangorestframework315
-          - python: '3.10'
+          - python: "3.10"
             TOXENV: py310-django52-djangorestframework315
-          - python: '3.11'
+          - python: "3.11"
             TOXENV: py311-django52-djangorestframework315
-          - python: '3.12'
+          - python: "3.12"
             TOXENV: py312-django52-djangorestframework315
-          - python: '3.13'
+          - python: "3.13"
             TOXENV: py313-django52-djangorestframework315
     steps:
       - uses: actions/checkout@v4
@@ -79,7 +79,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.env.python }}
-          cache: 'pip'
+          cache: "pip"
           cache-dependency-path: |
             **/requirements*.txt
 
