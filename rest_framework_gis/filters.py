@@ -4,10 +4,12 @@ from django.contrib.gis import forms
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.fields import BaseSpatialField
 from django.contrib.gis.db.models.functions import GeometryDistance
+from django.contrib.gis.gdal.error import GDALException
 from django.contrib.gis.geos import Point, Polygon
+from django.contrib.gis.geos.error import GEOSException
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import ParseError, ValidationError
 from rest_framework.filters import BaseFilterBackend
 
 from .tilenames import tile_edges
@@ -91,15 +93,30 @@ class InBBoxFilter(BaseFilterBackend):
 # backward compatibility
 InBBOXFilter = InBBoxFilter
 
+class SafeGeometryField(forms.GeometryField):
+    """
+    GeometryField that converts GEOS/GDAL errors into ValidationError.
+    """
+
+    def to_python(self, value):
+        try:
+            return super().to_python(value)
+        except (GEOSException, GDALException, ValueError, TypeError):
+            raise forms.ValidationError("Invalid geometry value.")
 
 class GeometryFilter(django_filters.Filter):
-    field_class = forms.GeometryField
+    field_class = SafeGeometryField
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("widget", forms.TextInput)
         super().__init__(*args, **kwargs)
-
-
+    
+    def filter(self, qs, value):
+        try:
+            return super().filter(qs, value)
+        except (GEOSException, GDALException, ValueError, TypeError) as e:
+            raise ValidationError(f"Invalid geometry value: {str(e)}")
+  
 class GeoFilterSet(django_filters.FilterSet):
     GEOFILTER_FOR_DBFIELD_DEFAULTS = {
         models.GeometryField: {"filterset_class": GeometryFilter},
