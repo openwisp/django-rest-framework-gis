@@ -1,0 +1,43 @@
+name: Backport fixes to stable branch
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: backport-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  backport-on-push:
+    if: github.event_name == 'push'
+    uses: openwisp/openwisp-utils/.github/workflows/reusable-backport.yml@master
+    with:
+      commit_sha: ${{ github.sha }}
+    secrets:
+      app_id: ${{ secrets.OPENWISP_BOT_APP_ID }}
+      private_key: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
+
+  backport-on-comment:
+    if: >
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      github.event.issue.pull_request.merged_at != null &&
+      github.event.issue.state == 'closed' &&
+      contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) &&
+      startsWith(github.event.comment.body, '/backport')
+    uses: openwisp/openwisp-utils/.github/workflows/reusable-backport.yml@master
+    with:
+      pr_number: ${{ github.event.issue.number }}
+      comment_body: ${{ github.event.comment.body }}
+    secrets:
+      app_id: ${{ secrets.OPENWISP_BOT_APP_ID }}
+      private_key: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
