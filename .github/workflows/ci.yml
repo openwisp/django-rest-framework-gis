@@ -66,19 +66,39 @@ jobs:
             TOXENV: py311-django50-djangorestframework316
           - python: "3.12"
             TOXENV: py312-django50-djangorestframework316
+          - python: "3.13"
+            TOXENV: py313-django50-djangorestframework316
           - python: "3.11"
             TOXENV: py311-django51-djangorestframework316
           - python: "3.12"
             TOXENV: py312-django51-djangorestframework316
+          - python: "3.13"
+            TOXENV: py313-django51-djangorestframework316
+          - python: "3.11"
+            TOXENV: py311-django52-djangorestframework316
+          - python: "3.12"
+            TOXENV: py312-django52-djangorestframework316
+          - python: "3.13"
+            TOXENV: py313-django52-djangorestframework316
           # DRF 3.17
           - python: "3.11"
             TOXENV: py311-django50-djangorestframework317
           - python: "3.12"
             TOXENV: py312-django50-djangorestframework317
+          - python: "3.13"
+            TOXENV: py313-django50-djangorestframework317
           - python: "3.11"
             TOXENV: py311-django51-djangorestframework317
           - python: "3.12"
             TOXENV: py312-django51-djangorestframework317
+          - python: "3.13"
+            TOXENV: py313-django51-djangorestframework317
+          - python: "3.11"
+            TOXENV: py311-django52-djangorestframework317
+          - python: "3.12"
+            TOXENV: py312-django52-djangorestframework317
+          - python: "3.13"
+            TOXENV: py313-django52-djangorestframework317
     steps:
       - uses: actions/checkout@v6
         with:
