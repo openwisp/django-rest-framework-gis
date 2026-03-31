@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.3.0 [Unreleased]
+--------------------------
+
+- Added support for Django REST Framework ``3.17.0``.
+
 Version 1.2.0 [2025-06-02]
 --------------------------
 
