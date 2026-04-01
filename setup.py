@@ -27,7 +27,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
         "django>=4.2",
-        "djangorestframework>=3.12,<3.17",
+        "djangorestframework>=3.12,<3.18",
         "django-filter>=23.5,<26.0",
     ],
     classifiers=[
