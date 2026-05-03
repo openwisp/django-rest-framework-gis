@@ -1,10 +1,17 @@
 Changelog
 =========
 
-Version 1.3.0 [Unreleased]
+Version 1.2.1 [unreleased]
 --------------------------
 
-- Added support for Django REST Framework ``3.17.0``.
+Changes
+~~~~~~~
+
+**Dependencies:**
+
+- Bumped ``djangorestframework`` to ``>=3.12,<3.18`` The code was already
+  compatible with the new release of DRF 3.17, no code changes were
+  needed.
 
 Version 1.2.0 [2025-06-02]
 --------------------------
