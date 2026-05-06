@@ -99,6 +99,10 @@ jobs:
             TOXENV: py312-django52-djangorestframework317
           - python: "3.13"
             TOXENV: py313-django52-djangorestframework317
+          - python: "3.12"
+            TOXENV: py312-django60-djangorestframework317
+          - python: "3.13"
+            TOXENV: py313-django60-djangorestframework317
     steps:
       - uses: actions/checkout@v6
         with:

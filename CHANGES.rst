@@ -1,17 +1,17 @@
 Changelog
 =========
 
-Version 1.2.1 [unreleased]
+Version 1.2.1 [2026-05-04]
 --------------------------
 
 Changes
 ~~~~~~~
 
-**Dependencies:**
+Dependencies
+++++++++++++
 
-- Bumped ``djangorestframework`` to ``>=3.12,<3.18`` The code was already
-  compatible with the new release of DRF 3.17, no code changes were
-  needed.
+- Bumped djangorestframework to >=3.12,<3.18 `#347
+  <https://github.com/openwisp/django-rest-framework-gis/issues/347>`_
 
 Version 1.2.0 [2025-06-02]
 --------------------------

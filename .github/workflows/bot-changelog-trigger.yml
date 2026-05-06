@@ -1,0 +1,38 @@
+name: Changelog Bot Trigger
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions: {}
+
+jobs:
+  check:
+    if: |
+      github.event.review.state == 'approved' &&
+      (github.event.review.author_association == 'OWNER' ||
+        github.event.review.author_association == 'MEMBER' ||
+        github.event.review.author_association == 'COLLABORATOR')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for noteworthy PR
+        id: check
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if echo "$PR_TITLE" | grep -qiE '^\[(feature|fix|change)\]'; then
+            echo "has_noteworthy=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Save PR metadata
+        if: steps.check.outputs.has_noteworthy == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: echo "$PR_NUMBER" > pr_number
+
+      - name: Upload PR metadata
+        if: steps.check.outputs.has_noteworthy == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: changelog-metadata
+          path: pr_number
