@@ -1,0 +1,54 @@
+name: Changelog Bot Runner
+
+on:
+  workflow_run:
+    workflows: ["Changelog Bot Trigger"]
+    types:
+      - completed
+
+permissions:
+  actions: read
+
+jobs:
+  fetch-metadata:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    permissions:
+      actions: read
+    outputs:
+      pr_number: ${{ steps.metadata.outputs.pr_number }}
+    steps:
+      - name: Download PR metadata
+        id: download
+        uses: actions/download-artifact@v8
+        with:
+          name: changelog-metadata
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+        continue-on-error: true
+
+      - name: Read PR metadata
+        if: steps.download.outcome == 'success'
+        id: metadata
+        run: |
+          PR_NUMBER=$(cat pr_number)
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid PR number: $PR_NUMBER"
+            exit 1
+          fi
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+  changelog:
+    needs: fetch-metadata
+    if: needs.fetch-metadata.outputs.pr_number != ''
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    uses: openwisp/openwisp-utils/.github/workflows/reusable-bot-changelog.yml@master
+    with:
+      pr_number: ${{ needs.fetch-metadata.outputs.pr_number }}
+    secrets:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      OPENWISP_BOT_APP_ID: ${{ secrets.OPENWISP_BOT_APP_ID }}
+      OPENWISP_BOT_PRIVATE_KEY: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
