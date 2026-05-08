@@ -1,0 +1,87 @@
+name: CI Failure Bot
+
+on:
+  workflow_run:
+    workflows: ["Django Rest Framework Gis CI Build"]
+    types:
+      - completed
+
+permissions:
+  pull-requests: read
+  actions: read
+  contents: read
+
+concurrency:
+  group: ci-failure-${{ github.repository }}-${{ github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  find-pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.event == 'pull_request' }}
+    outputs:
+      pr_number: ${{ steps.pr.outputs.number }}
+      pr_author: ${{ steps.pr.outputs.author }}
+    steps:
+      - name: Find PR Number
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER_PAYLOAD: ${{ github.event.workflow_run.pull_requests[0].number }}
+          EVENT_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          emit_pr() {
+            local pr_number="$1"
+            local pr_author
+            pr_author=$(gh pr view "$pr_number" --repo "$REPO" --json author --jq '.author.login // empty' 2>/dev/null || echo "")
+            if [ -z "$pr_author" ] || [ "$pr_author" = "null" ]; then
+              echo "::warning::Could not fetch PR author for PR #$pr_number"
+            fi 
+            echo "number=$pr_number" >> "$GITHUB_OUTPUT"
+            echo "author=$pr_author" >> "$GITHUB_OUTPUT"
+          }
+          PR_NUMBER="$PR_NUMBER_PAYLOAD"
+          if [ -n "$PR_NUMBER" ]; then
+            echo "Found PR #$PR_NUMBER from workflow payload."
+            emit_pr "$PR_NUMBER"
+            exit 0
+          fi
+          HEAD_SHA="$EVENT_HEAD_SHA"
+          echo "Payload empty. Searching for PR via Commits API..."
+          PR_NUMBER=$(gh api repos/$REPO/commits/$HEAD_SHA/pulls -q '.[0].number' 2>/dev/null || true)
+          if [ -n "$PR_NUMBER" ] && [ "$PR_NUMBER" != "null" ]; then
+             echo "Found PR #$PR_NUMBER using Commits API."
+             emit_pr "$PR_NUMBER"
+             exit 0
+          fi
+          echo "API lookup failed/empty. Scanning open PRs for matching head SHA..."
+          PR_NUMBER=$(gh pr list --repo "$REPO" --state open --limit 100 --json number,headRefOid --jq ".[] | select(.headRefOid == \"$HEAD_SHA\") | .number" | head -n 1)
+          if [ -n "$PR_NUMBER" ]; then
+             echo "Found PR #$PR_NUMBER by scanning open PRs."
+             emit_pr "$PR_NUMBER"
+             exit 0
+          fi
+          echo "::warning::No open PR found. This workflow run might not be attached to an open PR."
+          exit 0
+
+  call-ci-failure-bot:
+    needs: find-pr
+    if: ${{ needs.find-pr.outputs.pr_number != '' }}
+    permissions:
+      pull-requests: write
+      actions: write
+      contents: read
+    uses: openwisp/openwisp-utils/.github/workflows/reusable-bot-ci-failure.yml@master
+    with:
+      pr_number: ${{ needs.find-pr.outputs.pr_number }}
+      head_sha: ${{ github.event.workflow_run.head_sha }}
+      head_repo: ${{ github.event.workflow_run.head_repository.full_name }}
+      base_repo: ${{ github.repository }}
+      run_id: ${{ github.event.workflow_run.id }}
+      pr_author: ${{ needs.find-pr.outputs.pr_author }}
+      actor: ${{ github.event.workflow_run.actor.login }}
+    secrets:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      APP_ID: ${{ secrets.OPENWISP_BOT_APP_ID }}
+      PRIVATE_KEY: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
