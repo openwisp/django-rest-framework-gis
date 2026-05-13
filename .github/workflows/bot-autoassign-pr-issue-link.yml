@@ -1,0 +1,20 @@
+name: PR Issue Auto-Assignment
+on:
+  pull_request_target:
+    types: [opened, reopened, closed]
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+concurrency:
+  group: bot-autoassign-pr-link-${{ github.repository }}-${{ github.event.pull_request.number }}-${{ github.event.action }}
+  cancel-in-progress: true
+jobs:
+  auto-assign-issue:
+    if: github.event.action != 'closed' || github.event.pull_request.merged == false
+    uses: openwisp/openwisp-utils/.github/workflows/reusable-bot-autoassign.yml@master
+    with:
+      bot_command: issue_assignment
+    secrets:
+      OPENWISP_BOT_APP_ID: ${{ secrets.OPENWISP_BOT_APP_ID }}
+      OPENWISP_BOT_PRIVATE_KEY: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
