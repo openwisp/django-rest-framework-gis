@@ -20,7 +20,7 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if echo "$PR_TITLE" | grep -qiE '^\[(feature|fix|change)\]'; then
+          if echo "$PR_TITLE" | grep -qiE '^\[(feature|fix|change!?)\]'; then
             echo "has_noteworthy=true" >> $GITHUB_OUTPUT
           fi
 
