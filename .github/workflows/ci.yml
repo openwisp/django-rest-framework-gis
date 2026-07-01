@@ -104,7 +104,7 @@ jobs:
           - python: "3.13"
             TOXENV: py313-django60-djangorestframework317
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
