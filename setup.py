@@ -26,9 +26,9 @@ setup(
     keywords=["django", "rest-framework", "gis", "geojson"],
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
-        "django>=4.2",
+        "django>=5.0",
         "djangorestframework>=3.12,<3.18",
-        "django-filter>=23.5,<26.0",
+        "django-filter>=23.5,<27.0",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -40,7 +40,6 @@ setup(
         "Framework :: Django",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",

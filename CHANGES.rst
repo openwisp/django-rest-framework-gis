@@ -1,6 +1,19 @@
 Changelog
 =========
 
+Version 1.3.0 [in development]
+------------------------------
+
+Changes
+~~~~~~~
+
+Dependencies
+++++++++++++
+
+- Dropped support for python ``3.9``
+- Dropped support for Django ``4.2``
+
+
 Version 1.2.1 [2026-05-04]
 --------------------------
 

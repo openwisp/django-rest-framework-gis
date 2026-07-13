@@ -29,13 +29,6 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          # DRF 3.14
-          - python: "3.9"
-            TOXENV: py39-django42-djangorestframework314
-          - python: "3.10"
-            TOXENV: py310-django42-djangorestframework314
-          - python: "3.11"
-            TOXENV: py311-django42-djangorestframework314
           # DRF 3.15
           - python: "3.10"
             TOXENV: py310-django50-djangorestframework315
