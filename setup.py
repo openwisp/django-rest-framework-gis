@@ -26,7 +26,7 @@ setup(
     keywords=["django", "rest-framework", "gis", "geojson"],
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
-        "django>=5.0",
+        "django>=5.2",
         "djangorestframework>=3.12,<3.18",
         "django-filter>=23.5,<27.0",
     ],
