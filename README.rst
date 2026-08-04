@@ -41,7 +41,8 @@ Compatibility with DRF, Django and Python
 
 ========================  ============================ ==================== ==================================
 DRF-gis version           DRF version                  Django version       Python version
-**1.2.x**                 **3.12** up to **3.17**      **4.2 to 6.0**       **3.10** to **3.13**
+**1.3.x** (unreleased)    **3.12** up to **3.17**      **4.2 to 6.0**       **3.10** to **3.13**
+**1.2.x**                 **3.12** up to **3.17**      **4.2 to 6.0**       **3.9** to **3.13**
 **1.1.x**                 **3.12** up to **3.15**      **3.2, 4.2 to 5.1**  **3.8** to **3.12**
 **1.0.x**                 **3.10** up to **3.13**      **2.2 to 4.0**       **3.6** to **3.9**
 **0.18.x**                **3.10** up to **3.13**      **2.2 to 4.0**       **3.6** to **3.9**
@@ -702,11 +703,11 @@ The recommended way to run the tests is by using
 `pip install tox`.
 
 You can use ``tox -l`` to list the available environments, and then e.g. use
-the following to run all tests with Python 3.8 and Django 4.2:
+the following to run all tests with Python 3.13 and Django 6.0:
 
 .. code-block:: bash
 
-    tox -e py38-django42
+    tox -e py313-django60
 
 By default Django's test runner is used, but there is a variation of tox's
 envlist to use pytest (using the ``-pytest`` suffix).
