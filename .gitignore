@@ -14,3 +14,5 @@ tests/static/
 __pycache__/
 *.pyc
 .tox/
+env
+.venv

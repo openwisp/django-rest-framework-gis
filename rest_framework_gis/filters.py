@@ -155,7 +155,7 @@ class DistanceToPointFilter(BaseFilterBackend):
             return None
 
         try:
-            (x, y) = (float(n) for n in point_string.split(","))
+            x, y = (float(n) for n in point_string.split(","))
         except ValueError:
             raise ParseError(
                 "Invalid geometry string supplied for parameter {}".format(
