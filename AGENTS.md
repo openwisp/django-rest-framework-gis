@@ -47,6 +47,7 @@ If instructions conflict, repository config and CI workflows win first, docs nex
 - When separate tests cover different cases of the same feature, share almost identical setup, and primarily vary in input or expected outcome, group them in one test method with subTest. Keep each subtest's setup explicit and independent, and retain separate test methods when cases exercise genuinely distinct behavior. Leave one blank line immediately before each with self.subTest(...): call.
 - Use targeted tests while iterating, then run the documented full test command before considering the change complete.
 - Prefer in-process tests so coverage tools can measure changed code.
+- Keep helpers and classes used by only one test method inside that method. Promote them to class or module scope only when genuinely reused.
 - When changing GIS fields or serializers, add tests for GeoJSON input and output, validation failures, and affected geometry edge cases, including coordinate or SRID transformations. When changing filters, pagination, schema helpers, or tile names, test the changed public behavior and invalid or boundary input.
 
 ## Security and API Notes
