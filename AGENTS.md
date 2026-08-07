@@ -50,6 +50,11 @@ If instructions conflict, repository config and CI workflows win first, docs nex
 - Keep helpers and classes used by only one test method inside that method. Promote them to class or module scope only when genuinely reused.
 - When changing GIS fields or serializers, add tests for GeoJSON input and output, validation failures, and affected geometry edge cases, including coordinate or SRID transformations. When changing filters, pagination, schema helpers, or tile names, test the changed public behavior and invalid or boundary input.
 
+## Django Notes
+
+- Build internal URLs with named URL patterns and `reverse()` or `reverse_lazy()`, including in tests. Use the appropriate namespace and URL arguments.
+- In the main behavior test for non-trivial, frequently called views, include `assertNumQueries()` with representative data to enforce an intentional query budget and catch N+1 queries. Use `AssertNumQueriesSubTestMixin` from `openwisp_utils.tests` where available: it records the query-count check as a subtest, so subsequent assertions in the method still run. Change the expected count only when the extra queries are necessary and understood.
+
 ## Security and API Notes
 
 - Watch for invalid geometry handling, excessive query costs, unsafe user-controlled filters, and compatibility regressions across Django, DRF, GEOS, and GDAL.
