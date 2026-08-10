@@ -44,7 +44,7 @@ If instructions conflict, repository config and CI workflows win first, docs nex
 
 ## Testing and QA
 
-- When separate tests cover different cases of the same feature, share almost identical setup, and primarily vary in input or expected outcome, group them in one test method with subTest. Keep each subtest's setup explicit and independent, and retain separate test methods when cases exercise genuinely distinct behavior. Leave one blank line immediately before each with self.subTest(...): call.
+- When separate tests cover different cases of the same feature, share almost identical setup, and primarily vary in input or expected outcome, group them in one test method with `subTest`. Keep each subtest's setup explicit and independent, and retain separate test methods when cases exercise genuinely distinct behavior. Leave one blank line before each with `self.subTest(...)` statement only when a test method contains multiple such statements. Do not add a blank line for a single `subTest` statement inside a loop.
 - Use targeted tests while iterating, then run the documented full test command before considering the change complete.
 - For focused tests, call `./tests/manage.py test <pythonpath>` directly. Use `./runtests` only for the full suite because it runs multiple coverage and integration configurations and is not a focused-test runner.
 - Prefer in-process tests so coverage tools can measure changed code.
