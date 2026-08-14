@@ -101,6 +101,22 @@ jobs:
             TOXENV: py312-django60-djangorestframework317
           - python: "3.13"
             TOXENV: py313-django60-djangorestframework317
+          # DRF 3.18
+          - python: "3.11"
+            TOXENV: py311-django52-djangorestframework318
+          - python: "3.12"
+            TOXENV: py312-django52-djangorestframework318
+          - python: "3.13"
+            TOXENV: py313-django52-djangorestframework318
+          - python: "3.12"
+            TOXENV: py312-django60-djangorestframework318
+          - python: "3.13"
+            TOXENV: py313-django60-djangorestframework318
+          # Django 6.1
+          - python: "3.12"
+            TOXENV: py312-django61-djangorestframework318
+          - python: "3.13"
+            TOXENV: py313-django61-djangorestframework318
     steps:
       - uses: actions/checkout@v7
         with:
