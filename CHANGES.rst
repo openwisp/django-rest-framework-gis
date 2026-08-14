@@ -1,19 +1,6 @@
 Changelog
 =========
 
-Version 1.3.0 [unreleased]
---------------------------
-
-Changes
-~~~~~~~
-
-Dependencies
-++++++++++++
-
-- Bumped djangorestframework to >=3.12,<3.19. DRF 3.18 drops support for
-  Django 4.2, 5.0 and 5.1, so the test matrix now only exercises DRF 3.18
-  against Django 5.2 and 6.0.
-
 Version 1.2.1 [2026-05-04]
 --------------------------
 
