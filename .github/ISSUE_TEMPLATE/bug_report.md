@@ -23,7 +23,7 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**System Informatioon:**
+**System Information:**
 
 - OS: [e.g. Ubuntu 24.04 LTS]
 - Python Version: [e.g. Python 3.11.2]
