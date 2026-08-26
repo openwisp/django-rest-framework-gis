@@ -17,7 +17,6 @@ Dependencies
 - Added Django 6.1 to automated testing build `#372
   <https://github.com/openwisp/django-rest-framework-gis/issues/372>`_.
 
-
 Version 1.2.1 [2026-05-04]
 --------------------------
 
