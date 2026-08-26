@@ -28,7 +28,7 @@ setup(
     install_requires=[
         "django>=4.2",
         "djangorestframework>=3.12,<3.19",
-        "django-filter>=23.5,<26.0",
+        "django-filter>=23.5,<27.0",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
