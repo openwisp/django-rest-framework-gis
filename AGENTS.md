@@ -42,6 +42,14 @@ If instructions conflict, repository config and CI workflows win first, docs nex
 - Before adding a comment or docstring, ask whether it conveys information a reader cannot reasonably infer from clear code, names, and surrounding scope. Add a concise comment when it explains a non-obvious reason, constraint, compatibility or security requirement, side effect, or unavoidable complexity. In opaque syntax or domain-specific code, especially shell scripts, a comment may also explain what the code does. Do not add comments that merely restate adjacent code one-to-one.
 - Update docs when behavior, settings, public APIs, setup steps, or supported versions change, including when a documented feature's behavior changes or a new user-facing feature is added.
 
+## Django Rules
+
+- When processing all records from a queryset in commands, tasks, imports, exports, migrations, or similar operations, use `QuerySet.iterator()` or another bounded method. Do not load all matching records into memory at once.
+- When accessing related objects while processing a queryset, use `select_related()` or `prefetch_related()` as needed to avoid N+1 queries. `prefetch_related()` used with `iterator()` requires an explicit `chunk_size`; otherwise use `iterator()` with its default behavior.
+- Paginate API list responses that can return many records. Do not return every matching record in one response unless the maximum result size is defined and safely bounded.
+- Prefer bulk writes when writing many objects. Use `bulk_create()` or `bulk_update()` unless model validation, `save()` behavior, signals, or another requirement prevents it. Explain the reason for not using a bulk write in a nearby code comment.
+- Test custom pagination, custom batching, and code that consumes paginated APIs beyond the first page or batch. Do not repeat coverage already provided by an unchanged shared pagination class or utility.
+
 ## Testing and QA
 
 - When separate tests cover different cases of the same feature, share almost identical setup, and primarily vary in input or expected outcome, group them in one test method with `subTest`. Keep each subtest's setup explicit and independent, and retain separate test methods when cases exercise genuinely distinct behavior. Leave one blank line before each with `self.subTest(...)` statement only when a test method contains multiple such statements. Do not add a blank line for a single `subTest` statement inside a loop.
