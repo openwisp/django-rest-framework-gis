@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Version 1.3.0 [unreleased]
+--------------------------
+
+Changes
+~~~~~~~
+
+Dependencies
+++++++++++++
+
+- Bumped ``django-filter`` to ``>=23.5,<27.0`` `#373
+  <https://github.com/openwisp/django-rest-framework-gis/issues/373>`_.
+- Bumped ``djangorestframework`` to ``<3.19`` `#371
+  <https://github.com/openwisp/django-rest-framework-gis/issues/371>`_.
+- Added Django 6.1 to automated testing build `#372
+  <https://github.com/openwisp/django-rest-framework-gis/issues/372>`_.
+
+
 Version 1.2.1 [2026-05-04]
 --------------------------
 
