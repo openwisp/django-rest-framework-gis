@@ -31,7 +31,7 @@ jobs:
         env:
           # DRF 3.14
           - python: "3.10"
-            TOXENV: py310-django42-djangorestframework314
+            TOXENV: py310-django42-djangorestframework314-djangofilter235
           - python: "3.11"
             TOXENV: py311-django42-djangorestframework314
           # DRF 3.15
@@ -86,7 +86,7 @@ jobs:
           - python: "3.13"
             TOXENV: py313-django50-djangorestframework317
           - python: "3.11"
-            TOXENV: py311-django51-djangorestframework317
+            TOXENV: py311-django51-djangorestframework317-djangofilter251
           - python: "3.12"
             TOXENV: py312-django51-djangorestframework317
           - python: "3.13"
@@ -105,16 +105,16 @@ jobs:
           - python: "3.11"
             TOXENV: py311-django52-djangorestframework318
           - python: "3.12"
-            TOXENV: py312-django52-djangorestframework318
+            TOXENV: py312-django52-djangorestframework318-djangofilter261
           - python: "3.13"
             TOXENV: py313-django52-djangorestframework318
           - python: "3.12"
-            TOXENV: py312-django60-djangorestframework318
+            TOXENV: py312-django60-djangorestframework318-djangofilter261
           - python: "3.13"
             TOXENV: py313-django60-djangorestframework318
           # Django 6.1
           - python: "3.12"
-            TOXENV: py312-django61-djangorestframework318
+            TOXENV: py312-django61-djangorestframework318-djangofilter261
           - python: "3.13"
             TOXENV: py313-django61-djangorestframework318
     steps:
