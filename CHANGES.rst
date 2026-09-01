@@ -1,6 +1,22 @@
 Changelog
 =========
 
+Version 1.3.0 [2026-09-01]
+--------------------------
+
+Changes
+~~~~~~~
+
+Dependencies
+++++++++++++
+
+- Bumped ``djangorestframework`` from ``>=3.12,<3.18`` to `>=3.12,<3.19
+  <https://www.django-rest-framework.org/community/release-notes/#318x-series>`_.
+- Bumped ``django-filter`` from ``>=23.5,<26.0`` to `>=23.5,<27.0
+  <https://github.com/carltongibson/django-filter/blob/26.1/CHANGES.rst>`_.
+- Added support for Django ``6.1``.
+- Dropped support for Python ``3.9``.
+
 Version 1.2.1 [2026-05-04]
 --------------------------
 
