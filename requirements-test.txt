@@ -1,4 +1,4 @@
-psycopg2~=2.9.12
+psycopg2~=2.9.13
 # django-filter dependency is also defined here so pip resolves it together
 # with the Django version pinned by tox, instead of upgrading Django
 # to the latest.
