@@ -4,8 +4,13 @@ from django.contrib.gis.geos import Polygon
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework.serializers import (
     LIST_SERIALIZER_KWARGS,
+    BoundField,
+    JSONBoundField,
+    JSONField,
     ListSerializer,
     ModelSerializer,
+    NestedBoundField,
+    Serializer,
 )
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
@@ -109,6 +114,41 @@ class GeoFeatureModelSerializer(ModelSerializer):
                 "You must eiher define a 'bbox_geo_field' or "
                 "'auto_bbox', but you can not set both"
             )
+
+    def __getitem__(self, key):
+        field = self.fields[key]
+        value = None
+        if isinstance(self.data, dict) and "properties" in self.data:
+            if getattr(self.Meta, "geo_field", None) and key == self.Meta.geo_field:
+                value = self.data.get("geometry")
+            elif (
+                getattr(self.Meta, "id_field", None)
+                and key == self.Meta.id_field
+                and "id" in self.data
+            ):
+                value = self.data.get("id")
+            elif (
+                getattr(self.Meta, "bbox_geo_field", None)
+                and key == self.Meta.bbox_geo_field
+                and "bbox" in self.data
+            ):
+                value = self.data.get("bbox")
+            elif (
+                isinstance(self.data.get("properties"), dict)
+                and key in self.data["properties"]
+            ):
+                value = self.data["properties"][key]
+            else:
+                value = self.data.get(key)
+        elif isinstance(self.data, dict):
+            value = self.data.get(key)
+
+        error = self.errors.get(key) if hasattr(self, "_errors") else None
+        if isinstance(field, Serializer):
+            return NestedBoundField(field, value, error)
+        if isinstance(field, JSONField):
+            return JSONBoundField(field, value, error)
+        return BoundField(field, value, error)
 
     def to_representation(self, instance):
         """

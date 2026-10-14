@@ -559,6 +559,18 @@ class TestRestFrameworkGis(TestCase):
         self.assertContains(response, escape('"type": "Point"'))
         self.assertContains(response, escape('"coordinates": ['))
 
+    def test_geojson_detail_html_form_prepopulated(self):
+        location = Location.objects.create(
+            name="prepopulated test",
+            geometry="POINT (12.4924 41.8902)",
+        )
+
+        url = reverse("api_geojson_location_details", args=[location.id])
+        response = self.client.get(url, headers={"accept": "text/html"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'value="prepopulated test"')
+
     def test_patch_geojson_location(self):
         location = Location.objects.create(
             name="geojson patch test", geometry="POINT (135.0 45.0)"
