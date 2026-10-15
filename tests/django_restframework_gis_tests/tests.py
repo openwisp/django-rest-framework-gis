@@ -571,6 +571,135 @@ class TestRestFrameworkGis(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'value="prepopulated test"')
 
+    def test_geojson_serializer_bbox_geo_field_bound_field(self):
+        from rest_framework.test import APIRequestFactory
+
+        from .models import BoxedLocation
+        from .serializers import BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer
+
+        boxed = BoxedLocation.objects.create(
+            name="boxed test",
+            geometry="POINT (12.4924 41.8902)",
+            bbox_geometry="POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))",
+        )
+
+        request = APIRequestFactory().get("/")
+        serializer = BoxedLocationGeoFeatureWithBBoxGeoFieldSerializer(
+            instance=boxed,
+            context={"request": request},
+        )
+
+        bbox_field = serializer["bbox_geometry"]
+
+        self.assertEqual(
+            bbox_field.value,
+            (0.0, 0.0, 10.0, 10.0),
+        )
+
+    def test_geojson_serializer_nested_and_json_bound_fields(self):
+        from rest_framework import serializers
+
+        class NestedDummySerializer(serializers.Serializer):
+            dummy = serializers.CharField()
+
+        class ComplexGeoFeatureSerializer(gis_serializers.GeoFeatureModelSerializer):
+            nested = NestedDummySerializer(required=False)
+            extra_json = serializers.JSONField(required=False)
+            secret = serializers.CharField(write_only=True)
+
+            class Meta:
+                model = Location
+                geo_field = "geometry"
+                fields = ["id", "name", "geometry", "nested", "extra_json", "secret"]
+
+        location = Location.objects.create(
+            name="complex test",
+            geometry="POINT (1 1)",
+        )
+        location.nested = {"dummy": "value"}
+        location.extra_json = {"key": "data"}
+        location.secret = "hidden"
+
+        serializer = ComplexGeoFeatureSerializer(instance=location)
+
+        nested_field = serializer["nested"]
+        self.assertIsInstance(nested_field, serializers.NestedBoundField)
+        self.assertEqual(nested_field.value, {"dummy": "value"})
+
+        json_field = serializer["extra_json"]
+        self.assertIsInstance(json_field, serializers.JSONBoundField)
+        self.assertEqual(json_field.value, {"key": "data"})
+
+        secret_field = serializer["secret"]
+        self.assertIsInstance(secret_field, serializers.BoundField)
+        self.assertIsNone(secret_field.value)
+
+    def test_geojson_serializer_unbound_field_lookup(self):
+        from rest_framework import serializers
+
+        from .serializers import LocationGeoFeatureSerializer
+
+        serializer = LocationGeoFeatureSerializer()
+
+        name_field = serializer["name"]
+
+        self.assertIsInstance(name_field, serializers.BoundField)
+        self.assertEqual(name_field.value, "")
+
+    def test_geojson_serializer_custom_id_field_bound_field(self):
+        from rest_framework import serializers
+
+        from .serializers import LocationGeoFeatureSlugSerializer
+
+        location = Location.objects.create(
+            name="slug test",
+            geometry="POINT (12.4924 41.8902)",
+        )
+        serializer = LocationGeoFeatureSlugSerializer(instance=location)
+        slug_field = serializer["slug"]
+
+        self.assertIsInstance(slug_field, serializers.BoundField)
+        self.assertEqual(slug_field.value, location.slug)
+        self.assertIsNone(slug_field.errors)
+        self.assertEqual(serializer["name"].value, location.name)
+
+    def test_geojson_serializer_bound_flat_data(self):
+        from rest_framework import serializers
+
+        from .serializers import LocationGeoFeatureSerializer
+
+        serializer = LocationGeoFeatureSerializer(data={"name": "flat test"})
+        self.assertFalse(serializer.is_valid())
+
+        name_field = serializer["name"]
+        self.assertIsInstance(name_field, serializers.BoundField)
+        self.assertEqual(name_field.value, "flat test")
+
+        geometry_field = serializer["geometry"]
+        self.assertIsInstance(geometry_field, serializers.BoundField)
+        self.assertIsNone(geometry_field.value)
+
+    def test_geojson_serializer_field_errors(self):
+        from rest_framework import serializers
+
+        from .serializers import LocationGeoFeatureSerializer
+
+        serializer = LocationGeoFeatureSerializer(data={"name": ""})
+        self.assertFalse(serializer.is_valid())
+
+        name_field = serializer["name"]
+        self.assertIsInstance(name_field, serializers.BoundField)
+        self.assertEqual(name_field.value, "")
+        self.assertEqual(name_field.errors, ["This field may not be blank."])
+
+        geometry_field = serializer["geometry"]
+        self.assertIsInstance(geometry_field, serializers.BoundField)
+        self.assertIsNone(geometry_field.value)
+        self.assertEqual(geometry_field.errors, ["This field is required."])
+
+        slug_field = serializer["slug"]
+        self.assertIsNone(slug_field.errors)
+
     def test_patch_geojson_location(self):
         location = Location.objects.create(
             name="geojson patch test", geometry="POINT (135.0 45.0)"
