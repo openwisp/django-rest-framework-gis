@@ -423,6 +423,27 @@ attributes of your model. This task is done by ``unformat_geojson``. It should
 return a dictionary with your model attributes as keys, and the corresponding
 values retrieved from the GeoJSON feature data.
 
+HTML Browsable API form prepopulation
+#####################################
+
+The browsable API uses ``serializer[field_name]`` to get bound fields
+for HTML forms. Since ``GeoFeatureModelSerializer`` returns GeoJSON
+data, field values are retrieved from the corresponding GeoJSON keys:
+
+- The geometry field declared in ``Meta.geo_field`` is retrieved from the
+  top-level ``geometry`` key.
+- The identifier field (the model primary key or custom ``Meta.id_field``)
+  is retrieved from the top-level ``id`` key.
+- The bounding box field declared in ``Meta.bbox_geo_field`` is retrieved
+  from the top-level ``bbox`` key.
+- Regular attributes are retrieved from the nested ``properties``
+  dictionary.
+- If a field is not present in ``properties`` (or when the serializer
+  contains flat dictionary data), lookup falls back to top-level keys
+  in ``serializer.data``.
+
+
+
 Pagination
 ----------
 
