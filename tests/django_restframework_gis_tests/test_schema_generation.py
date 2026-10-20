@@ -24,6 +24,7 @@ from .views import (
     GeojsonBoxedLocationDetails,
     GeojsonLocationContainedInBBoxList,
     GeojsonLocationContainedInTileList,
+    GeojsonLocationOrderDistanceToPointList,
     GeojsonLocationWithinDistanceOfPointList,
     ModelViewWithPolygon,
     geojson_location_list,
@@ -601,6 +602,33 @@ class TestRestFrameworkGisFiltersSchema(TestCase):
                     "explode": False,
                 },
             ],
+        )
+
+    def test_distance_to_point_ordering_filter(self):
+        path = "/"
+        method = "GET"
+        view = create_view(
+            GeojsonLocationOrderDistanceToPointList, "GET", create_request("/")
+        )
+        inspector = GeoFeatureAutoSchema()
+        inspector.view = view
+        generated_schema = inspector.get_filter_parameters(path, method)
+        self.assertDictEqual(
+            generated_schema[-1],
+            {
+                "name": "order",
+                "required": False,
+                "in": "query",
+                "description": "",
+                "schema": {
+                    "type": "string",
+                    "enum": ["asc", "desc"],
+                    "default": "asc",
+                    "example": "asc",
+                },
+                "style": "form",
+                "explode": False,
+            },
         )
 
     def test_geometry_field(self):
