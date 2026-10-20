@@ -283,9 +283,10 @@ class DistanceToPointOrderingFilter(DistanceToPointFilter):
                 "in": "query",
                 "description": "",
                 "schema": {
-                    "type": "enum",
-                    "items": {"type": "string", "enum": ["asc", "desc"]},
-                    "example": "desc",
+                    "type": "string",
+                    "enum": ["asc", "desc"],
+                    "default": "asc",
+                    "example": "asc",
                 },
                 "style": "form",
                 "explode": False,
