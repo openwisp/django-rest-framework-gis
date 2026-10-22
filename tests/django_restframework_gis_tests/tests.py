@@ -700,6 +700,49 @@ class TestRestFrameworkGis(TestCase):
         slug_field = serializer["slug"]
         self.assertIsNone(slug_field.errors)
 
+    def test_geojson_serializer_invalid_input_preserves_properties(self):
+        from rest_framework import serializers
+        from rest_framework.renderers import HTMLFormRenderer
+
+        from .serializers import LocationGeoFeatureSerializer
+
+        data = {
+            "type": "Feature",
+            "properties": {
+                "name": "kept name",
+            },
+        }
+        serializer = LocationGeoFeatureSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("geometry", serializer.errors)
+
+        name_field = serializer["name"]
+        self.assertIsInstance(name_field, serializers.BoundField)
+        self.assertEqual(name_field.value, "kept name")
+        self.assertIsNone(name_field.errors)
+
+        geometry_field = serializer["geometry"]
+        self.assertIsInstance(geometry_field, serializers.BoundField)
+        self.assertIsNone(geometry_field.value)
+        self.assertEqual(geometry_field.errors, ["This field is required."])
+
+        # Verify browsable API HTML form retains submitted value
+        html = HTMLFormRenderer().render(
+            serializer.data, None, {"serializer": serializer}
+        )
+        self.assertIn('value="kept name"', html)
+
+        # Verify through client post with text/html accept header
+        response = self.client.post(
+            self.geojson_location_list_url,
+            json.dumps(data),
+            content_type="application/json",
+            headers={"accept": "text/html"},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, 'value="kept name"', status_code=400)
+        self.assertContains(response, "This field is required.", status_code=400)
+
     def test_patch_geojson_location(self):
         location = Location.objects.create(
             name="geojson patch test", geometry="POINT (135.0 45.0)"

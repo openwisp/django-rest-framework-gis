@@ -118,29 +118,38 @@ class GeoFeatureModelSerializer(ModelSerializer):
     def __getitem__(self, key):
         field = self.fields[key]
         value = None
-        if isinstance(self.data, dict) and "properties" in self.data:
+        data = self.data
+        if not (isinstance(data, dict) and "properties" in data):
+            if (
+                hasattr(self, "initial_data")
+                and isinstance(self.initial_data, dict)
+                and "properties" in self.initial_data
+            ):
+                data = self.initial_data
+
+        if isinstance(data, dict) and "properties" in data:
             if getattr(self.Meta, "geo_field", None) and key == self.Meta.geo_field:
-                value = self.data.get("geometry")
+                value = data.get("geometry")
             elif (
                 getattr(self.Meta, "id_field", None)
                 and key == self.Meta.id_field
-                and "id" in self.data
+                and "id" in data
             ):
-                value = self.data.get("id")
+                value = data.get("id")
             elif (
                 getattr(self.Meta, "bbox_geo_field", None)
                 and key == self.Meta.bbox_geo_field
-                and "bbox" in self.data
+                and "bbox" in data
             ):
-                value = self.data.get("bbox")
-            elif (
-                isinstance(self.data.get("properties"), dict)
-                and key in self.data["properties"]
-            ):
-                value = self.data["properties"][key]
+                value = data.get("bbox")
+            elif isinstance(data.get("properties"), dict) and key in data["properties"]:
+                value = data["properties"][key]
             else:
-                value = self.data.get(key)
-        elif isinstance(self.data, dict):
+                value = data.get(key)
+        elif isinstance(data, dict):
+            value = data.get(key)
+
+        if value is None and isinstance(self.data, dict):
             value = self.data.get(key)
 
         error = self.errors.get(key) if hasattr(self, "_errors") else None
