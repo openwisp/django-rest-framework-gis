@@ -1,0 +1,43 @@
+name: GitHub Actions Security Analysis with zizmor
+
+on:
+  push:
+    branches:
+      - master
+      - "[0-9]+.[0-9]+"
+  pull_request:
+    branches:
+      - master
+      - "[0-9]+.[0-9]+"
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - ready_for_review
+
+permissions: {}
+
+jobs:
+  zizmor:
+    name: Run zizmor
+    runs-on: ubuntu-latest
+    # Only run the edited activity when the PR base branch changed.
+    if: github.event.action != 'edited' || github.event.changes.base.ref.from != ''
+    concurrency:
+      group: zizmor-${{ github.repository }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    permissions:
+      security-events: write # Uploads zizmor findings to GitHub code scanning.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
+        with:
+          # Disables SARIF upload for fork PRs; zizmor analysis still runs and fails on findings.
+          advanced-security: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+          persona: pedantic
