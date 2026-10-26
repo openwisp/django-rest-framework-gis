@@ -1,28 +1,36 @@
 name: PR Reopen Reassignment
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] Required to update stale fork PRs; the workflow runs trusted bot code only.
     types: [reopened]
-  issue_comment:
+  issue_comment: # zizmor: ignore[dangerous-triggers] Required for PR-author recovery comments; the bot verifies the author before writes.
     types: [created]
-permissions:
-  contents: read
-  issues: write
-  pull-requests: write
+permissions: {}
 concurrency:
   group: bot-autoassign-pr-reopen-${{ github.repository }}-${{ github.event.pull_request.number || github.event.issue.number }}
   cancel-in-progress: true
 jobs:
   reassign-on-reopen:
-    if: github.event_name == 'pull_request_target' && github.event.action == 'reopened'
-    uses: openwisp/openwisp-utils/.github/workflows/reusable-bot-autoassign.yml@master
+    if: >
+      github.repository == 'openwisp/django-rest-framework-gis' &&
+      github.event_name == 'pull_request_target' &&
+      github.event.action == 'reopened'
+    permissions:
+      contents: read
+    uses: openwisp/openwisp-actions/.github/workflows/reusable-bot-autoassign.yml@61f8fad5c4f6b9b1cf47eb396c2e1c8392aed52f # 0.1.1
     with:
       bot_command: pr_reopen
     secrets:
       OPENWISP_BOT_APP_ID: ${{ secrets.OPENWISP_BOT_APP_ID }}
       OPENWISP_BOT_PRIVATE_KEY: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
   handle-pr-activity:
-    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && github.event.issue.user.login == github.event.comment.user.login
-    uses: openwisp/openwisp-utils/.github/workflows/reusable-bot-autoassign.yml@master
+    if: >
+      github.repository == 'openwisp/django-rest-framework-gis' &&
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      github.event.issue.user.login == github.event.comment.user.login
+    permissions:
+      contents: read
+    uses: openwisp/openwisp-actions/.github/workflows/reusable-bot-autoassign.yml@61f8fad5c4f6b9b1cf47eb396c2e1c8392aed52f # 0.1.1
     with:
       bot_command: pr_reopen
     secrets:

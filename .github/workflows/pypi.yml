@@ -4,8 +4,12 @@ on:
   release:
     types: [published]
 
-permissions:
-  id-token: write
+permissions: {}
+
+concurrency:
+  group: pypi-publish-${{ github.repository }}
+  queue: max
+  cancel-in-progress: false
 
 jobs:
   pypi-publish:
@@ -15,11 +19,14 @@ jobs:
       name: pypi
       url: https://pypi.org/p/djangorestframework-gis
     permissions:
-      id-token: write
+      contents: read
+      id-token: write # Required for trusted publishing to PyPI.
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.x"
       - name: Install dependencies
@@ -29,4 +36,4 @@ jobs:
       - name: Build package
         run: python -m build
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.14.2
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2

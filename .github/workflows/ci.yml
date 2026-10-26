@@ -11,6 +11,13 @@ on:
       - master
       - "[0-9]+.[0-9]+"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.repository }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Python==${{ matrix.env.python }} | ${{ matrix.env.TOXENV }}
@@ -18,7 +25,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:17-3.5-alpine
+        image: postgis/postgis@sha256:1e85984a7261b01b38a8e7d4166abcdb35370e6b7667a6d6fd9caa057f64eab6 # 17-3.5-alpine
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
@@ -120,12 +127,13 @@ jobs:
           - python: "3.13"
             TOXENV: py313-django61-djangorestframework318
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.env.python }}
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: ${{ matrix.env.python }}
           cache: "pip"
@@ -147,16 +155,17 @@ jobs:
 
       - name: Tests
         if: ${{ !cancelled() && steps.deps.conclusion == 'success' }}
-        run: |
-          tox -e ${{ matrix.env.TOXENV }}
-          coverage combine
-          coverage xml
         env:
           POSTGRES_HOST: localhost
+          TOXENV: ${{ matrix.env.TOXENV }}
+        run: |
+          tox -e "$TOXENV"
+          coverage combine
+          coverage xml
 
       - name: Upload Coverage
         if: ${{ success() }}
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
         with:
           parallel: true
           format: cobertura
@@ -164,10 +173,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   coveralls:
+    name: Finalize Coveralls report
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
         with:
           parallel-finished: true
