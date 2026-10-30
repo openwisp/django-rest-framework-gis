@@ -39,29 +39,21 @@ jobs:
       matrix:
         env:
           # DRF 3.14
-          - python: "3.10"
-            TOXENV: py310-django42-djangorestframework314-djangofilter235
           - python: "3.11"
-            TOXENV: py311-django42-djangorestframework314
+            TOXENV: py311-django42-djangorestframework314-djangofilter235
           # DRF 3.15
-          - python: "3.10"
-            TOXENV: py310-django50-djangorestframework315
           - python: "3.11"
             TOXENV: py311-django50-djangorestframework315
           - python: "3.12"
             TOXENV: py312-django50-djangorestframework315
           - python: "3.13"
             TOXENV: py313-django50-djangorestframework315
-          - python: "3.10"
-            TOXENV: py310-django51-djangorestframework315
           - python: "3.11"
             TOXENV: py311-django51-djangorestframework315
           - python: "3.12"
             TOXENV: py312-django51-djangorestframework315
           - python: "3.13"
             TOXENV: py313-django51-djangorestframework315
-          - python: "3.10"
-            TOXENV: py310-django52-djangorestframework315
           - python: "3.11"
             TOXENV: py311-django52-djangorestframework315
           - python: "3.12"
