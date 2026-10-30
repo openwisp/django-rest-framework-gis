@@ -4,8 +4,13 @@ from django.contrib.gis.geos import Polygon
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework.serializers import (
     LIST_SERIALIZER_KWARGS,
+    BoundField,
+    JSONBoundField,
+    JSONField,
     ListSerializer,
     ModelSerializer,
+    NestedBoundField,
+    Serializer,
 )
 
 from .fields import GeometryField, GeometrySerializerMethodField  # noqa
@@ -109,6 +114,50 @@ class GeoFeatureModelSerializer(ModelSerializer):
                 "You must eiher define a 'bbox_geo_field' or "
                 "'auto_bbox', but you can not set both"
             )
+
+    def __getitem__(self, key):
+        field = self.fields[key]
+        value = None
+        data = self.data
+        if not (isinstance(data, dict) and "properties" in data):
+            if (
+                hasattr(self, "initial_data")
+                and isinstance(self.initial_data, dict)
+                and "properties" in self.initial_data
+            ):
+                data = self.initial_data
+
+        if isinstance(data, dict) and "properties" in data:
+            if getattr(self.Meta, "geo_field", None) and key == self.Meta.geo_field:
+                value = data.get("geometry")
+            elif (
+                getattr(self.Meta, "id_field", None)
+                and key == self.Meta.id_field
+                and "id" in data
+            ):
+                value = data.get("id")
+            elif (
+                getattr(self.Meta, "bbox_geo_field", None)
+                and key == self.Meta.bbox_geo_field
+                and "bbox" in data
+            ):
+                value = data.get("bbox")
+            elif isinstance(data.get("properties"), dict) and key in data["properties"]:
+                value = data["properties"][key]
+            else:
+                value = data.get(key)
+        elif isinstance(data, dict):
+            value = data.get(key)
+
+        if value is None and isinstance(self.data, dict):
+            value = self.data.get(key)
+
+        error = self.errors.get(key) if hasattr(self, "_errors") else None
+        if isinstance(field, Serializer):
+            return NestedBoundField(field, value, error)
+        if isinstance(field, JSONField):
+            return JSONBoundField(field, value, error)
+        return BoundField(field, value, error)
 
     def to_representation(self, instance):
         """
