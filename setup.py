@@ -27,7 +27,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
         "django>=4.2",
-        "djangorestframework>=3.12,<3.19",
+        "djangorestframework>=3.14,<3.19",
         "django-filter>=23.5,<27.0",
     ],
     classifiers=[
@@ -40,7 +40,6 @@ setup(
         "Framework :: Django",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",

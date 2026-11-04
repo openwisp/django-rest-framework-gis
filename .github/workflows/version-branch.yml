@@ -5,8 +5,15 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   version-branch:
-    uses: openwisp/openwisp-utils/.github/workflows/reusable-version-branch.yml@master
+    if: github.repository == 'openwisp/django-rest-framework-gis'
+    uses: openwisp/openwisp-actions/.github/workflows/reusable-version-branch.yml@61f8fad5c4f6b9b1cf47eb396c2e1c8392aed52f # 0.1.1
     with:
       module_name: rest_framework_gis
+      client_id: ${{ vars.OPENWISP_BOT_CLIENT_ID }}
+    secrets:
+      private_key: ${{ secrets.OPENWISP_BOT_PRIVATE_KEY }}
