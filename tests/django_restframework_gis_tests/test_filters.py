@@ -458,6 +458,30 @@ class TestRestFrameworkGisFilters(TestCase):
         response = self.client.get(self.geojson_contained_in_geometry)
         self.assertEqual(len(response.data), 2)
 
+    def test_GeometryField_invalid_geojson(self):
+        polygon = {
+            "type": "Polygon",
+            "coordinates": [[[11.6, 52.1], [7.0, 45.9], [32.3, 44.4], [11.6, 52.1]]],
+        }
+        feature = {"type": "Feature", "properties": {}, "geometry": polygon}
+        values = [
+            {"type": "Feature", "I am not valid": "1,1,1"},
+            feature,
+            {"type": "FeatureCollection", "features": [feature]},
+            {"type": "Point"},
+            {"type": "Point", "coordinates": "x"},
+        ]
+        for value in values:
+            with self.subTest(value=value):
+                response = self.client.get(
+                    self.geojson_contained_in_geometry,
+                    {"contains_properly": json.dumps(value)},
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(
+                    response.data, {"contains_properly": ["Invalid geometry value."]}
+                )
+
     def test_inBBOXFilter_filtering_none(self):
         url_params = "?in_bbox=&format=json"
         response = self.client.get(
