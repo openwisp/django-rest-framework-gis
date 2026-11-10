@@ -502,6 +502,11 @@ We can then filter in the URL, using GeoJSON, and we will perform a
 ``__contains`` geometry lookup, e.g.
 ``/region/?contains_geom={ "type": "Point", "coordinates": [ -123.26436996459961, 44.564178042345375 ] }``.
 
+When using GeoJSON, the value must be a geometry object, such as ``Point`` or
+``Polygon``: ``Feature`` and ``FeatureCollection`` values are not accepted.
+Values that cannot be parsed return HTTP 400 with the
+``Invalid geometry value.`` validation error.
+
 GeoFilterSet
 ~~~~~~~~~~~~
 

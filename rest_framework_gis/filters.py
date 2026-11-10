@@ -4,8 +4,9 @@ from django.contrib.gis import forms
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models.fields import BaseSpatialField
 from django.contrib.gis.db.models.functions import GeometryDistance
+from django.contrib.gis.gdal import GDALException
 from django.contrib.gis.geos import Point, Polygon
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db.models import Q
 from rest_framework.exceptions import ParseError
 from rest_framework.filters import BaseFilterBackend
@@ -92,8 +93,19 @@ class InBBoxFilter(BaseFilterBackend):
 InBBOXFilter = InBBoxFilter
 
 
+class GeometryFormField(forms.GeometryField):
+    def to_python(self, value):
+        # Django only catches GEOS errors, but GDAL parses GeoJSON input
+        try:
+            return super().to_python(value)
+        except GDALException:
+            raise ValidationError(
+                self.error_messages["invalid_geom"], code="invalid_geom"
+            )
+
+
 class GeometryFilter(django_filters.Filter):
-    field_class = forms.GeometryField
+    field_class = GeometryFormField
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("widget", forms.TextInput)
